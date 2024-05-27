@@ -50,7 +50,7 @@ type ChatsPaneProps = {
   selectedChatId: string;
 };
 
-export default function RopsList(props: ChatsPaneProps) {
+export default function RopsList(props: any) {
   const [open, setOpen] = React.useState(false);
   const { chats, setSelectedChat, selectedChatId } = props;
   const handleToast = () => {
@@ -147,7 +147,7 @@ export default function RopsList(props: ChatsPaneProps) {
         }}
       >
         
-        {chats.map((chat) => (
+        {chats.map((chat:any) => (
           <RopsListItem
             sender={{
               name: '',
