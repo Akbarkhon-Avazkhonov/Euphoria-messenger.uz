@@ -7,7 +7,6 @@ import ChatBubble from './ChatBubble';
 import MessageInput from './MessageInput';
 import MessagesPaneHeader from './MessagesPaneHeader';
 import { ChatProps, MessageProps } from '../types';
-import { message } from 'telegram/client';
 
 type MessagesPaneProps = {
   chat: ChatProps;
