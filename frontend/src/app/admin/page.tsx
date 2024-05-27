@@ -24,11 +24,11 @@ export default  function OperatorPage() {
                   </Box>
               </Grid>
               <Grid xs={3}>
-                <RopsList
+                {/* <RopsList
                         chats={chats}
                         selectedChatId={selectedChat.id}
                         setSelectedChat={setSelectedChat}
-                      />
+                      /> */}
               </Grid>
           </Grid>
         
