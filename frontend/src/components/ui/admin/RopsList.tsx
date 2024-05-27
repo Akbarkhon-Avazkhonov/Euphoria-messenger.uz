@@ -149,11 +149,15 @@ export default function RopsList(props: ChatsPaneProps) {
         
         {chats.map((chat) => (
           <RopsListItem
-            key={chat.id}
+            sender={{
+              name: '',
+              username: '',
+              avatar: '',
+              online: false
+            }} messages={[]} key={chat.id}
             {...chat}
             setSelectedChat={setSelectedChat}
-            selectedChatId={selectedChatId}
-          />
+            selectedChatId={selectedChatId}          />
         ))}
       </List>
             </Toggler>
