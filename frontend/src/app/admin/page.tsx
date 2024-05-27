@@ -3,13 +3,12 @@
 import Header from "@/components/ui/Header";
 import MyMessages from "@/components/ui/MyMessages";
 import { CssVarsProvider, CssBaseline, Box, Grid } from "@mui/joy";
-import { chats } from './data';
 
 import React from "react";
-import RopsList from "@/components/ui/admin/RopsList";
+
 
 export default  function OperatorPage() {
-  const [selectedChat, setSelectedChat] = React.useState(chats[0]);
+  const [selectedChat, setSelectedChat] = React.useState({});
     return (
         <CssVarsProvider disableTransitionOnChange>
           <CssBaseline />
