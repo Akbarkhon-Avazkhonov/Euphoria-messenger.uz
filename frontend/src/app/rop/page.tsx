@@ -47,7 +47,7 @@ export default  function OperatorPage() {
   <Grid xs={3}>
   <OperatorsList
           chats={chats}
-          selectedChatId={selectedChat.userId}
+          selectedChatId={(selectedChat as { userId: string }).userId}
           setSelectedChat={setSelectedChat}
         />
   </Grid>
