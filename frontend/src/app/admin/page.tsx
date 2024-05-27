@@ -5,6 +5,8 @@ import MyMessages from "@/components/ui/MyMessages";
 import { CssVarsProvider, CssBaseline, Box, Grid } from "@mui/joy";
 
 import React from "react";
+import { chats } from "./data";
+import RopsList from "@/components/ui/admin/RopsList";
 
 
 export default  function OperatorPage() {
@@ -23,11 +25,11 @@ export default  function OperatorPage() {
                   </Box>
               </Grid>
               <Grid xs={3}>
-                {/* <RopsList
+               <RopsList
                         chats={chats}
-                        selectedChatId={selectedChat.id}
+                        selectedChatId={selectedChat}
                         setSelectedChat={setSelectedChat}
-                      /> */}
+                      /> 
               </Grid>
           </Grid>
         
