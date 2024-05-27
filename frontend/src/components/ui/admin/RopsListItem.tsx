@@ -27,7 +27,11 @@ export default function RopsListItem(props: RopListItemProps) {
         <ListItemButton
           onClick={() => {
             toggleMessagesPane();
-            setSelectedChat({ id, sender, messages });
+            setSelectedChat({
+              id,
+              userId: '',
+              title: ''
+            });
           }}
           selected={selected}
           color="neutral"
