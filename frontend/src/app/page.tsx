@@ -26,7 +26,7 @@ const [username, setUsername] = React.useState<string>('');
 const [password, setPassword] = React.useState<string>('');
 
 const handleSubmit = async () => {
-  console.log(username)
+ 
   const data = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signInWithName`, {
     method: 'POST',
     headers: {
