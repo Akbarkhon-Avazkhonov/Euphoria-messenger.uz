@@ -64,7 +64,7 @@ export default function OperatorsList(props: ChatsPaneProps) {
         {chats && chats.map((chat) => (
           <OperatorsListItem
           
-             key={chat.id}
+            username={''} messages={''} key={chat.id}
             {...chat}
             setSelectedChat={setSelectedChat}
             selectedChatId={selectedChatId}          />
