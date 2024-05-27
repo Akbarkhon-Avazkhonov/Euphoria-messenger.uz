@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect } from 'react';
 import { IMaskInput } from 'react-imask';
 import FormControl from '@mui/joy/FormControl';

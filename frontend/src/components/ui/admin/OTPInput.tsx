@@ -1,3 +1,4 @@
+"use client";
 import * as React from 'react';
 import { Input as BaseInput } from '@mui/base/Input';
 import { Box, styled } from '@mui/system';
