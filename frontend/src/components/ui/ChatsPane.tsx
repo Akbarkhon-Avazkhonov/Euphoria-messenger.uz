@@ -10,9 +10,10 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ChatListItem from './ChatListItem';
 import { ChatProps } from '../types';
 import { toggleMessagesPane } from '../utils';
-import { LogoutRounded, MenuRounded } from '@mui/icons-material';
+import { CreateRounded, LogoutRounded, MenuRounded } from '@mui/icons-material';
 import ColorSchemeToggle from './ColorSchemeToggle';
 import LogoutModal from './LogoutModal';
+import NewMessageIcon from './NewMessageIcon';
 
 type ChatsPaneProps = {
   chats: ChatProps[];
@@ -115,7 +116,11 @@ export default function ChatsPane(props: ChatsPaneProps) {
           />
         ))
        }
+       
+
       </List>
+
+      <NewMessageIcon />
     </Sheet>
   );
 }
