@@ -16,7 +16,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
   const { chat } = props;
   const [textAreaValue, setTextAreaValue] = React.useState('');
   const [chatMessages, setChatMessages] = React.useState([]);
-
+  
   React.useEffect(() => {
     const fetchData = async () => {
       const data = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/messages/getMessages`, {
@@ -34,6 +34,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
     };
 
     fetchData();
+    
   }, [chat.userId]);
 
   return (

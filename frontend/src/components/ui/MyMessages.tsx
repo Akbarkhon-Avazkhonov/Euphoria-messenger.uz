@@ -4,6 +4,7 @@ import Sheet from '@mui/joy/Sheet';
 import MessagesPane from './MessagesPane';
 import ChatsPane from './ChatsPane';
 import { ChatProps } from '../types';
+import Chat from './chat/Chat';
 
 export default function MyProfile() {
   const [selectedChat, setSelectedChat] = React.useState<any>({});
@@ -37,7 +38,7 @@ export default function MyProfile() {
           top: 52,
         }}
       >
-        <ChatsPane
+        <Chat
           chats={selectedChat}
           selectedChatId={selectedChat.id}
           setSelectedChat={setSelectedChat}

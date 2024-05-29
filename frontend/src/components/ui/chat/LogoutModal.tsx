@@ -17,7 +17,7 @@ export default function LogoutModal() {
 
   return (
     <>
-      <IconButton
+        <IconButton
           variant="plain"
           aria-label="edit"
           color="neutral"
@@ -35,7 +35,7 @@ export default function LogoutModal() {
         sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
         {!loading ?
-        <ModalDialog variant="outlined" role="alertdialog">
+        <ModalDialog variant="outlined" role="alertdialog" color='danger'>
         <DialogTitle>
           <WarningRounded />
           Вы уверены, что хотите выйти?
@@ -53,9 +53,9 @@ export default function LogoutModal() {
           </Button>
         </DialogActions>
       </ModalDialog>:
-      <ModalDialog variant="outlined" role="alertdialog" >
-          <LinearProgress color="danger" variant="soft" />
-      </ModalDialog>}
+        <ModalDialog variant="outlined" role="alertdialog" color='danger' >
+            <LinearProgress color="danger" variant="soft" />
+        </ModalDialog>}
       </Modal>
     </>
   );
