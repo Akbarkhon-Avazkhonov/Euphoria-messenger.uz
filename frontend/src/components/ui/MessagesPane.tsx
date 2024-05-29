@@ -88,13 +88,13 @@ export default function MessagesPane(props: MessagesPaneProps) {
           const newIdString = newId.toString();
           setChatMessages([
             ...chatMessages,
-            // {
-            //   id: chat.userId,
-            //   title: 'You',
-            //   out: true,
-            //   message: textAreaValue,
-            //   timestamp: 'Just now',
-            // },
+            {
+              id: chat.userId,
+              title: 'You',
+              out: true,
+              message: textAreaValue,
+              timestamp: 'Just now',
+            },
           ]);
         }}
       />

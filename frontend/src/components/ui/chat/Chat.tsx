@@ -2,7 +2,7 @@ import * as React from 'react';
 import Stack from '@mui/joy/Stack';
 import Sheet from '@mui/joy/Sheet';
 import Typography from '@mui/joy/Typography';
-import { Box, Chip, Input } from '@mui/joy';
+import { Box, Chip, Input, Snackbar } from '@mui/joy';
 import List from '@mui/joy/List';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
@@ -13,66 +13,67 @@ import ChatItem from './ChatItem';
 import io from 'socket.io-client';
 
 export default function ChatsPane(props: any) {
-  const { setSelectedChat, selectedChatId } = props;
-  const [socket, setSocket] = React.useState<any>(null);
-  const [data, setData] = React.useState<any[]>([]);
+  const { chats ,setSelectedChat, selectedChatId } = props;
+  // const [socket, setSocket] = React.useState<any>(null);
+  // const [data, setData] = React.useState<any[]>([]);
+  // const [newMessage, setNewMessage] = React.useState<any>(null);
+  // React.useEffect(() => {
+  //   const session = localStorage.getItem('session');
+  //   if (session) {
+  //     const newSocket = io('http://localhost:5000', {
+  //       extraHeaders: {
+  //         session: session,
+  //       },
+  //     });
+  //     setSocket(newSocket);
 
-  React.useEffect(() => {
-    const session = localStorage.getItem('session');
-    if (session) {
-      const newSocket = io('http://localhost:5000', {
-        extraHeaders: {
-          session: session,
-        },
-      });
-      setSocket(newSocket);
+  //     newSocket.on('message', (newMessage: any) => {
+  //       setNewMessage(newMessage);
+  //       setData((prevData) => {
+  //         const updatedData = prevData.map((item) => {
+  //           if (item.userId === newMessage.peerId.userId) {
+  //             return { ...item, message: newMessage.message, unreadCount: item.unreadCount + 1 };
+  //           }
+  //           return item;
+  //         });
 
-      newSocket.on('message', (newMessage: any) => {
-        setData((prevData) => {
-          const updatedData = prevData.map((item) => {
-            if (item.userId === newMessage.peerId.userId) {
-              return { ...item, message: newMessage.message, unreadCount: item.unreadCount + 1 };
-            }
-            return item;
-          });
+  //         const isNewUser = !updatedData.some((item) => item.userId === newMessage.peerId.userId);
+  //         if (isNewUser) {
+  //           updatedData.push({
+  //             userId: newMessage.peerId.userId,
+  //             message: newMessage.message,
+  //             unreadCount: 1,
+  //             title: newMessage.peerId.title,
+  //           });
+  //         }
 
-          const isNewUser = !updatedData.some((item) => item.userId === newMessage.peerId.userId);
-          if (isNewUser) {
-            updatedData.push({
-              userId: newMessage.peerId.userId,
-              message: newMessage.message,
-              unreadCount: 1,
-              title: newMessage.peerId.title,
-            });
-          }
+  //         return updatedData;
+  //       });
+  //     });
 
-          return updatedData;
-        });
-      });
+  //     return () => {
+  //       newSocket.close();
+  //     };
+  //   }
+  // }, []);
 
-      return () => {
-        newSocket.close();
-      };
-    }
-  }, []);
-
-  React.useEffect(() => {
-    const session = localStorage.getItem('session');
-    if (session) {
-      const fetchData = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/messages/getDialogs`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            session: session,
-          },
-        });
-        const result = await response.json();
-        setData(result);
-      };
-      fetchData();
-    }
-  }, []);
+  // React.useEffect(() => {
+  //   const session = localStorage.getItem('session');
+  //   if (session) {
+  //     const fetchData = async () => {
+  //       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/messages/getDialogs`, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           session: session,
+  //         },
+  //       });
+  //       const result = await response.json();
+  //       setData(result);
+  //     };
+  //     fetchData();
+  //   }
+  // }, []);
 
   return (
     <Sheet
@@ -127,7 +128,7 @@ export default function ChatsPane(props: any) {
           '--ListItem-paddingX': '1rem',
         }}
       >
-        {data && Array.isArray(data) && data.map((item: any) => (
+        {chats && Array.isArray(chats) && chats.map((item: any) => (
           item && (
             <ChatItem
               key={item.userId}
@@ -142,6 +143,9 @@ export default function ChatsPane(props: any) {
         ))}
       </List>
       <NewChatModal />
+
+
+
     </Sheet>
   );
 }

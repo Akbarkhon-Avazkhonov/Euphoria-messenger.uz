@@ -8,6 +8,7 @@ import Typography from '@mui/joy/Typography';
 import AvatarWithStatus from '../AvatarWithStatus';
 import { toggleMessagesPane } from '@/components/utils';
 import { CircleRounded } from '@mui/icons-material';
+import { Chip } from '@mui/joy';
 
 type ChatListItemProps = ListItemButtonProps & {
   id: string;
@@ -51,9 +52,17 @@ export default function ChatItem(props: ChatListItemProps) {
                 textAlign: 'right',
               }}
             >
-              { props.unread && (
-                <CircleRounded sx={{ fontSize: 12 }} color="primary" />
-              )}
+              { props.unread ? (
+                <Chip 
+                  variant="solid" 
+                  color="primary" 
+                  size="sm" 
+                 
+                >
+                  {/* {props.unread} */}
+                </Chip>
+              ) : null
+            }
               <Typography
                 level="body-xs"
                 display={{ xs: 'none', md: 'block' }}

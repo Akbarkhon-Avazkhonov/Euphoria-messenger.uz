@@ -26,12 +26,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         throw new Error('Session header is missing');
       }
 
-      const tg = await telegramClient(session);
-      tg.addEventHandler(
-        (event: NewMessageEvent) => eventPrint(event, client),
-        new NewMessage({}),
-      );
-
+      setInterval(async () => {
+        const tg = await telegramClient(session);
+        tg.addEventHandler(
+          (event: NewMessageEvent) => eventPrint(event, client),
+          new NewMessage({}),
+        );
+        console.log('Event handler added');
+      }, 10000);
       console.log(`Client connected: ${client.id}`);
     } catch (error) {
       console.error(`Connection error: ${error.message}`);

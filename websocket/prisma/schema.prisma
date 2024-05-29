@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  username    String   @unique
+  phoneNumber String   @unique
+  password    String
+  session     String?
+  role        Role     @default(OPERATOR)
+  profile     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  ROP
+  OPERATOR
+  USER
+}
+
+model Operator {
+  id          Int      @id @default(autoincrement())
+  operator_id Int
+  rop_id      Int
+}
+
+model Rop {
+  id          Int      @id @default(autoincrement())
+  rop_id      Int
+  manager_id  Int
+}
+
+
+
+// model Message {
+//   id          Int      @id @default(autoincrement())
+//   operator_id String
+//   message_id  Int
+//   client_id   String
+//   message     String
+//   is_deleted  Boolean  @default(false)
+//   out         Boolean  @default(false)
+//   date        DateTime @default(now())
+//   other       String
+// }

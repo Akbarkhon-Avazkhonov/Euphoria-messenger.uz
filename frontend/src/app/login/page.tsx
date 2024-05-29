@@ -19,15 +19,15 @@ import ModalNewUser from '@/components/ui/ModalNewUser';
 import ForgetPassword from '@/components/ui/ForgetPassword';
 import { Snackbar } from '@mui/joy';
 
-type PageProps = {
-  // Define any additional PageProps properties here
-};
+// type PageProps = {
+//   // Define any additional PageProps properties here
+// };
 
-type LoginProps = PageProps & {
-  setSession: never | any
-};
+// type LoginProps = PageProps & {
+//   setSession: never | any
+// };
 
-export default function Login(props: LoginProps) {
+export default function Login(props: any) {
   const [username, setUsername] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
   const [snackbarOpen, setSnackbarOpen] = React.useState<boolean>(false);

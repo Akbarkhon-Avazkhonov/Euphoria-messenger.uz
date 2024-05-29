@@ -19,8 +19,8 @@ export default function ChatHeader() {
         fontWeight="lg"
         endDecorator={
           <Chip
-            size="small"
-            label="Logout"
+            variant="soft"
+            color="primary"
             onClick={() => {
               localStorage.removeItem('session');
               window.location.reload();
