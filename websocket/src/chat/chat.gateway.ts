@@ -41,7 +41,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           },
       );
       const filteredResult = result.filter((item) => item);
-      client.emit('message', filteredResult);
+      client.emit('getDialogs', filteredResult);
 
       // setInterval(async () => {
 
@@ -115,7 +115,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           date: message.date,
         }));
         result.sort((a, b) => a.date - b.date);
-        client.emit('messages', result);
+        client.emit('getMessages', result);
       } catch (error) {
         console.error(`Error getting messages: ${error.message}`);
       }
@@ -187,6 +187,7 @@ async function eventPrint(event: NewMessageEvent, client: any) {
     const message = event.message;
     if (event.isPrivate) {
       console.log(`Received message: ${message.text}`);
+      client.emit('newMessages', message);
       client.emit('newMessage', message);
     }
   } catch (error) {

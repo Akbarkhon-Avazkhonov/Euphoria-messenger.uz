@@ -1,3 +1,4 @@
+"use client";
 import Header from "@/components/ui/Header";
 import Main from "@/components/ui/main/Main";
 import { CssVarsProvider, CssBaseline, Box } from "@mui/joy";

@@ -14,7 +14,7 @@ type MessagesPaneProps = {
 };
 
 export default function MessagesPane(props: MessagesPaneProps) {
-  const { socket, chat , } = props;
+  const { socket, chat  } = props;
   const [textAreaValue, setTextAreaValue] = React.useState('');
   const [chatMessages, setChatMessages] = React.useState<MessageProps[]>([]);
 
@@ -31,32 +31,42 @@ export default function MessagesPane(props: MessagesPaneProps) {
       setChatMessages(value);
     };
 
-    socket.on('messages', onMessages);
+    socket.on('getMessages', onMessages);
 
     return () => {
-      socket.off('messages', onMessages);
+      socket.off('getMessages', onMessages);
     };
-  }, [socket,chatMessages]);
+  }, [socket]);
 
   const onNewMessage = (value: any) => {
  
     //if previus message same as new message then return
     
     setChatMessages((prevMessages: MessageProps[]) => {
+      console.log(prevMessages);
+      console.log(value);
+      console.log(localStorage.getItem('selectedChat'));
       console.log(value.peerId.userId);
-      console.log(chat)
-        return [...prevMessages, value.message];
+      
+      if(localStorage.getItem('selectedChat') == `"${value.peerId.userId}"`)
+      {
+        return [...prevMessages, value];
+      }
+      else{
+        return prevMessages;
+      }
+     
     });
 
     
 
-  
+    
 
 };
   React.useEffect(() => {
     
    
-    socket.on('newMessage', onNewMessage);
+    socket.on('newMessages', onNewMessage);
 
     
   }, [socket]);

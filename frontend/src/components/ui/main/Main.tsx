@@ -13,9 +13,12 @@ export default function MyProfile() {
   const [newMessage, setNewMessage] = React.useState<any>(null);
   const [isConnected, setIsConnected] = React.useState(socket.connected);
 
+  const handleSetSelectedChat = (chat: any) => {
+    setSelectedChat(chat);
+    localStorage.setItem('selectedChat', JSON.stringify(chat.id));
+  };
   React.useEffect(() => {
     function onConnect() {
-      socket.emit('getDialogs');
       setIsConnected(true);
     }
 
@@ -32,7 +35,6 @@ export default function MyProfile() {
         setChats((prevChats) => {
         const updatedChats = prevChats.map((chat) => {
           if (chat.userId === value.peerId.userId) {
-            console.log('Chat found:', chat);
             return { ...chat, message: value.message };
           }
           return chat;
@@ -53,33 +55,28 @@ export default function MyProfile() {
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('getDialogs', onDialogs);
-    socket.on('newMessage', onNewMessage);
+    socket.on('newMessages', onNewMessage);
 
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('getDialogs', onDialogs);
-      socket.off('newMessage', onNewMessage);
+      socket.off('newMessages', onNewMessage);
     };
   }, []);
 
-  React.useEffect(() => {
-    const storedChats = JSON.parse(localStorage.getItem('chats') || '[]');
-    if (storedChats.length) {
-      setChats(storedChats);
-    }
-  }, [newMessage]);
+  // React.useEffect(() => {
+  //   const storedChats = JSON.parse(localStorage.getItem('chats') || '[]');
+  //   if (storedChats.length) {
+  //     setChats(storedChats);
+  //   }
 
-  React.useEffect(() => {
-    selectedChat.id && socket.emit('getMessages', selectedChat.id);
+
+  // React.useEffect(() => {
+  //   selectedChat.id && socket.emit('getMessages', selectedChat.id);
   
-  }, [selectedChat]);
+  // }, [selectedChat]);
 
-  const sendMessage = () => {
-    if (socket) {
-      socket.emit('message', 'Button Clicked!');
-    }
-  };
 
   return (
     <Sheet
@@ -135,7 +132,7 @@ export default function MyProfile() {
           top: 52,
         }}
       >
-        <Chat socket={socket} chats={chats} selectedChatId={selectedChat.id} setSelectedChat={setSelectedChat} />
+        <Chat socket={socket} chats={chats} selectedChatId={selectedChat.id} setSelectedChat={handleSetSelectedChat} />
       </Sheet>
       <MessagesPane chat={selectedChat} socket={socket} />
     </Sheet>

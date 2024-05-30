@@ -8,7 +8,7 @@ let session = ''; // Provide a default value for session
 if(typeof window !== 'undefined'){
     session = window.localStorage.getItem('session') || '';
 }
-export const socket = io("http://localhost:5001", {
+export const socket = io("http://localhost:5005", {
     extraHeaders: {
         session: session,
     },
