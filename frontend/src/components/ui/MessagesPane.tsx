@@ -11,11 +11,10 @@ import { ChatProps, MessageProps } from '../types';
 type MessagesPaneProps = {
   socket: any;
   chat: ChatProps;
-  userId : string;
 };
 
 export default function MessagesPane(props: MessagesPaneProps) {
-  const { socket, chat ,userId } = props;
+  const { socket, chat , } = props;
   const [textAreaValue, setTextAreaValue] = React.useState('');
   const [chatMessages, setChatMessages] = React.useState<MessageProps[]>([]);
 
@@ -45,12 +44,8 @@ export default function MessagesPane(props: MessagesPaneProps) {
     
     setChatMessages((prevMessages: MessageProps[]) => {
       console.log(value.peerId.userId);
-      console.log(userId);
       console.log(chat)
-      if (value.peerId.userId === userId) {
         return [...prevMessages, value.message];
-      }
-      return prevMessages; // Add this line to return the previous messages when the condition is not met
     });
 
     
