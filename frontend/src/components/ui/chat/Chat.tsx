@@ -1,3 +1,4 @@
+"use client";
 import * as React from 'react';
 import Stack from '@mui/joy/Stack';
 import Sheet from '@mui/joy/Sheet';
@@ -13,47 +14,14 @@ import ChatItem from './ChatItem';
 import io from 'socket.io-client';
 
 export default function ChatsPane(props: any) {
-  const { chats ,setSelectedChat, selectedChatId } = props;
+  const { socket , chats ,setSelectedChat, selectedChatId } = props;
   // const [socket, setSocket] = React.useState<any>(null);
   // const [data, setData] = React.useState<any[]>([]);
   // const [newMessage, setNewMessage] = React.useState<any>(null);
   // React.useEffect(() => {
-  //   const session = localStorage.getItem('session');
-  //   if (session) {
-  //     const newSocket = io('http://localhost:5000', {
-  //       extraHeaders: {
-  //         session: session,
-  //       },
-  //     });
-  //     setSocket(newSocket);
+   
 
-  //     newSocket.on('message', (newMessage: any) => {
-  //       setNewMessage(newMessage);
-  //       setData((prevData) => {
-  //         const updatedData = prevData.map((item) => {
-  //           if (item.userId === newMessage.peerId.userId) {
-  //             return { ...item, message: newMessage.message, unreadCount: item.unreadCount + 1 };
-  //           }
-  //           return item;
-  //         });
-
-  //         const isNewUser = !updatedData.some((item) => item.userId === newMessage.peerId.userId);
-  //         if (isNewUser) {
-  //           updatedData.push({
-  //             userId: newMessage.peerId.userId,
-  //             message: newMessage.message,
-  //             unreadCount: 1,
-  //             title: newMessage.peerId.title,
-  //           });
-  //         }
-
-  //         return updatedData;
-  //       });
-  //     });
-
-  //     return () => {
-  //       newSocket.close();
-  //     };
+  //     socket.emit('getDialogs');
   //   }
   // }, []);
 
@@ -131,6 +99,7 @@ export default function ChatsPane(props: any) {
         {chats && Array.isArray(chats) && chats.map((item: any) => (
           item && (
             <ChatItem
+              socket={socket}
               key={item.userId}
               id={item.userId}
               unread={item.unreadCount}
@@ -142,7 +111,7 @@ export default function ChatsPane(props: any) {
           )
         ))}
       </List>
-      <NewChatModal />
+      <NewChatModal socket = {props.socket}/>
 
 
 

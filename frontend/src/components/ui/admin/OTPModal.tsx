@@ -1,3 +1,4 @@
+"use client";
 import { Modal, ModalDialog, DialogTitle, Stack, FormControl, Button } from "@mui/joy";
 import React from "react";
 import OTPInput from "./OTPInput";

@@ -1,7 +1,7 @@
 "use client";
 
 import Header from "@/components/ui/Header";
-import MyMessages from "@/components/ui/MyMessages";
+// import MyMessages from "@/components/ui/MyMessages";
 import { CssVarsProvider, CssBaseline, Box, Grid } from "@mui/joy";
 
 import React from "react";
@@ -38,7 +38,7 @@ export default  function OperatorPage() {
   <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
             <Header />
             <Box component="main" className="MainContent" sx={{ flex: 1 }}>
-              <MyMessages />
+              {/* <MyMessages /> */}
               
             </Box>
 

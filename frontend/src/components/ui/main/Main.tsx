@@ -1,82 +1,91 @@
+"use client";
 import * as React from 'react';
-import Sheet from '@mui/joy/Sheet';
-
 import { io } from 'socket.io-client';
+import { Snackbar, Typography, Button } from '@mui/joy';
+import Sheet from '@mui/joy/Sheet';
 import MessagesPane from '../MessagesPane';
 import Chat from '../chat/Chat';
-import { Snackbar, Typography } from '@mui/joy';
+import { socket } from '@/socket';
 
 export default function MyProfile() {
   const [selectedChat, setSelectedChat] = React.useState<any>({});
-  const [chats, setChats] = React.useState<any>([]);
-  const [messages, setMessages] = React.useState([]);
-  const [newMes, setNewMes] = React.useState<any>(null);
+  const [chats, setChats] = React.useState<any[]>([]);
+  const [newMessage, setNewMessage] = React.useState<any>(null);
+  const [isConnected, setIsConnected] = React.useState(socket.connected);
 
   React.useEffect(() => {
-    const session = localStorage.getItem('session');
-    if (session) {
-      const newSocket = io('http://localhost:5001', {
-        extraHeaders: {
-          session: session,
-        },
-      });
+    function onConnect() {
+      socket.emit('getDialogs');
+      setIsConnected(true);
+    }
 
-      newSocket.on('message', (newMessage: any) => {
-        setNewMes(newMessage);  
-        console.log(newMessage);
-        setChats((prevData: Array<any>) => {
-          const updatedData = prevData.map((item) => {
-            if (item.userId === newMessage.peerId.userId) {
-              return { ...item, message: newMessage.message, unreadCount: item.unreadCount + 1 };
-            }
-            return item;
-          });
+    function onDisconnect() {
+      setIsConnected(false);
+    }
 
-          const isNewUser = !updatedData.some((item) => item.userId === newMessage.peerId.userId);
-          if (isNewUser) {
-            updatedData.push({
-              userId: newMessage.peerId.userId,
-              message: newMessage.message,
-              unreadCount: 1,
-              title: newMessage.peerId.title,
-            });
+    function onDialogs(value: any[]) {
+      setChats(value);
+      localStorage.setItem('chats', JSON.stringify(value));
+    }
+
+    function onNewMessage(value: { peerId: { userId: any; name: any; }; message: any; }) {
+        setChats((prevChats) => {
+        const updatedChats = prevChats.map((chat) => {
+          if (chat.userId === value.peerId.userId) {
+            console.log('Chat found:', chat);
+            return { ...chat, message: value.message };
           }
-
-          return updatedData;
+          return chat;
         });
+        if (!updatedChats.find((chat) => chat.userId === value.peerId.userId)) {
+          updatedChats.push({
+            userId: value.peerId.userId,
+            name: value.peerId.name,
+            message: value.message,
+          });
+        }
+        localStorage.setItem('chats', JSON.stringify(updatedChats));
+        return updatedChats;
       });
-
-      return () => {
-        newSocket.close();
-      };
+      setNewMessage(value);
     }
+
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    socket.on('getDialogs', onDialogs);
+    socket.on('newMessage', onNewMessage);
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('getDialogs', onDialogs);
+      socket.off('newMessage', onNewMessage);
+    };
   }, []);
 
   React.useEffect(() => {
-    const session = localStorage.getItem('session');
-    if (session) {
-      const fetchData = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/messages/getDialogs`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            session: session,
-          },
-        });
-        const result = await response.json();
-        setChats(result);
-      };
-      fetchData();
+    const storedChats = JSON.parse(localStorage.getItem('chats') || '[]');
+    if (storedChats.length) {
+      setChats(storedChats);
     }
-  }, []);
+  }, [newMessage]);
 
+  React.useEffect(() => {
+    selectedChat.id && socket.emit('getMessages', selectedChat.id);
+  
+  }, [selectedChat]);
+
+  const sendMessage = () => {
+    if (socket) {
+      socket.emit('message', 'Button Clicked!');
+    }
+  };
 
   return (
     <Sheet
       sx={{
         flex: 1,
         width: '100%',
-        
         mx: 'auto',
         pt: { xs: 'var(--Header-height)', sm: 0 },
         display: 'grid',
@@ -86,6 +95,33 @@ export default function MyProfile() {
         },
       }}
     >
+      {newMessage && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={!!newMessage}
+          autoHideDuration={5000}
+          onClose={() => setNewMessage(null)}
+          variant="soft"
+          color="primary"
+        >
+          <Typography level="body-sm" sx={{ color: 'text.secondary' }}>
+            {newMessage.message}
+          </Typography>
+        </Snackbar>
+      )}
+      {isConnected && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={isConnected}
+          autoHideDuration={5000}
+          onClose={() => setIsConnected(false)}
+          variant="soft"
+        >
+          <Typography level="body-sm" sx={{ color: 'text.secondary' }}>
+            Connected
+          </Typography>
+        </Snackbar>
+      )}
       <Sheet
         sx={{
           position: { xs: 'fixed', sm: 'sticky' },
@@ -95,32 +131,13 @@ export default function MyProfile() {
           },
           transition: 'transform 0.4s, width 0.4s',
           zIndex: 100,
-
           width: '400px',
-          
           top: 52,
         }}
       >
-        <Chat
-          chats={chats}
-          selectedChatId={selectedChat.id}
-          setSelectedChat={setSelectedChat}
-        />
+        <Chat socket={socket} chats={chats} selectedChatId={selectedChat.id} setSelectedChat={setSelectedChat} />
       </Sheet>
-      <MessagesPane chat={selectedChat} />
-      <Snackbar 
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={!!newMes}
-      autoHideDuration={5000}
-      onClose={() => setNewMes(null)}
-      variant='soft'
-      color='primary'>
-        {newMes && (
-          <Typography level="body-sm" sx={{ color: 'text.secondary' }}>
-            {newMes.message}
-          </Typography>
-        )}
-      </Snackbar>
+      <MessagesPane chat={selectedChat} socket={socket} />
     </Sheet>
   );
 }

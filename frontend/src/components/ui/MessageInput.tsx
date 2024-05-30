@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from 'react';
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
@@ -23,17 +25,17 @@ export default function MessageInput(props: MessageInputProps) {
       onSubmit();
       setTextAreaValue('');
 
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/messages/sendMessage`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'session': `${localStorage.getItem('session')}`,
-        },
-        body: JSON.stringify({
-          id: props.userId,
-          message: textAreaValue,
-        }),
-      });
+      // await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/messages/sendMessage`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'session': `${localStorage.getItem('session')}`,
+      //   },
+      //   body: JSON.stringify({
+      //     id: props.userId,
+      //     message: textAreaValue,
+      //   }),
+      // });
     }
   };
   return (

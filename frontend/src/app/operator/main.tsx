@@ -1,8 +1,5 @@
-"use client";
-
 import Header from "@/components/ui/Header";
-import MyMessages from "@/components/ui/MyMessages";
-import Main from "@/components/ui/main/main";
+import Main from "@/components/ui/main/Main";
 import { CssVarsProvider, CssBaseline, Box } from "@mui/joy";
 
 export default  function OperatorPage() {

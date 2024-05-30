@@ -6,28 +6,35 @@ import { CreateRounded, LoginRounded, PersonAddRounded, VisibilityOffRounded, Vi
 import PhoneInput from '../admin/PhoneInput';
 
 
-export default function NewMessageIcon() {
+export default function NewMessageIcon(props: any) {
   const [open, setOpen] = React.useState<boolean>(false);
   const [username, setUsername] = React.useState<string>('');
   const [message, setMessage] = React.useState<string>('');
 
     const handleSend = async () => {
-        const data = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/messages/sendFirstMessage`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'session': `${localStorage.getItem('session')}`
-            },
-            body: JSON.stringify(
-                {
-                    phone: localStorage.getItem('phoneInputValue'),
-                    firstName: username,
-                    message: message
+      props.socket.emit('sendFirstMessage', 
+      {
+        phone: localStorage.getItem('phoneInputValue'),
+        firstName: username,
+        message: message
+      });
 
-                }
-            ),
-        });
-        const response = await data.json();
+        // const data = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/messages/sendFirstMessage`, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'session': `${localStorage.getItem('session')}`
+        //     },
+        //     body: JSON.stringify(
+        //         {
+        //             phone: localStorage.getItem('phoneInputValue'),
+        //             firstName: username,
+        //             message: message
+
+        //         }
+        //     ),
+        // });
+        // const response = await data.json();
         window.location.reload();
     
     }

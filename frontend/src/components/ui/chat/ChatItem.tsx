@@ -1,3 +1,4 @@
+"use client";
 import * as React from 'react';
 import Box from '@mui/joy/Box';
 import ListDivider from '@mui/joy/ListDivider';
@@ -11,6 +12,7 @@ import { CircleRounded } from '@mui/icons-material';
 import { Chip } from '@mui/joy';
 
 type ChatListItemProps = ListItemButtonProps & {
+  socket: any;
   id: string;
   unread?: boolean;
   sender: string;
@@ -20,7 +22,7 @@ type ChatListItemProps = ListItemButtonProps & {
 };
 
 export default function ChatItem(props: ChatListItemProps) {
-  const { id, sender, messages, selectedChatId, setSelectedChat } = props;
+  const { socket, id, sender, messages, selectedChatId, setSelectedChat } = props;
   const selected = selectedChatId === id;
 
  

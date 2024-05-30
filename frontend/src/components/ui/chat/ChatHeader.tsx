@@ -1,3 +1,4 @@
+"use client";
 import { Stack, Typography, Chip } from "@mui/joy";
 import ColorSchemeToggle from "../ColorSchemeToggle";
 import NewMessageIcon from "../NewMessageIcon";
