@@ -4,7 +4,7 @@ interface NewMessageModalProps {
     newMessage: any;
     setNewMessage: (newMessage: any) => void;
 }
-export default function NewMessageModal(props: NewMessageModalProps) {
+export default function NewIncomeMessageModal(props: NewMessageModalProps) {
     return (
         <>
         {props.newMessage && (

@@ -1,7 +1,4 @@
 import Chat from "@/components/operator/Chat";
-import Messenger from "@/components/operator/Chat";
-import Header from "@/components/ui/Header";
-import Main from "@/components/ui/main/Main";
 import { CssVarsProvider, CssBaseline, Box } from "@mui/joy";
 
 export default  function Operator() {
@@ -9,7 +6,6 @@ export default  function Operator() {
         <CssVarsProvider disableTransitionOnChange>
           <CssBaseline />
           <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
-            <Header />
             <Box component="main" className="MainContent" sx={{ flex: 1 }}>
               <Chat/>
             </Box>

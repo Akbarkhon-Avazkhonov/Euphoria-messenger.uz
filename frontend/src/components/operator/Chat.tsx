@@ -1,17 +1,21 @@
 "use client";
 import * as React from 'react';
-import { Snackbar, Typography, Button, ListDivider, List } from '@mui/joy';
+import { Snackbar, Typography, Button, ListDivider, List, Box, Stack } from '@mui/joy';
 import Sheet from '@mui/joy/Sheet';
 
 import { socket } from '@/socket';
 import MessagesPane from '../ui/MessagesPane';
-import Chat from '../ui/chat/Chat';
 import DialogsSearch from '@/components/ui/dialogs/DialogsSearch';
 import DialogsHeader from '@/components/ui/dialogs/DialogsHeader';
 import DialogsItem from '../ui/dialogs/DialogsItem';
 import ConnectedModal from '../ui/dialogs/ConnectedModal';
-import NewMessageModal from '../ui/dialogs/NewMessageModal';
-import { message } from 'telegram/client';
+import NewIncomeMessageModal from '../ui/dialogs/NewIncomeMessageModal';
+import NewChatModal from '../ui/dialogs/NewDialogModal';
+import NewDialogIcon from '../ui/dialogs/NewDialogModal';
+import NewDialogModal from '../ui/dialogs/NewDialogModal';
+import MessageHeader from '../ui/messages/MessageHeader';
+import MessageInput from '../ui/messages/MessageInput';
+import { ChatBubble } from '@mui/icons-material';
 const test_chats = [
   {
     userId: 1,
@@ -50,84 +54,26 @@ const test_chats = [
     title: 'David',
     message: 'Ciao',
   },
-  {
-    userId: 7,
-    title: 'Eve',
-    message: 'Namaste',
-  },
-  {
-    userId: 8,
-    title: 'Frank',
-    message: 'Konnichiwa',
-  },
-  {
-    userId: 9,
-    title: 'Grace',
-    message: 'Guten Tag',
-  },
-  {
-    userId: 10,
-    title: 'Heidi',
-    message: 'Shalom',
-  },
+
+  
 ];
 export default function MyProfile() {
-  const [selectedUserId, setSelectedUserId] = React.useState<string>('');
-  const [chats, setChats] = React.useState<any[]>([]);
+  const [selectedChat, setSelectedChat] = React.useState<any>({
+    userId: '',
+  });
+  const [chats, setChats] = React.useState<any[]>(test_chats);
   const [newMessage, setNewMessage] = React.useState<any>();
   const [isConnected, setIsConnected] = React.useState(socket.connected);
+  const [textAreaValue, setTextAreaValue] = React.useState('');
 
-
-  // React.useEffect(() => {
-  //   function onConnect() {
-  //     setIsConnected(true);
-  //   }
-
-  //   function onDisconnect() {
-  //     setIsConnected(false);
-  //   }
-
-  //   function onDialogs(value: any[]) {
-  //     setChats(value);
-  //     localStorage.setItem('chats', JSON.stringify(value));
-  //   }
-
-  //   function onNewMessage(value: { peerId: { userId: any; name: any; }; message: any; }) {
-  //       setChats((prevChats) => {
-  //       const updatedChats = prevChats.map((chat) => {
-  //         if (chat.userId === value.peerId.userId) {
-  //           return { ...chat, message: value.message };
-  //         }
-  //         return chat;
-  //       });
-  //       if (!updatedChats.find((chat) => chat.userId === value.peerId.userId)) {
-  //         updatedChats.push({
-  //           userId: value.peerId.userId,
-  //           name: value.peerId.name,
-  //           message: value.message,
-  //         });
-  //       }
-  //       localStorage.setItem('chats', JSON.stringify(updatedChats));
-  //       return updatedChats;
-  //     });
-  //     setNewMessage(value);
-  //   }
-
-  //   socket.on('connect', onConnect);
-  //   socket.on('disconnect', onDisconnect);
-  //   socket.on('getDialogs', onDialogs);
-  //   socket.on('newMessages', onNewMessage);
-
-  //   return () => {
-  //     socket.off('connect', onConnect);
-  //     socket.off('disconnect', onDisconnect);
-  //     socket.off('getDialogs', onDialogs);
-  //     socket.off('newMessages', onNewMessage);
-  //   };
-  // }, []);
-
-
-
+  const [chatMessages, setChatMessages] = React.useState<any[]>([]);
+  const setSelectedUserId = (userId: string) => {
+    // find the chat with the given userId
+    const chat = chats.find((chat) => chat.userId.toString() === userId);
+    setSelectedChat(chat);
+   
+ 
+  };
   return (
     <Sheet
       sx={{
@@ -143,7 +89,7 @@ export default function MyProfile() {
       }}
     >
       <ConnectedModal isConnected={isConnected} setIsConnected={setIsConnected}/>
-      <NewMessageModal newMessage={newMessage} setNewMessage={setNewMessage} />
+      <NewIncomeMessageModal newMessage={newMessage} setNewMessage={setNewMessage} />
 
       <Sheet
         sx={{
@@ -184,8 +130,8 @@ export default function MyProfile() {
                 message={chat.message}
                 date={chat.date}
                 unreadCount={chat.unreadCount}
-                selected={selectedUserId === chat.userId.toString()}
-                setSelectedUserId={setSelectedUserId}
+                selected={selectedChat.userId == chat.userId.toString()}
+                setSelectedUserId={(userId) => setSelectedUserId(userId)}
                 userId={chat.userId.toString()}
               />
 
@@ -195,8 +141,56 @@ export default function MyProfile() {
         }
          </List>
          </Sheet>
-        {/* <Chat socket={socket} chats={test_chats} selectedChatId={selectedChat.id} setSelectedChat={handleSetSelectedChat} /> */}
+         
+         <NewDialogModal socket = {socket}/>
+         
       </Sheet>
+  
+        <Sheet
+      sx={{
+        height: { xs: 'calc(100dvh - var(--Header-height))', lg: '100dvh' },
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: 'background.level3',
+      }}
+    >
+      
+      <MessageHeader title={selectedChat.title} />
+      <Box
+        sx={{
+          display: 'flex',
+          flex: 1,
+          minHeight: 0,
+          px: 2,
+          py: 3,
+          overflowY: 'scroll',
+          flexDirection: 'column-reverse',
+        }}
+      >
+        <Stack spacing={2} justifyContent="flex-end">
+          {chatMessages.map((message: MessageProps, index: number) => {
+            const isYou = message.out;
+            return (
+              <Stack
+                key={index}
+                direction="row"
+                spacing={2}
+                flexDirection={isYou ? 'row-reverse' : 'row'}
+              >
+                {/* <ChatBubble variant={isYou ? 'sent' : 'received'} {...message} /> */}
+              </Stack>
+            );
+          })}
+        </Stack>
+      </Box>
+      <MessageInput
+        textAreaValue={textAreaValue}
+        setTextAreaValue={setTextAreaValue}
+        userId={selectedChat.userId}
+        onSubmit={console.log}
+      />
+      
+    </Sheet>
       {/* <MessagesPane chat={selectedChat} socket={socket} /> */}
     </Sheet>
   );

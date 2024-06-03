@@ -1,4 +1,5 @@
 "use client";
+
 import * as React from 'react';
 import Button from '@mui/joy/Button';
 import Modal from '@mui/joy/Modal';
@@ -18,7 +19,7 @@ export default function LogoutModal() {
 
   return (
     <>
-        <IconButton
+      <IconButton
           variant="plain"
           aria-label="edit"
           color="neutral"
@@ -54,9 +55,9 @@ export default function LogoutModal() {
           </Button>
         </DialogActions>
       </ModalDialog>:
-        <ModalDialog variant="outlined" role="alertdialog" color='danger' >
-            <LinearProgress color="danger" variant="soft" />
-        </ModalDialog>}
+      <ModalDialog variant="outlined" role="alertdialog" >
+          <LinearProgress color="danger" variant="soft" />
+      </ModalDialog>}
       </Modal>
     </>
   );

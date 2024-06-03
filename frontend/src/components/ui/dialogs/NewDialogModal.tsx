@@ -6,7 +6,7 @@ import { CreateRounded, LoginRounded, PersonAddRounded, VisibilityOffRounded, Vi
 import PhoneInput from '../admin/PhoneInput';
 
 
-export default function NewMessageIcon(props: any) {
+export default function NewDialogModal(props: any) {
   const [open, setOpen] = React.useState<boolean>(false);
   const [username, setUsername] = React.useState<string>('');
   const [message, setMessage] = React.useState<string>('');

@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/joy";
 import Chip from "@mui/joy/Chip/Chip";
 import ColorSchemeToggle from "@/components/ui/ColorSchemeToggle";
-import LogoutModal from "@/components/ui/LogoutModal";
+import LogoutModal from "@/components/ui/dialogs/LogoutModal";
 interface DialogHeaderProps{
     unreadDialogs?: number
 }

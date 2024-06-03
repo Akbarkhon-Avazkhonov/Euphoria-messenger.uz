@@ -91,33 +91,7 @@ export default function MyProfile() {
         },
       }}
     >
-      {newMessage && (
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          open={!!newMessage}
-          autoHideDuration={5000}
-          onClose={() => setNewMessage(null)}
-          variant="soft"
-          color="primary"
-        >
-          <Typography level="body-sm" sx={{ color: 'text.secondary' }}>
-            {newMessage.message}
-          </Typography>
-        </Snackbar>
-      )}
-      {isConnected && (
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          open={isConnected}
-          autoHideDuration={5000}
-          onClose={() => setIsConnected(false)}
-          variant="soft"
-        >
-          <Typography level="body-sm" sx={{ color: 'text.secondary' }}>
-            Connected
-          </Typography>
-        </Snackbar>
-      )}
+
       <Sheet
         sx={{
           position: { xs: 'fixed', sm: 'sticky' },
