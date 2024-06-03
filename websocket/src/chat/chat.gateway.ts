@@ -37,20 +37,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
             title: dialog.title,
             unreadCount: dialog.unreadCount,
             message: dialog.message.message,
+            phone: dialog.entity.phone,
             date: dialog.date,
           },
       );
       const filteredResult = result.filter((item) => item);
       client.emit('getDialogs', filteredResult);
 
-      // setInterval(async () => {
-
       this.tg.addEventHandler(
         (event: NewMessageEvent) => eventPrint(event, client),
         new NewMessage({}),
       );
       console.log('Event handler added');
-      // }, 10000);
       console.log(`Client connected: ${client.id}`);
     } catch (error) {
       console.error(`Connection error: ${error.message}`);

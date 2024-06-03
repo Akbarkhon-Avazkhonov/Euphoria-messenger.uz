@@ -37,7 +37,7 @@ export default function LogoutModal() {
         sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
         {!loading ?
-        <ModalDialog variant="outlined" role="alertdialog">
+        <ModalDialog variant="outlined" role="alertdialog" color='danger'>
         <DialogTitle>
           <WarningRounded />
           Вы уверены, что хотите выйти?

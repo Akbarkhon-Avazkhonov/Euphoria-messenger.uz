@@ -6,13 +6,7 @@
     display: none; /* Chrome, Safari, Opera */
 }
 
-.loader {    
-  /* absolete center */
-  position: fixed;
-  top: 450px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
+
 
 /* animation.css */
 .fade-in {

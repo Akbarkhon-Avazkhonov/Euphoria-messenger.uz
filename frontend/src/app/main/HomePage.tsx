@@ -3,6 +3,7 @@ import { LinearProgress } from '@mui/joy';
 import * as React from 'react';
 import OperatorPage from '../operator/main';
 import Login from '../login/Login';
+import Loading from '../loading';
 
 export default function HomePage() {
   const [loading, setLoading] = React.useState<boolean>(true);
@@ -19,7 +20,7 @@ export default function HomePage() {
   <>
     {
       loading ? (
-        <LinearProgress />
+        <Loading />
       ) : (
         <div className={"fade-in"}>
             {session ? <OperatorPage /> : <Login setSession={setSession}/>}

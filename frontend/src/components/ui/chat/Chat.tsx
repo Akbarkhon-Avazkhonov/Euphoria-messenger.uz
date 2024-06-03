@@ -52,7 +52,7 @@ export default function ChatsPane(props: any) {
         overflowY: 'auto',
       }}
     >
-      <Stack
+      {/* <Stack
         direction="row"
         spacing={1}
         alignItems="center"
@@ -88,7 +88,7 @@ export default function ChatsPane(props: any) {
           placeholder="Поиск..."
           aria-label="Search"
         />
-      </Box>
+      </Box> */}
       <List
         sx={{
           py: 0,

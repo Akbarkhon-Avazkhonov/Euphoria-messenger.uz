@@ -1,76 +1,56 @@
 "use client";
-
-import * as React from 'react';
-import { CssVarsProvider } from '@mui/joy/styles';
-import GlobalStyles from '@mui/joy/GlobalStyles';
-import CssBaseline from '@mui/joy/CssBaseline';
-import Box from '@mui/joy/Box';
-import Button from '@mui/joy/Button';
-import Checkbox from '@mui/joy/Checkbox';
-import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
-import IconButton from '@mui/joy/IconButton';
-import Input from '@mui/joy/Input';
-import Typography from '@mui/joy/Typography';
-import Stack from '@mui/joy/Stack';
+import { Box, Button, Checkbox, FormControl, FormLabel, IconButton, Input, Snackbar, Stack, Typography } from "@mui/joy";
+import ForgetPassword from "@/components/login/ForgetPassword";
+import { useState } from "react";
+import ModalNewUser from "@/components/login/ModalNewUser";
+import ColorSchemeToggle from "../ui/ColorSchemeToggle";
 import ChatRoundedIcon from '@mui/icons-material/ChatRounded';
-import ColorSchemeToggle from '@/components/ui/ColorSchemeToggle';
-import ModalNewUser from '@/components/ui/ModalNewUser';
-import ForgetPassword from '@/components/ui/ForgetPassword';
-import { Snackbar } from '@mui/joy';
+import { redirect } from "next/navigation";
+import { LoginRounded, VisibilityOffRounded, VisibilityRounded } from "@mui/icons-material";
+import React from "react";
+import { cookies } from "next/headers";
+import { setCookie } from "cookies-next";
 
-// type PageProps = {
-//   // Define any additional PageProps properties here
-// };
 
-// type LoginProps = PageProps & {
-//   setSession: never | any
-// };
+export default function LoginForm(){
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+    const [passwordVisible, setPasswordVisible] = React.useState(false);
 
-export default function Login(props: any) {
-  const [username, setUsername] = React.useState<string>('');
-  const [password, setPassword] = React.useState<string>('');
-  const [snackbarOpen, setSnackbarOpen] = React.useState<boolean>(false);
 
-  const handleSubmit = async () => {
-    const data = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signInWithName`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }),
-    });
-
-    const response = await data.json();
-
-    if (response.session) {
-      localStorage.setItem('session', response.session);
-      localStorage.setItem('rop_session', response.session);
-      localStorage.removeItem('phoneCode');
-      localStorage.removeItem('phoneCodeHash');
-      localStorage.removeItem('phoneInputValue');
-      localStorage.removeItem('nameInputValue');
-      props.setSession(response.session);
-    } else {
-      setSnackbarOpen(true);
-    }
-  };
-
-  return (
-    <CssVarsProvider defaultMode="dark" disableTransitionOnChange>
-      <CssBaseline />
-      <GlobalStyles
-        styles={{
-          ':root': {
-            '--Form-maxWidth': '800px',
-            '--Transition-duration': '0.4s',
+    const handleSubmit = async () => {
+        const data = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signInWithName`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        }}
-      />
-      <Box
+          body: JSON.stringify({
+            username: username,
+            password: password,
+          }),
+        });
+    
+        const response = await data.json();
+    
+        if (response.session) {
+          setCookie('session', response.session, {
+            maxAge: 60 * 60 * 24 * 7,
+            path: '/',
+          });
+          // cookies().set('session',response.session)
+          redirect('/operator')
+        //   props.setSession(response.session);
+        } else {
+          setSnackbarOpen(true);
+        }
+      };
+      const togglePasswordVisibility = () => {
+        setPasswordVisible(!passwordVisible);
+      };
+    return (
+        <>
+              <Box
         sx={(theme) => ({
           width: { xs: '100%', md: '50vw' },
           transition: 'width var(--Transition-duration)',
@@ -92,7 +72,11 @@ export default function Login(props: any) {
             flexDirection: 'column',
             minHeight: '100dvh',
             width: '100%',
-            px: 2,
+           
+            px: {
+              xs:2,
+              md:4
+            },
           }}
         >
           <Box
@@ -145,7 +129,6 @@ export default function Login(props: any) {
                 </Typography>
               </Stack>
             </Stack>
-
             <Stack gap={4} sx={{ mt: 2 }}>
               <FormControl required>
                 <FormLabel>Логин</FormLabel>
@@ -153,14 +136,29 @@ export default function Login(props: any) {
                   type="text"
                   name="login"
                   onChange={(event) => setUsername(event.target.value)}
+                  endDecorator={
+                    <LoginRounded/>
+                  }
                 />
               </FormControl>
               <FormControl required>
                 <FormLabel>Пароль</FormLabel>
                 <Input
-                  type="password"
                   name="password"
                   onChange={(event) => setPassword(event.target.value)}
+                  type={passwordVisible ? 'text' : 'password'}
+                  required
+                  endDecorator={
+                    <IconButton
+                      variant="plain"
+                      aria-label={passwordVisible ? 'hide password' : 'show password'}
+                      color="neutral"
+                      size="sm"
+                      onClick={togglePasswordVisibility}
+                    >
+                      {passwordVisible ? <VisibilityRounded /> : <VisibilityOffRounded />}
+                    </IconButton>
+                  }
                 />
               </FormControl>
               <Stack gap={4} sx={{ mt: 2 }}>
@@ -178,7 +176,19 @@ export default function Login(props: any) {
                   Войти
                 </Button>
               </Stack>
+              <Snackbar
+                    open={snackbarOpen}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    color="danger"
+                    variant="soft"
+                    autoHideDuration={5000}
+                    onClose={() => setSnackbarOpen(false)}
+                    size="md"
+                >
+                    {username === '' || password === '' ? 'Заполните все поля !' : 'Неверный логин или пароль'}
+                </Snackbar>
             </Stack>
+            
           </Box>
           <Box component="footer" sx={{ py: 3 }}>
             <Typography level="body-xs" textAlign="center">
@@ -209,19 +219,8 @@ export default function Login(props: any) {
               'url(https://images.pexels.com/photos/2681319/pexels-photo-2681319.jpeg?auto=compress&cs=tinysrgb&w=600)',
           },
         })}
-      />
-
-      <Snackbar
-        open={snackbarOpen}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        color="danger"
-        variant="soft"
-        autoHideDuration={5000}
-        onClose={() => setSnackbarOpen(false)}
-        size="md"
-      >
-        {username === '' || password === '' ? 'Заполните все поля !' : 'Неверный логин или пароль'}
-      </Snackbar>
-    </CssVarsProvider>
-  );
+      /></>
+    
+    )
 }
+

@@ -7,7 +7,7 @@ import ModalClose from '@mui/joy/ModalClose';
 import Typography from '@mui/joy/Typography';
 import { ModalDialog } from '@mui/joy';
 
-export default function ModalNewUser() {
+export default function ForgetPassword() {
   const [open, setOpen] = React.useState<boolean>(false);
   return (
     <>

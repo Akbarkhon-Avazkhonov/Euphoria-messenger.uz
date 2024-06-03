@@ -1,6 +1,5 @@
 "use client";
 import * as React from 'react';
-import { io } from 'socket.io-client';
 import { Snackbar, Typography, Button } from '@mui/joy';
 import Sheet from '@mui/joy/Sheet';
 import MessagesPane from '../MessagesPane';
