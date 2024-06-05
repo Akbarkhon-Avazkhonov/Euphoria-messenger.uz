@@ -28,23 +28,15 @@ const TextMaskAdapter = React.forwardRef<HTMLElement, CustomProps>(
   },
 );
 
-export default function PhoneInput() {
-  const [value, setValue] = React.useState<string>(() => {
-    // Get the value from local storage if available
-    const storedValue = localStorage.getItem('phoneInputValue');
-    return storedValue || '';
-  });
-
-  useEffect(() => {
-    // Save the value to local storage on every change
-    localStorage.setItem('phoneInputValue', value);
-  }, [value]);
-
+export default function PhoneInput(props:{
+  phone: string;
+  setPhone: (phone: string) => void;
+}) {
   return (
     <Input
       placeholder="Номер телефона"
-      value={value}
-      onChange={(event) => setValue(event.target.value)}
+      value={props.phone}
+      onChange={(event) => props.setPhone(event.target.value)}
       slotProps={{ input: { component: TextMaskAdapter } }}
       endDecorator={<CallRounded />}
     />

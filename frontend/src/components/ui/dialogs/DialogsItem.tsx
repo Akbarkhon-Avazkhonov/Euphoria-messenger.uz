@@ -7,7 +7,7 @@ import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 import AvatarWithStatus from '../AvatarWithStatus';
 import { Chip, ListDivider } from '@mui/joy';
-
+import  relativeDate  from '@/utils/date';
 interface DialogsItemProps {
     avatar?: string | undefined;
     userId: string ;
@@ -16,7 +16,7 @@ interface DialogsItemProps {
     phone: string | undefined;
     message: string | undefined;
     selected: boolean;
-    date: string | undefined;
+    date: Date;
     setSelectedUserId: (userId: string) => void;
     
 }
@@ -66,7 +66,7 @@ export default function DialogsItem(props: DialogsItemProps) {
                 display={{ xs: 'none', md: 'block' }}
                 noWrap
               >
-                {props.date}
+               {relativeDate(props.date) }
               </Typography>
             </Box>
           </Stack>
@@ -85,7 +85,7 @@ export default function DialogsItem(props: DialogsItemProps) {
           </Typography>
         </ListItemButton>
       </ListItem>
-                    <ListDivider sx={{margin: 0 }} />
+                    <ListDivider sx={{margin: 0 }} inset='gutter'/>
 </>
       
 

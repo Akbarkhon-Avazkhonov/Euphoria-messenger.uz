@@ -5,23 +5,21 @@ interface ConnectedModalProps {
     setIsConnected: (isConnected: boolean) => void;
   }
 export default function ConnectedModal(props: ConnectedModalProps) {
-    return (
-        <>
-            {props.isConnected && (
-                      <Snackbar
-                      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                      open={props.isConnected}
-                      autoHideDuration={5000}
-                      onClose={() => props.setIsConnected(false)}
-                      variant="soft"
-                      color="success"
-                    >
-                      <Typography level="body-sm" sx={{ color: 'text.secondary' }}>
-                        Подключено
-                      </Typography>
-                    </Snackbar>
-            )}
-      
-            </>
-    );
+    if (props.isConnected) {
+        return (
+            <Snackbar
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            open={props.isConnected}
+            autoHideDuration={5000}
+            onClose={() => props.setIsConnected(false)}
+            variant="soft"
+            color="success"
+          >
+            <Typography level="body-sm" sx={{ color: 'text.secondary' }}>
+              Подключено
+            </Typography>
+          </Snackbar>
+        );
+    }
+    return null;
     }

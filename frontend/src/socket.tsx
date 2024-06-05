@@ -1,16 +1,9 @@
 "use client";
-import { io } from 'socket.io-client';
 
-// "undefined" means the URL will be computed from the `window.location` object
-const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:5005';
+//socket client with cookie
+import { io } from "socket.io-client";
 
-let session = ''; // Provide a default value for session
-if(typeof window !== 'undefined'){
-    session = window.localStorage.getItem('session') || '';
-}
-export const socket = io("http://localhost:5005", {
-    extraHeaders: {
-        session: session,
-    },
+export const socket = io(process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5005', {
+  withCredentials: true,
 });
 

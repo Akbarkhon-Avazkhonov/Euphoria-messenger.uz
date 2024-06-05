@@ -184,6 +184,16 @@ export class AuthController {
   async loginWithName(@Body() body: { username: string; password: string }) {
     return await this.authService.signInWithName(body.username, body.password);
   }
+
+  @Post('getOperators')
+  async getRopOperators(@Body() body: { rop_session: string }) {
+    return await this.authService.getOperators(body.rop_session);
+  }
+
+  @Post('getAll')
+  async getAlls(@Body() body: { session: string }) {
+    return await this.authService.getAll(body.session);
+  }
   @ApiSecurity('session')
   @ApiBody({
     description: 'Send username',

@@ -60,7 +60,7 @@ export default function RopsList(props: any) {
   return (
     <Sheet
       sx={{
-        borderRight: '1px solid',
+        borderLeft: '1px solid',
         borderColor: 'divider',
         height: 'calc(100dvh - var(--Header-height))',
         overflowY: 'auto',

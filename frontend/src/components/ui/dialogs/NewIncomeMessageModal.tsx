@@ -5,23 +5,21 @@ interface NewMessageModalProps {
     setNewMessage: (newMessage: any) => void;
 }
 export default function NewIncomeMessageModal(props: NewMessageModalProps) {
+  if (props.newMessage) {
     return (
-        <>
-        {props.newMessage && (
-            <Snackbar
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            open={props.newMessage}
-            autoHideDuration={5000}
-            onClose={() => props.setNewMessage(null)}
-            variant="soft"
-            color="primary"
-          >
-            <Typography level="body-sm" sx={{ color: 'text.secondary' }}>
-              {props.newMessage.message}
-            </Typography>
-          </Snackbar>
-        )}
-        </>
-        
-    )
+        <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={props.newMessage}
+        autoHideDuration={5000}
+        onClose={() => props.setNewMessage(null)}
+        variant="soft"
+        color="primary"
+      >
+        <Typography level="body-sm" sx={{ color: 'text.secondary' }}>
+          {props.newMessage.message}
+        </Typography>
+      </Snackbar>
+    );
+}
+    return null;
 }

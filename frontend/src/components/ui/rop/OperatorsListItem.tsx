@@ -9,6 +9,7 @@ import Typography from '@mui/joy/Typography';
 import AvatarWithStatus from '../AvatarWithStatus';
 import { ChatProps } from '../../types';
 import { toggleMessagesPane } from '../../utils';
+import { setCookie } from 'cookies-next';
 
 type ChatListItemProps = ListItemButtonProps & {
   id: string;
@@ -17,23 +18,28 @@ type ChatListItemProps = ListItemButtonProps & {
   messages: string;
   selectedChatId?: string;
   setSelectedChat: (chat: any) => void;
+  session: string;
+  phoneNumber: string;
 };
 
 export default function OperatorListItem(props: ChatListItemProps) {
-  const { id, username, selectedChatId, setSelectedChat } = props;
+  const { id, username, selectedChatId, setSelectedChat , session , phoneNumber} = props;
   const selected = selectedChatId === id;
+
+  const handleSelectOperator = async () => {
+    setCookie('session', encodeURIComponent(session), {
+      maxAge: 60 * 60 * 24 * 7,
+      path: '/',
+    });
+    window.location.reload();
+
+  };
   return (
     <React.Fragment>
       <ListItem >
         <ListItemButton
           onClick={() => {
-            toggleMessagesPane();
-            setSelectedChat({username});
-            //save session to local storage from local storage operators
-            const operators = JSON.parse(localStorage.getItem('operators') || '');
-            const operator = operators.find((operator: any) => operator.username === username);
-            localStorage.setItem('session', operator.session);            
-            window.location.reload();
+            handleSelectOperator();
           }}
           selected={selected}
           color="neutral"

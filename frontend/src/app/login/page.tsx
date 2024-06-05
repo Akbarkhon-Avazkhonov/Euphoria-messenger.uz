@@ -17,7 +17,8 @@ export default async function Login() {
           },
         }}
       />
-      <LoginForm/>
+      
+      <LoginForm />
     </CssVarsProvider>
   );
 }

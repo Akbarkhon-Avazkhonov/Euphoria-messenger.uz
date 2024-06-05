@@ -5,10 +5,9 @@ import { useState } from "react";
 import ModalNewUser from "@/components/login/ModalNewUser";
 import ColorSchemeToggle from "../ui/ColorSchemeToggle";
 import ChatRoundedIcon from '@mui/icons-material/ChatRounded';
-import { redirect } from "next/navigation";
+import { useRouter } from 'next/navigation'
 import { LoginRounded, VisibilityOffRounded, VisibilityRounded } from "@mui/icons-material";
 import React from "react";
-import { cookies } from "next/headers";
 import { setCookie } from "cookies-next";
 
 
@@ -18,6 +17,7 @@ export default function LoginForm(){
     const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
     const [passwordVisible, setPasswordVisible] = React.useState(false);
 
+    const router = useRouter();
 
     const handleSubmit = async () => {
         const data = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signInWithName`, {
@@ -34,13 +34,25 @@ export default function LoginForm(){
         const response = await data.json();
     
         if (response.session) {
-          setCookie('session', response.session, {
+          setCookie('session', encodeURIComponent(response.session), {
             maxAge: 60 * 60 * 24 * 7,
             path: '/',
           });
-          // cookies().set('session',response.session)
-          redirect('/operator')
-        //   props.setSession(response.session);
+          setCookie('role', response.role, {
+            maxAge: 60 * 60 * 24 * 7,
+            path: '/',
+          });
+          setCookie('rop_session', encodeURIComponent(response.session), {
+            maxAge: 60 * 60 * 24 * 7,
+            path: '/',
+          });
+          setCookie('admin_session', encodeURIComponent(response.session), {
+            maxAge: 60 * 60 * 24 * 7,
+            path: '/',
+          });
+          if(response.role === 'ADMIN') router.push('/admin') ;
+          else if(response.role === 'ROP') router.push('/rop');
+          else if(response.role === 'OPERATOR') router.push('/operator');
         } else {
           setSnackbarOpen(true);
         }

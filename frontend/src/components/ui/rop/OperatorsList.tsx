@@ -17,11 +17,11 @@ type ChatsPaneProps = {
 
 export default function OperatorsList(props: ChatsPaneProps) {
   const { chats, setSelectedChat, selectedChatId } = props;
-
+  
   return (
     <Sheet
       sx={{
-        borderRight: '1px solid',
+        borderLeft: '1px solid',
         borderColor: 'divider',
         height: 'calc(100dvh - var(--Header-height))',
         overflowY: 'auto',
@@ -65,7 +65,7 @@ export default function OperatorsList(props: ChatsPaneProps) {
         {chats && chats.map((chat) => (
           <OperatorsListItem
           
-            username={''} messages={''} key={chat.id}
+            session={''} phoneNumber={''} username={''} messages={''} key={chat.id}
             {...chat}
             setSelectedChat={setSelectedChat}
             selectedChatId={selectedChatId}          />

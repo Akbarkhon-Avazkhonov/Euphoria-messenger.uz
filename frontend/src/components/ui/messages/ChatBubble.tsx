@@ -10,32 +10,54 @@ import Typography from '@mui/joy/Typography';
 import CelebrationOutlinedIcon from '@mui/icons-material/CelebrationOutlined';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import InsertDriveFileRoundedIcon from '@mui/icons-material/InsertDriveFileRounded';
-import { MessageProps } from '../types';
+import { MessageProps } from '../../types';
+import relativeDate from '@/utils/date';
 
 type ChatBubbleProps = MessageProps & {
   variant: 'sent' | 'received';
 };
 
-export default function ChatBubble(props: any) {
-  const { message, variant,attachment = undefined, title } = props;
+export default function ChatBubble(props: ChatBubbleProps) {
+  const { message, variant,media = undefined ,date} = props;
   const isSent = variant === 'sent';
   const [isHovered, setIsHovered] = React.useState<boolean>(false);
   const [isLiked, setIsLiked] = React.useState<boolean>(false);
   const [isCelebrated, setIsCelebrated] = React.useState<boolean>(false);
+  let fileName = 'Отправленный файл'
+  if (media != 'null' && media) {
+    try{
+    const mediaObj = JSON.parse(media)
+    const mediaAttributes = mediaObj.document.attributes
+    for (let i in mediaAttributes) {
+      Object.keys(mediaAttributes[i]).forEach((keyName) => {
+        if (keyName=='fileName') {
+          fileName = mediaAttributes[i][keyName]
+          
+        }
+      }
+      );
+    }}
+    catch(e){
+      console.log(e)
+    }
+  }
   return (
     <Box sx={{ maxWidth: '60%', minWidth: 'auto' }}>
       <Stack
         direction="row"
-        justifyContent="space-between"
+        justifyContent="end"
         spacing={2}
         sx={{ mb: 0.25 }}
       >
         <Typography level="body-xs">
           {/* {out &&  sender : sender.name} */}
         </Typography>
+        <Typography level="body-xs">{relativeDate(date)}</Typography>
+
         <Typography level="body-xs">{}</Typography>
       </Stack>
-      {attachment ? (
+      {media != 'null' && media ? (
+        
         <Sheet
           variant="outlined"
           sx={{
@@ -51,8 +73,8 @@ export default function ChatBubble(props: any) {
               <InsertDriveFileRoundedIcon />
             </Avatar>
             <div>
-              <Typography fontSize="sm">{attachment.fileName}</Typography>
-              <Typography level="body-sm">{attachment.size}</Typography>
+              <Typography fontSize="sm">{fileName}</Typography>
+              {/* <Typography level="body-sm">{media.size}</Typography> */}
             </div>
           </Stack>
         </Sheet>
@@ -85,7 +107,7 @@ export default function ChatBubble(props: any) {
                   : 'var(--joy-palette-text-primary)',
               }}
             >
-              {message }
+              {message}
             </Typography>
           </Sheet>
           :
@@ -108,7 +130,7 @@ export default function ChatBubble(props: any) {
                 color: 'var(--joy-palette-danger-solidBg)'
               }}
             >
-              Сообщение не поддерживается в данной версии приложения
+              {media ? media : 'Сообщение не поддерживается в данной версии приложения'}
             </Typography>
           </Sheet>
           }

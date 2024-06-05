@@ -1,7 +1,5 @@
 import { TelegramClient } from 'telegram';
-import { NewMessage, NewMessageEvent } from 'telegram/events';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { LogLevel } from 'telegram/extensions/Logger';
 import { StringSession } from 'telegram/sessions';
 const TEST_SERVERS = process.env.TEST_SERVERS == 'true';
 

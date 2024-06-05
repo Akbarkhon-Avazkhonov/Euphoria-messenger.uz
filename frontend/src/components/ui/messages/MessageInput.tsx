@@ -9,12 +9,17 @@ import { IconButton, Stack } from '@mui/joy';
 
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { AttachFileRounded, ImageRounded } from '@mui/icons-material';
+import SendFile from './SendFile';
+import { socket } from '@/socket';
 
 export type MessageInputProps = {
   textAreaValue: string;
   userId : string;
   setTextAreaValue: (value: string) => void;
-  onSubmit: () => void;
+  onSubmit: (
+    message: string,
+    userId: string
+  ) => void;
 };
 
 export default function MessageInput(props: MessageInputProps) {
@@ -22,21 +27,13 @@ export default function MessageInput(props: MessageInputProps) {
   const textAreaRef = React.useRef<HTMLDivElement>(null);
   const handleClick = async () => {
     if (textAreaValue.trim() !== '') {
-      onSubmit();
+      onSubmit(
+        textAreaValue,
+        props.userId
+      );
       setTextAreaValue('');
 
-      // await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/messages/sendMessage`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'session': `${localStorage.getItem('session')}`,
-      //   },
-      //   body: JSON.stringify({
-      //     id: props.userId,
-      //     message: textAreaValue,
-      //   }),
-      // });
-    }
+     }
   };
   return (
     <Box sx={{ px: 2, pb: 3 }}>
@@ -64,12 +61,10 @@ export default function MessageInput(props: MessageInputProps) {
               }}
             >
               <div>
-                <IconButton size="sm" variant="plain" color="neutral">
-                  <AttachFileRounded />
-                </IconButton>
-                <IconButton size="sm" variant="plain" color="neutral">
+                <SendFile userId={props.userId}/>
+                {/* <IconButton size="sm" variant="plain" color="neutral">
                   <ImageRounded />
-                </IconButton>
+                </IconButton> */}
                
               </div>
               <Button

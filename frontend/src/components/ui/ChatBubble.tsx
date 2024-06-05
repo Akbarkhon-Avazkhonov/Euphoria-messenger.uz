@@ -14,10 +14,11 @@ import { MessageProps } from '../types';
 
 type ChatBubbleProps = MessageProps & {
   variant: 'sent' | 'received';
+  attachment?: any;
 };
 
-export default function ChatBubble(props: any) {
-  const { message, variant,attachment = undefined, title } = props;
+export default function ChatBubble(props: ChatBubbleProps) {
+  const { message, variant,attachment = undefined } = props;
   const isSent = variant === 'sent';
   const [isHovered, setIsHovered] = React.useState<boolean>(false);
   const [isLiked, setIsLiked] = React.useState<boolean>(false);

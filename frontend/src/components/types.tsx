@@ -11,11 +11,7 @@ export type MessageProps = {
   out: boolean;
   date: string;
   unread?: boolean;
-  attachment?: {
-    fileName: string;
-    type: string;
-    size: string;
-  };
+  media?: any;
 };
 
 export type ChatProps = {

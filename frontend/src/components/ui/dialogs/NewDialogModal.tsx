@@ -10,32 +10,19 @@ export default function NewDialogModal(props: any) {
   const [open, setOpen] = React.useState<boolean>(false);
   const [username, setUsername] = React.useState<string>('');
   const [message, setMessage] = React.useState<string>('');
-
+  const [phone, setPhone] = React.useState<string>('');
     const handleSend = async () => {
       props.socket.emit('sendFirstMessage', 
       {
-        phone: localStorage.getItem('phoneInputValue'),
+        phone: phone,
         firstName: username,
         message: message
       });
-
-        // const data = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/messages/sendFirstMessage`, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'session': `${localStorage.getItem('session')}`
-        //     },
-        //     body: JSON.stringify(
-        //         {
-        //             phone: localStorage.getItem('phoneInputValue'),
-        //             firstName: username,
-        //             message: message
-
-        //         }
-        //     ),
-        // });
-        // const response = await data.json();
-        window.location.reload();
+      props.socket.emit('getDialogs');
+      setMessage('');
+      setUsername('');
+      setPhone('');
+      setOpen(false);
     
     }
 
@@ -45,7 +32,7 @@ export default function NewDialogModal(props: any) {
         aria-label="add"
         color="primary"
         variant='solid'
-        size="lg"
+        size="md"
         sx={{ position: 'fixed', bottom: 32, left: 348 }}
         onClick={() => setOpen(true)}
       >
@@ -64,7 +51,7 @@ export default function NewDialogModal(props: any) {
               endDecorator={<LoginRounded />}
             />
 
-            <PhoneInput />
+            <PhoneInput phone={phone} setPhone={setPhone}/>
 
             <Textarea 
             placeholder='Сообщение'

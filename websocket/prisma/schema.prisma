@@ -24,22 +24,19 @@ enum Role {
   MANAGER
   ROP
   OPERATOR
-  USER
 }
 
 model Operator {
-  id          Int      @id @default(autoincrement())
+  id          Int @id @default(autoincrement())
   operator_id Int
   rop_id      Int
 }
 
 model Rop {
-  id          Int      @id @default(autoincrement())
-  rop_id      Int
-  manager_id  Int
+  id         Int @id @default(autoincrement())
+  rop_id     Int
+  manager_id Int
 }
-
-
 
 // model Message {
 //   id          Int      @id @default(autoincrement())

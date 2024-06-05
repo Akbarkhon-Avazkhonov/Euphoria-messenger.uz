@@ -5,15 +5,14 @@ import Button from '@mui/joy/Button';
 import Modal from '@mui/joy/Modal';
 import { DialogActions, DialogContent, DialogTitle, Divider, IconButton, LinearProgress, ModalDialog } from '@mui/joy';
 import { LogoutRounded , WarningRounded } from '@mui/icons-material';
+import { deleteCookie } from 'cookies-next';
 
 export default function LogoutModal() {
   const [open, setOpen] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
   const handleLogout = () => {
-    setLoading(true);
-    localStorage.removeItem('session');
-    localStorage.removeItem('rop_session');
-    window.location.reload();
+    deleteCookie('session');
+    window.location.href = '/login';
   }
 
 

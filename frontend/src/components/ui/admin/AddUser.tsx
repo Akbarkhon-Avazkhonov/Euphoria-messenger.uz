@@ -12,7 +12,7 @@ export default function AddUser() {
   const [role, setRole] = React.useState<string>('');
   const [username, setUsername] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
-
+  const [phone, setPhone] = React.useState<string>('');
   React.useEffect(() => {
     // Get values from local storage if available when component mounts
     const storedRole = localStorage.getItem('roleInputValue');
@@ -28,7 +28,8 @@ export default function AddUser() {
     localStorage.setItem('roleInputValue', role);
     localStorage.setItem('usernameInputValue', username);
     localStorage.setItem('passwordInputValue', password);
-  }, [role, username, password]);
+    localStorage.setItem('phoneInputValue', phone);
+  }, [role, username, password, phone]);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -85,7 +86,7 @@ export default function AddUser() {
                 </IconButton>
               }
             />
-            <PhoneInput />
+            <PhoneInput phone={phone} setPhone={setPhone}/>
             <Select
               placeholder="Выберите роль"
               name="role"
