@@ -31,20 +31,20 @@ function splitSession(cookie: string) {
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private tg: any;
+  private tgs: any[] = [];
   async handleConnection(client: Socket) {
     const cookie = client.handshake.headers.cookie;
     if (cookie) {
       const session = splitSession(cookie);
-      this.tg = await telegramClient(session);
-      this.tg.addEventHandler(
+      this.tgs[session] = await telegramClient(session);
+      this.tgs[session].addEventHandler(
         (event: NewMessageEvent) => eventPrint(event, client, session),
         new NewMessage({}),
       );
-      console.log(`Client connected: ${client.id}`);
       client.join(session);
       client.to(session).emit('connection', 'Connected to Telegram');
       client.emit('connection', 'Connected to Telegram');
-      const dialogs = await this.tg.getDialogs({ limit: 100 });
+      const dialogs = await this.tgs[session].getDialogs({ limit: 100 });
       const result = dialogs.map(
         (dialog) =>
           dialog.isUser && {
@@ -65,8 +65,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleDisconnect(client: Socket) {
     try {
       const session = client.handshake.headers.session;
-      if (session) {
-        this.tg.removeEventHandler(eventPrint, new NewMessage({}));
+      if (typeof session == 'string' && this.tgs[session]) {
+        this.tgs[session].removeEventHandler(eventPrint, new NewMessage({}));
       }
       console.log(`Client disconnected: ${client.id}`);
     } catch (error) {
@@ -78,11 +78,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const cookie = client.handshake.headers.cookie;
 
     const session = splitSession(cookie);
-    console.log('Session:', session);
     if (!session) {
       return 'Session header is missing';
     } else {
-      const dialogs = await this.tg.getDialogs({ limit: 100 });
+      const dialogs = await this.tgs[session].getDialogs({ limit: 100 });
       const result = dialogs.map(
         (dialog) =>
           dialog.isUser && {
@@ -105,10 +104,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const session = splitSession(cookie);
 
     if (session && payload[0].userId) {
-      console.log('Session:', session);
-      await this.tg.getDialogs({ limit: 100 });
-      console.log('Payload:', payload);
-      const messages = await this.tg.getMessages(payload[0].userId, {
+      await this.tgs[session].getDialogs({ limit: 100 });
+      const messages = await this.tgs[session].getMessages(payload[0].userId, {
         limit: 100,
         maxId: payload.maxId,
       });
@@ -142,8 +139,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       try {
         const id = payload.userId;
         const message = payload.message;
-        await this.tg.getDialogs();
-        const result = await this.tg.sendMessage(id.toString(), {
+        await this.tgs[session].getDialogs();
+        const result = await this.tgs[session].sendMessage(id.toString(), {
           message: message,
         });
         return result;
@@ -165,7 +162,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const phone = payload.phone;
         const firstName = payload.firstName;
         const message = payload.message;
-        await this.tg.invoke(
+        await this.tgs[session].invoke(
           new Api.contacts.ImportContacts({
             contacts: [
               new Api.InputPhoneContact({
@@ -177,8 +174,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
             ],
           }),
         );
-        const userPeer = await this.tg.getEntity(phone);
-        const user = await this.tg.sendMessage(userPeer, {
+        const userPeer = await this.tgs[session].getEntity(phone);
+        const user = await this.tgs[session].sendMessage(userPeer, {
           message: message,
         });
         return user;
@@ -211,7 +208,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         // });
 
         const message = payload.message;
-        await this.tg.getDialogs('limit: 100');
+        await this.tgs[session].getDialogs('limit: 100');
         const customFile = new CustomFile(
           payload.fileName,
           buffer.length,
@@ -219,13 +216,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           buffer,
         );
 
-        const result = await this.tg.sendFile(id, {
+        const result = await this.tgs[session].sendFile(id, {
           file: customFile,
           message: message,
           fileName: payload.fileName,
           forceDocument: true,
         });
-        console.log('File sent:', result);
 
         return result;
       } catch (error) {
@@ -238,7 +234,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 async function eventPrint(event: NewMessageEvent, client: any, session: any) {
   try {
     if (event.isPrivate) {
-      console.log('message is', event.message.text);
       client.to(session).emit('newMessage', event.message);
       client.emit('newMessage', event.message);
     }

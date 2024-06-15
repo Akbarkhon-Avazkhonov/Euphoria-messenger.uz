@@ -45,8 +45,7 @@ export class AuthService {
         phoneNumber,
       );
       const session = client.session.save();
-      console.log('phoneCodeHash', phoneCodeHash);
-      console.log('session', session);
+
       await this.prisma.user.create({
         data: {
           username: username,
@@ -67,10 +66,7 @@ export class AuthService {
     phoneCode: string,
     session: string,
   ) {
-    console.log('phoneNumber', phoneNumber);
-    console.log('phoneCodeHash', phoneCodeHash);
-    console.log('phoneCode', phoneCode);
-    console.log('session', session);
+
 
     const oldSession = session;
     const client = await telegramClient(session);
@@ -148,105 +144,30 @@ export class AuthService {
       return result;
     }
   }
-  rops: any[] = [
-    {
-      name: 'Steve E.',
-      username: '@steveEberger',
-      avatar: '/static/images/avatar/2.jpg',
-      online: true,
-      operators: [
-        {
-          name: 'Katherine Moss',
-          username: '@kathy',
-          avatar: '/static/images/avatar/3.jpg',
-          online: false,
-        },
-        {
-          name: 'Phoenix Baker',
-          username: '@phoenix',
-          avatar: '/static/images/avatar/1.jpg',
-          online: true,
-        },
-        {
-          name: 'Eleanor Pena',
-          username: '@eleanor',
-          avatar: '/static/images/avatar/4.jpg',
-          online: false,
-        },
-        {
-          name: 'Kenny Peterson',
-          username: '@kenny',
-          avatar: '/static/images/avatar/5.jpg',
-          online: true,
-        },
-        {
-          name: 'Al Sanders',
-          username: '@al',
-          avatar: '/static/images/avatar/6.jpg',
-          online: true,
-        },
-        {
-          name: 'Melissa Van Der Berg',
-          username: '@melissa',
-          avatar: '/static/images/avatar/7.jpg',
-          online: false,
-        },
-      ],
-    },
-    {
-      name: 'Steve E.',
-      username: '@steveEberger',
-      avatar: '/static/images/avatar/2.jpg',
-      online: true,
-      operators: [
-        {
-          name: 'Katherine Moss',
-          username: '@kathy',
-          avatar: '/static/images/avatar/3.jpg',
-          online: false,
-        },
-        {
-          name: 'Phoenix Baker',
-          username: '@phoenix',
-          avatar: '/static/images/avatar/1.jpg',
-          online: true,
-        },
-        {
-          name: 'Eleanor Pena',
-          username: '@eleanor',
-          avatar: '/static/images/avatar/4.jpg',
-          online: false,
-        },
-        {
-          name: 'Kenny Peterson',
-          username: '@kenny',
-          avatar: '/static/images/avatar/5.jpg',
-          online: true,
-        },
-        {
-          name: 'Al Sanders',
-          username: '@al',
-          avatar: '/static/images/avatar/6.jpg',
-          online: true,
-        },
-        {
-          name: 'Melissa Van Der Berg',
-          username: '@melissa',
-          avatar: '/static/images/avatar/7.jpg',
-          online: false,
-        },
-      ],
-    },
-  ];
+
   async getAll(session: string) {
     const admin = await this.prisma.user.findFirst({
       where: { session: session },
     });
     if (admin) {
-      const rops = this.prisma.user.findMany({
+      const rops: any = await this.prisma.user.findMany({
         where: { role: 'ROP' },
       });
-      return rops;
+      const result = [];
+      for (const rop of rops) {
+        const operators = await this.prisma.operator.findMany({
+          where: { rop_id: rop.id },
+        });
+        const ops = [];
+        for (const operator of operators) {
+          const oper = await this.prisma.user.findUnique({
+            where: { id: operator.operator_id },
+          });
+          ops.push(oper);
+        }
+        result.push({ ...rop, operators: ops });
+      }
+      return result;
     }
   }
 }

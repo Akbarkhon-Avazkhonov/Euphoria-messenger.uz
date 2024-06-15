@@ -46,7 +46,7 @@ function Toggler(props: {
 }
 
 type ChatsPaneProps = {
-  chats: ChatProps[];
+  chats: any;
   setSelectedChat: (chat: ChatProps) => void;
   selectedChatId: string;
 };
@@ -102,69 +102,69 @@ export default function RopsList(props: any) {
           aria-label="Search"
         />
       </Box>
-      <List sx={{ '--List-nestedInsetStart': '1rem' }} > 
-      <ListItem nested>
-            <Toggler
-              renderToggle={({ open, setOpen }) => (
-                <ListItemButton onClick={() => setOpen(!open)}>
-                  
-                  <ListItemContent >
-                  <Stack direction="row" spacing={1.5} >
-            <AvatarWithStatus online={true}  />
-            <Box sx={{ flex: 1 }}>
-              <Typography level="title-sm">{"Akbarkhon"}</Typography>
-              {/* <Typography level="body-sm">{sender.username}</Typography> */}
-            </Box>
-            <Box
-              sx={{
-                lineHeight: 1.5,
-                textAlign: 'right',
-              }}
-            >
-              
-              <Typography
-                level="body-xs"
-                display={{ xs: 'none', md: 'block' }}
-                noWrap
+     {
+      chats.map((chat: any) => (
+        <List sx={{ '--List-nestedInsetStart': '1rem' }} > 
+        <ListItem nested>
+              <Toggler
+                renderToggle={({ open, setOpen }) => (
+                  <ListItemButton onClick={() => setOpen(!open)}>
+                    
+                    <ListItemContent >
+                    <Stack direction="row" spacing={1.5} >
+              <AvatarWithStatus />
+              <Box sx={{ flex: 1 }}>
+                <Typography level="title-sm">{chat.username}</Typography>
+                <Typography level="body-sm">{chat.phoneNumber}</Typography>
+
+              </Box>
+              <Box
+                sx={{
+                  lineHeight: 1.5,
+                  textAlign: 'right',
+                }}
               >
-                5 mins ago
-              </Typography>
-            </Box>
-          </Stack>
-                  </ListItemContent>
-                  <KeyboardArrowDownRounded
-                    sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
-                  />
-                </ListItemButton>
-              )}
-            >
-            <List
-        sx={{
-          py: 0,
-          '--ListItem-paddingY': '0.75rem',
-          '--ListItem-paddingX': '1rem',
+                
+                <Typography
+                  level="body-xs"
+                  display={{ xs: 'none', md: 'block' }}
+                  noWrap
+                >
+                  {chat.password}
+                </Typography>
+              </Box>
+            </Stack>
+                    </ListItemContent>
+                    <KeyboardArrowDownRounded
+                      sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
+                    />
+                  </ListItemButton>
+                )}
+              >
+              <List
+          sx={{
+            py: 0,
+            '--ListItem-paddingY': '0.75rem',
+            '--ListItem-paddingX': '1rem',
+            
+            
+          }}
+        >
           
+          {chat.operators.map((operator:any) => (
+            <RopsListItem
+              key={chat.id}
+              operator={operator}
+              setSelectedChat={setSelectedChat}
+              selectedChatId={selectedChatId}          />
+          ))}
+        </List>
+              </Toggler>
+            </ListItem>
+            </List>
           
-        }}
-      >
-        
-        {chats.map((chat:any) => (
-          <RopsListItem
-            sender={{
-              name: '',
-              username: '',
-              avatar: '',
-              online: false
-            }} messages={[]} key={chat.id}
-            {...chat}
-            setSelectedChat={setSelectedChat}
-            selectedChatId={selectedChatId}          />
-        ))}
-      </List>
-            </Toggler>
-          </ListItem>
-          </List>
-          
+      ))}
+     
           <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'center'}}
         open={open}

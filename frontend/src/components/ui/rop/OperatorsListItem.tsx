@@ -9,7 +9,7 @@ import Typography from '@mui/joy/Typography';
 import AvatarWithStatus from '../AvatarWithStatus';
 import { ChatProps } from '../../types';
 import { toggleMessagesPane } from '../../utils';
-import { setCookie } from 'cookies-next';
+import { getCookie, setCookie } from 'cookies-next';
 
 type ChatListItemProps = ListItemButtonProps & {
   id: string;
@@ -24,7 +24,9 @@ type ChatListItemProps = ListItemButtonProps & {
 
 export default function OperatorListItem(props: ChatListItemProps) {
   const { id, username, selectedChatId, setSelectedChat , session , phoneNumber} = props;
-  const selected = selectedChatId === id;
+  const decsession = decodeURIComponent(getCookie('session') || '');
+
+  const selected = decsession == session;
 
   const handleSelectOperator = async () => {
     setCookie('session', encodeURIComponent(session), {

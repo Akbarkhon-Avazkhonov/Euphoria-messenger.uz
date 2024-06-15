@@ -191,8 +191,8 @@ export class AuthController {
   }
 
   @Post('getAll')
-  async getAlls(@Body() body: { session: string }) {
-    return await this.authService.getAll(body.session);
+  async getAlls(@Body() body: { admin_session: string }) {
+    return await this.authService.getAll(body.admin_session);
   }
   @ApiSecurity('session')
   @ApiBody({

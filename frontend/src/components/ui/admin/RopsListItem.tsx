@@ -9,33 +9,40 @@ import Typography from '@mui/joy/Typography';
 import AvatarWithStatus from '../AvatarWithStatus';
 import { ChatProps, MessageProps, UserProps } from '../../types';
 import { toggleMessagesPane } from '../../utils';
-
+import { setCookie } from 'cookies-next';
+import { getCookie } from 'cookies-next';
 type RopListItemProps = ListItemButtonProps & {
-  id: string;
-  unread?: boolean;
-  sender: UserProps;
-  messages: MessageProps[];
+  operator:any
   selectedChatId?: string;
   setSelectedChat: (chat: ChatProps) => void;
 };
 
+
 export default function RopsListItem(props: RopListItemProps) {
-  const { id, sender, messages, selectedChatId, setSelectedChat } = props;
-  const selected = selectedChatId === id;
+  const { operator, selectedChatId, setSelectedChat } = props;
+  const session = decodeURIComponent(getCookie('session') || '');
+
+  const selected = operator.session == session;
+  const handleSelectOperator = async () => {
+    setCookie('session', encodeURIComponent(operator.session), {
+      maxAge: 60 * 60 * 24 * 7,
+      path: '/',
+    });
+    window.location.reload();
+  
+  };
+  
   return (
     <React.Fragment>
       <ListItem>
         <ListItemButton
           onClick={() => {
             toggleMessagesPane();
-            setSelectedChat({
-              id,
-              userId: '',
-              title: ''
-            });
+            handleSelectOperator();
           }}
           selected={selected}
           color="neutral"
+          
           sx={{
             flexDirection: 'column',
             alignItems: 'initial',
@@ -43,10 +50,10 @@ export default function RopsListItem(props: RopListItemProps) {
           }}
         >
           <Stack direction="row" spacing={1.5}>
-            <AvatarWithStatus online={sender.online} src={sender.avatar} />
+            <AvatarWithStatus  />
             <Box sx={{ flex: 1 }}>
-              <Typography level="title-sm">{sender.name}</Typography>
-              {/* <Typography level="body-sm">{sender.username}</Typography> */}
+              <Typography level="title-sm">{operator.username}</Typography>
+              <Typography level="body-sm">{operator.phoneNumber}</Typography>
             </Box>
             <Box
               sx={{
@@ -60,7 +67,7 @@ export default function RopsListItem(props: RopListItemProps) {
                 display={{ xs: 'none', md: 'block' }}
                 noWrap
               >
-                5 mins ago
+                {operator.password}
               </Typography>
             </Box>
           </Stack>

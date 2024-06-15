@@ -1,8 +1,9 @@
+import { password, sessions } from 'telegram';
 import { ChatProps, UserProps } from './types';
 
 export const users: UserProps[] = [
   {
-    name: 'Steve E.',
+    name: 'Steve .',
     username: '@steveEberger',
     avatar: '/static/images/avatar/2.jpg',
     online: true,
@@ -47,8 +48,8 @@ export const users: UserProps[] = [
 
 export const rops: any[] = [
   {
-    name: 'Steve E.',
-    username: '@steveEberger',
+    username: 'Steve E',
+    phoneNumber: '+1 202-555-0136',
     avatar: '/static/images/avatar/2.jpg',
     online: true,
     operators: [
@@ -90,50 +91,7 @@ export const rops: any[] = [
       },
     ]
   },
-  {
-    name: 'Steve E.',
-    username: '@steveEberger',
-    avatar: '/static/images/avatar/2.jpg',
-    online: true,
-    operators: [
-      {
-        name: 'Katherine Moss',
-        username: '@kathy',
-        avatar: '/static/images/avatar/3.jpg',
-        online: false,
-      },
-      {
-        name: 'Phoenix Baker',
-        username: '@phoenix',
-        avatar: '/static/images/avatar/1.jpg',
-        online: true,
-      },
-      {
-        name: 'Eleanor Pena',
-        username: '@eleanor',
-        avatar: '/static/images/avatar/4.jpg',
-        online: false,
-      },
-      {
-        name: 'Kenny Peterson',
-        username: '@kenny',
-        avatar: '/static/images/avatar/5.jpg',
-        online: true,
-      },
-      {
-        name: 'Al Sanders',
-        username: '@al',
-        avatar: '/static/images/avatar/6.jpg',
-        online: true,
-      },
-      {
-        name: 'Melissa Van Der Berg',
-        username: '@melissa',
-        avatar: '/static/images/avatar/7.jpg',
-        online: false,
-      },
-    ]
-  },
+
  
 ];
 export const chats: ChatProps[] = [
@@ -361,3 +319,25 @@ export const chats: ChatProps[] = [
     ],
   },
 ];
+
+
+export const all : any[] = [
+  {
+    id: '1',
+    username: 'Steve E',
+    phoneNumber: '+1 202-555-0136',
+    password: 'secret',
+    session: 'activesds',
+    role: 'ROP',
+    operators: [
+      {
+        id: '1',
+    username: 'Steve E',
+    phoneNumber: '+1 202-555-0136',
+    password: 'secret',
+    session: 'activesds',
+    role: 'ROP'
+      }
+    ]
+  }
+]
