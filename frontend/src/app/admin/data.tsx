@@ -1,4 +1,3 @@
-import { password, sessions } from 'telegram';
 import { ChatProps, UserProps } from './types';
 
 export const users: UserProps[] = [
