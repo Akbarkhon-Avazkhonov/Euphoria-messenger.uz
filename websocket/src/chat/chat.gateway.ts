@@ -22,7 +22,7 @@ function splitSession(cookie: string) {
 }
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000',
+    origin: 'https://euphoria-messenger.uz',
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true,
     cookie: true,
