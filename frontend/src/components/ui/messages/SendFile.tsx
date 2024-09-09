@@ -6,7 +6,6 @@ import { socket } from "@/socket";
 
 export default function SendFile(props: { userId: string; }) {
     const [file, setFile] = useState(null);
-
     const handleFileChange = (event: any) => {
         const selectedFile = event.target.files[0];
 

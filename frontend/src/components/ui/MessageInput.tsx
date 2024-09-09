@@ -9,12 +9,21 @@ import { IconButton, Stack } from '@mui/joy';
 
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { AttachFileRounded, ImageRounded } from '@mui/icons-material';
+import { AudioRecorder } from 'react-audio-voice-recorder';
 
 export type MessageInputProps = {
   textAreaValue: string;
   userId : string;
   setTextAreaValue: (value: string) => void;
   onSubmit: () => void;
+};
+
+const addAudioElement = (blob:any) => {
+  const url = URL.createObjectURL(blob);
+  const audio = document.createElement("audio");
+  audio.src = url;
+  audio.controls = true;
+  document.body.appendChild(audio);
 };
 
 export default function MessageInput(props: MessageInputProps) {
@@ -81,6 +90,7 @@ export default function MessageInput(props: MessageInputProps) {
               >
                 Отправить
               </Button>
+
             </Stack>
           }
           onKeyDown={(event) => {

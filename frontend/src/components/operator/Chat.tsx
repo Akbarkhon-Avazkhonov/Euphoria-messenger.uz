@@ -122,6 +122,16 @@ export default function Chat(props: ChatProps) {
       onNewMessage(message);  
     });
   }, []);
+
+  React.useEffect(() => {
+    props.socket.on('getFile', (data:any) => {
+
+      console.log(data);
+    //@ts-ignore
+    window.open(data, '_blank');
+      
+      })
+  }, []);
   
   return (
     <Sheet
@@ -223,6 +233,7 @@ export default function Chat(props: ChatProps) {
         {chatMessages.map((message: any, index: number) => {
           const isYou = message.out;
           const show = message.peerId.userId == selectedChat.userId;
+          console.log(selectedChat.userId);
           if(show){
           return (
             <Stack
@@ -231,7 +242,7 @@ export default function Chat(props: ChatProps) {
               spacing={2}
               flexDirection={isYou ? 'row-reverse' : 'row'}
             >
-              <ChatBubble variant={isYou ? 'sent' : 'received'} {...message} />
+              <ChatBubble variant={isYou ? 'sent' : 'received'} {...message} userId = {selectedChat.userId} />
             </Stack>
           );
         }

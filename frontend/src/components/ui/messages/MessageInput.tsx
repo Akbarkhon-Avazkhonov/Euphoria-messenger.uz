@@ -11,6 +11,11 @@ import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { AttachFileRounded, ImageRounded } from '@mui/icons-material';
 import SendFile from './SendFile';
 import { socket } from '@/socket';
+import { AudioRecorder } from 'react-audio-voice-recorder';
+import { ReactMediaRecorder } from "react-media-recorder";
+import SendAudio from './SendAudio';
+
+
 
 export type MessageInputProps = {
   textAreaValue: string;
@@ -35,6 +40,7 @@ export default function MessageInput(props: MessageInputProps) {
 
      }
   };
+
   return (
     <Box sx={{ px: 2, pb: 3 }}>
       <FormControl>
@@ -60,13 +66,25 @@ export default function MessageInput(props: MessageInputProps) {
                 borderColor: 'divider',
               }}
             >
-              <div>
+              <Stack direction='row'>
+                <SendAudio 
+                userId={props.userId}
+                setTextAreaValue={setTextAreaValue}
+                textAreaValue={textAreaValue}
+                />
+              
+
+              
+    
                 <SendFile userId={props.userId}/>
                 {/* <IconButton size="sm" variant="plain" color="neutral">
                   <ImageRounded />
                 </IconButton> */}
                
-              </div>
+               
+    
+              </Stack>
+              
               <Button
                 size="sm"
                 color="primary"
@@ -76,6 +94,7 @@ export default function MessageInput(props: MessageInputProps) {
               >
                 Отправить
               </Button>
+
             </Stack>
           }
           onKeyDown={(event) => {

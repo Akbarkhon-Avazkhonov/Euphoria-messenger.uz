@@ -45,8 +45,7 @@ export class AuthService {
         phoneNumber,
       );
       const session = client.session.save();
-      console.log('phoneCodeHash', phoneCodeHash);
-      console.log('session', session);
+
       await this.prisma.user.create({
         data: {
           username: username,
@@ -67,10 +66,7 @@ export class AuthService {
     phoneCode: string,
     session: string,
   ) {
-    console.log('phoneNumber', phoneNumber);
-    console.log('phoneCodeHash', phoneCodeHash);
-    console.log('phoneCode', phoneCode);
-    console.log('session', session);
+
 
     const oldSession = session;
     const client = await telegramClient(session);
@@ -126,9 +122,9 @@ export class AuthService {
     }
   }
 
-  async getOperators(headers: any) {
+  async getOperators(session: string) {
     const rop = await this.prisma.user.findFirst({
-      where: { session: headers.session },
+      where: { session: session },
     });
     const result = [];
     if (rop) {
@@ -145,6 +141,32 @@ export class AuthService {
       }
       return result;
     } else {
+      return result;
+    }
+  }
+
+  async getAll(session: string) {
+    const admin = await this.prisma.user.findFirst({
+      where: { session: session },
+    });
+    if (admin) {
+      const rops: any = await this.prisma.user.findMany({
+        where: { role: 'ROP' },
+      });
+      const result = [];
+      for (const rop of rops) {
+        const operators = await this.prisma.operator.findMany({
+          where: { rop_id: rop.id },
+        });
+        const ops = [];
+        for (const operator of operators) {
+          const oper = await this.prisma.user.findUnique({
+            where: { id: operator.operator_id },
+          });
+          ops.push(oper);
+        }
+        result.push({ ...rop, operators: ops });
+      }
       return result;
     }
   }

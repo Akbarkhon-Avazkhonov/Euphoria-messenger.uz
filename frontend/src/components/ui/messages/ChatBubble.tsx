@@ -12,8 +12,10 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import InsertDriveFileRoundedIcon from '@mui/icons-material/InsertDriveFileRounded';
 import { MessageProps } from '../../types';
 import relativeDate from '@/utils/date';
+import { socket } from "@/socket";
 
 type ChatBubbleProps = MessageProps & {
+  userId: string;
   variant: 'sent' | 'received';
 };
 
@@ -40,6 +42,10 @@ export default function ChatBubble(props: ChatBubbleProps) {
     catch(e){
       console.log(e)
     }
+  }
+
+  const handleGetFile = () => {
+    socket.emit('getFile', {userId: props.userId, messageId: props.id})
   }
   return (
     <Box sx={{ maxWidth: '60%', minWidth: 'auto' }}>
@@ -68,7 +74,11 @@ export default function ChatBubble(props: ChatBubbleProps) {
             borderTopLeftRadius: isSent ? 'lg' : 0,
           }}
         >
-          <Stack direction="row" spacing={1.5} alignItems="center">
+          <Stack direction="row" spacing={1.5} alignItems="center" onClick={handleGetFile} sx={
+            {
+              cursor: 'pointer'
+            }
+          }>
             <Avatar color="primary" size="lg">
               <InsertDriveFileRoundedIcon />
             </Avatar>

@@ -22,6 +22,9 @@ interface DialogsItemProps {
 }
 
 export default function DialogsItem(props: DialogsItemProps) {
+  if (props.userId === '777000'){
+    return;
+  }
   return (
     <>
       <ListItem >
@@ -39,7 +42,7 @@ export default function DialogsItem(props: DialogsItemProps) {
           }}
         >
           <Stack direction="row" spacing={1.5}>
-            <AvatarWithStatus />
+            <AvatarWithStatus fullname={props.title} />
             <Box sx={{ flex: 1 }}>
               <Typography level="title-sm">{props.title}</Typography>
               <Typography level="body-sm">{props.phone}</Typography>

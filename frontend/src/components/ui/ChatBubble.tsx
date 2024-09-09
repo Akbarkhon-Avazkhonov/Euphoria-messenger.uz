@@ -23,6 +23,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
   const [isHovered, setIsHovered] = React.useState<boolean>(false);
   const [isLiked, setIsLiked] = React.useState<boolean>(false);
   const [isCelebrated, setIsCelebrated] = React.useState<boolean>(false);
+
   return (
     <Box sx={{ maxWidth: '60%', minWidth: 'auto' }}>
       <Stack
@@ -47,8 +48,8 @@ export default function ChatBubble(props: ChatBubbleProps) {
             borderTopLeftRadius: isSent ? 'lg' : 0,
           }}
         >
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            <Avatar color="primary" size="lg">
+          <Stack direction="row" spacing={1.5} alignItems="center" >
+            <Avatar color="primary" size="lg" >
               <InsertDriveFileRoundedIcon />
             </Avatar>
             <div>
