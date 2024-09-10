@@ -1,0 +1,109 @@
+{
+  "flags": 770,
+  "out": true,
+  "mentioned": false,
+  "mediaUnread": false,
+  "silent": false,
+  "post": false,
+  "fromScheduled": false,
+  "legacy": false,
+  "editHide": false,
+  "pinned": false,
+  "noforwards": false,
+  "invertMedia": false,
+  "flags2": 0,
+  "offline": false,
+  "id": 120037,
+  "fromId": { "userId": "5735038397", "className": "PeerUser" },
+  "fromBoostsApplied": null,
+  "peerId": { "userId": "6320677435", "className": "PeerUser" },
+  "savedPeerId": null,
+  "fwdFrom": null,
+  "viaBotId": null,
+  "viaBusinessBotId": null,
+  "replyTo": null,
+  "date": 1725912348,
+  "message": "",
+  "media": {
+    "flags": 1,
+    "nopremium": false,
+    "spoiler": false,
+    "video": false,
+    "round": false,
+    "voice": false,
+    "document": {
+      "flags": 1,
+      "id": "5402394874920067249",
+      "accessHash": "-6810792535515741851",
+      "fileReference": {
+        "type": "Buffer",
+        "data": [
+          3, 0, 1, 212, 229, 102, 223, 87, 181, 82, 57, 123, 151, 185, 181, 95,
+          130, 124, 255, 198, 242, 233, 230, 118, 137
+        ]
+      },
+      "date": 1725912348,
+      "mimeType": "image/png",
+      "size": "715008",
+      "thumbs": [
+        {
+          "type": "i",
+          "bytes": {
+            "type": "Buffer",
+            "data": [
+              1, 40, 40, 212, 184, 184, 75, 120, 247, 63, 208, 15, 83, 89, 87,
+              23, 178, 204, 56, 37, 71, 160, 226, 153, 168, 74, 102, 184, 99,
+              159, 149, 14, 208, 42, 188, 110, 70, 115, 206, 104, 2, 64, 141,
+              215, 156, 250, 230, 166, 130, 242, 120, 91, 27, 139, 15, 70, 230,
+              130, 129, 70, 65, 227, 142, 63, 58, 135, 57, 57, 29, 105, 12, 220,
+              130, 116, 158, 61, 203, 248, 143, 74, 43, 46, 206, 99, 21, 202,
+              231, 128, 220, 26, 41, 136, 207, 44, 73, 59, 191, 26, 124, 64, 28,
+              241, 154, 154, 250, 216, 67, 118, 251, 137, 10, 223, 50, 251, 212,
+              73, 177, 84, 141, 222, 226, 144, 19, 171, 2, 135, 28, 227, 190,
+              41, 140, 7, 110, 158, 213, 22, 224, 70, 55, 241, 142, 244, 191,
+              187, 199, 223, 52, 12, 147, 113, 92, 119, 162, 164, 178, 132, 79,
+              114, 161, 88, 149, 67, 150, 207, 165, 20, 192, 215, 185, 182, 75,
+              168, 182, 63, 224, 71, 80, 107, 14, 226, 194, 226, 2, 126, 66,
+              235, 253, 229, 230, 138, 40, 17, 87, 7, 56, 193, 207, 165, 90,
+              183, 176, 184, 156, 143, 144, 162, 255, 0, 121, 184, 162, 138, 64,
+              110, 90, 219, 37, 172, 91, 19, 241, 39, 169, 162, 138, 41, 129
+            ]
+          },
+          "className": "PhotoStrippedSize"
+        },
+        {
+          "type": "m",
+          "w": 320,
+          "h": 320,
+          "size": 23150,
+          "className": "PhotoSize"
+        }
+      ],
+      "videoThumbs": null,
+      "dcId": 2,
+      "attributes": [
+        { "w": 850, "h": 850, "className": "DocumentAttributeImageSize" },
+        { "fileName": "SG_main.png", "className": "DocumentAttributeFilename" }
+      ],
+      "className": "Document"
+    },
+    "altDocument": null,
+    "ttlSeconds": null,
+    "className": "MessageMediaDocument"
+  },
+  "replyMarkup": null,
+  "entities": null,
+  "views": null,
+  "forwards": null,
+  "replies": null,
+  "editDate": null,
+  "postAuthor": null,
+  "groupedId": null,
+  "reactions": null,
+  "restrictionReason": null,
+  "ttlPeriod": null,
+  "quickReplyShortcutId": null,
+  "effect": null,
+  "factcheck": null,
+  "className": "Message"
+}

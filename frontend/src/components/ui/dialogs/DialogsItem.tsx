@@ -7,7 +7,7 @@ import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 import AvatarWithStatus from '../AvatarWithStatus';
 import { Chip, ListDivider } from '@mui/joy';
-import  relativeDate  from '@/utils/date';
+import  {convertDate}  from '@/utils/date';
 interface DialogsItemProps {
     avatar?: string | undefined;
     userId: string ;
@@ -69,7 +69,7 @@ export default function DialogsItem(props: DialogsItemProps) {
                 display={{ xs: 'none', md: 'block' }}
                 noWrap
               >
-               {relativeDate(props.date) }
+               {convertDate(props.date) }
               </Typography>
             </Box>
           </Stack>

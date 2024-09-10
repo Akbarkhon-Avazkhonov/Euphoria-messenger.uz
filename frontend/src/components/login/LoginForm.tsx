@@ -17,6 +17,7 @@ export default function LoginForm(){
     const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
     const [passwordVisible, setPasswordVisible] = React.useState(false);
 
+
     const router = useRouter();
 
     const handleSubmit = async () => {
@@ -60,6 +61,27 @@ export default function LoginForm(){
       const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);
       };
+          // add listener to enter
+    React.useEffect(() => {
+      const handleEnter = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+          handleSubmit();
+        }
+      };
+      window.addEventListener('keydown', handleEnter);
+      return () => window.removeEventListener('keydown', handleEnter);
+    }, [handleSubmit]);
+        // add listener to enter
+        React.useEffect(() => {
+          const handleEnter = (event: KeyboardEvent) => {
+            if (event.key === 'Enter') {
+              handleSubmit();
+            }
+          };
+          window.addEventListener('keydown', handleEnter);
+          return () => window.removeEventListener('keydown', handleEnter);
+        }, [handleSubmit]);
+        
     return (
         <>
               <Box
@@ -74,7 +96,7 @@ export default function LoginForm(){
           backdropFilter: 'blur(12px)',
           backgroundColor: 'rgba(255 255 255 / 0.2)',
           [theme.getColorSchemeSelector('dark')]: {
-            backgroundColor: 'rgba(19 19 24 / 0.4)',
+            backgroundColor: 'rgba(25 25 25 / 0.1)',
           },
         })}
       >
@@ -174,19 +196,19 @@ export default function LoginForm(){
                 />
               </FormControl>
               <Stack gap={4} sx={{ mt: 2 }}>
+              <Button fullWidth onClick={handleSubmit}>
+                  Войти
+                </Button>
                 <Box
                   sx={{
                     display: 'flex',
-                    justifyContent: 'space-between',
+                    justifyContent: 'center',
                     alignItems: 'center',
                   }}
                 >
-                  <Checkbox size="sm" label="Запомнить меня" name="persistent" />
                   <ForgetPassword />
                 </Box>
-                <Button fullWidth onClick={handleSubmit}>
-                  Войти
-                </Button>
+
               </Stack>
               <Snackbar
                     open={snackbarOpen}
@@ -224,11 +246,10 @@ export default function LoginForm(){
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          backgroundImage:
-            'url(https://w0.peakpx.com/wallpaper/156/402/HD-wallpaper-climb-success-hustle-motivation-mountain.jpg)',
+          backgroundImage: 'url(images/euphoria-logo.png)',
           [theme.getColorSchemeSelector('dark')]: {
             backgroundImage:
-              'url(https://images.pexels.com/photos/2681319/pexels-photo-2681319.jpeg?auto=compress&cs=tinysrgb&w=600)',
+              'url(images/euphoria-logo-dark.png)',
           },
         })}
       /></>

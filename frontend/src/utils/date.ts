@@ -1,39 +1,3 @@
-// export default  function relativeDate(date:  Date  |  string ) {
-//     const now = new Date().getTime();
-//     const diff = Math.round(now/1000 - (+(date)));
-  
-//     const minute = 60;
-//     const hour = minute * 60;
-//     const day = hour * 24;
-//     const week = day * 7;
-//     const month = day * 30;
-//     const year = month * 12;
-  
-//     if (diff < 30) {
-//       return "только что";
-//     } else if (diff < minute) {
-//       return diff + " секунд назад";
-//     } else if (diff < 2 * minute) {
-//       return "минуту назад";
-//     } else if (diff < hour) {
-//       return Math.floor(diff / minute) + " минуты назад";
-//     } else if (Math.floor(diff / hour) == 1) {
-//       return "час назад";
-//     } else if (diff < day) {
-//       return Math.floor(diff / hour) + " часа назад";
-//     } else if (diff < day * 2) {
-//       return "вчера";
-//     } else if (diff < week) {
-//       return week + " дней назад";
-//     } else if (diff < month) {
-//       return Math.floor(diff / week) + " недели назад";
-//     } else if (diff < year) {
-//       return Math.floor(diff / month) + " месяцев назад";
-//     } else {
-//       return Math.floor(diff / year) + " года назад";
-//     }
-//   }
-
   export default  function relativeDate(timestamp: any): string {
     const date = new Date(timestamp * 1000); // Multiply by 1000 to convert seconds to milliseconds
     
@@ -54,4 +18,23 @@
       }
     )}`;
   }
+
+export function convertDate(timestamp: any): string {
+    const date = new Date(timestamp * 1000); // Multiply by 1000 to convert seconds to milliseconds
+    // if the date is today, return only the time
+    if (new Date().getDate() === date.getDate()) {
+      return date.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    }
+    // if the date is yesterday, return 'Yesterday'
+    if (new Date().getDate() - 1 === date.getDate()) {
+      return 'Вчера';
+    }
+    // otherwise, return the full date 
+    
+    return `${date.toLocaleString('en-GB').slice(0,10)}`;
+  }
+
   
