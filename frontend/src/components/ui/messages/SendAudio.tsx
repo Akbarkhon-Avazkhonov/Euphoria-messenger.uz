@@ -75,7 +75,6 @@ const AudioRecorder = (props:any) => {
       props.setTextAreaValue('');
     });
 
-    console.log(content);
     
 
     setStream(null);

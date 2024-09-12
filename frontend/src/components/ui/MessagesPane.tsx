@@ -43,10 +43,6 @@ export default function MessagesPane(props: MessagesPaneProps) {
     //if previus message same as new message then return
     
     setChatMessages((prevMessages: MessageProps[]) => {
-      console.log(prevMessages);
-      console.log(value);
-      console.log(localStorage.getItem('selectedChat'));
-      console.log(value.peerId.userId);
       
       if(localStorage.getItem('selectedChat') == `"${value.peerId.userId}"`)
       {

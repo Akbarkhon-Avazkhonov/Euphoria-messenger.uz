@@ -72,7 +72,6 @@ export default function Chat(props: ChatProps) {
     });
   };
   const onNewMessage = (message: any) => {
-    console.log(message);
     setNewMessage(message);
     setDialogs((prev) => {
       const newDialogs = [...prev];
@@ -114,7 +113,6 @@ export default function Chat(props: ChatProps) {
   }, [selectedChat]);
   React.useLayoutEffect(() => {
     props.socket.on('getMessages', (messages) => {
-      console.log(messages);
       setChatMessages(messages);});
   }, []);
   React.useEffect(() => {
@@ -126,7 +124,6 @@ export default function Chat(props: ChatProps) {
   React.useEffect(() => {
     props.socket.on('getFile', (data:any) => {
 
-      console.log(data);
     //@ts-ignore
     window.open(data, '_blank');
       
@@ -233,7 +230,6 @@ export default function Chat(props: ChatProps) {
         {chatMessages.map((message: any, index: number) => {
           const isYou = message.out;
           const show = message.peerId.userId == selectedChat.userId;
-          console.log(selectedChat.userId);
           if(show){
           return (
             <Stack

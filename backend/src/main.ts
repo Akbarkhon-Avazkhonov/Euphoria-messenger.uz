@@ -4,7 +4,9 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    snapshot: true,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Messanger API')
@@ -28,6 +30,6 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, // Allow credentials
   });
-  await app.listen(5000);
+  await app.listen(5005);
 }
 bootstrap();

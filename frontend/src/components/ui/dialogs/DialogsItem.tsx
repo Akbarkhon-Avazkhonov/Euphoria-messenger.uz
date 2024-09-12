@@ -30,7 +30,6 @@ export default function DialogsItem(props: DialogsItemProps) {
       <ListItem >
         <ListItemButton
           onClick={() => {
-            console.log(props.userId);
             props.setSelectedUserId(props.userId.toString());
           }}
           selected={props.selected}

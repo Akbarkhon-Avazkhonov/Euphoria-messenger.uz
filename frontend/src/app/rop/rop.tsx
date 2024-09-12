@@ -25,7 +25,6 @@ export default  function Rop() {
   });
 
   const response = await data.json();
-  console.log(response);
   setChats(response);
 };
 

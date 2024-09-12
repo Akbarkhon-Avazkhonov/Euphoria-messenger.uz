@@ -40,7 +40,6 @@ export default function ChatBubble(props: ChatBubbleProps) {
       );
     }}
     catch(e){
-      console.log(e)
     }
   }
 

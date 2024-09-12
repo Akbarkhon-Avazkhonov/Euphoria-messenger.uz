@@ -26,7 +26,6 @@ export default  function Admin() {
     });
 
     const response = await all.json();
-    console.log(response);
     setChats(response);
   }
   useEffect(() => {

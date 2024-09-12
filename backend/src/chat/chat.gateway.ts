@@ -15,6 +15,7 @@ import { NewMessage, NewMessageEvent } from 'telegram/events';
 import { blobToBuffer, splitSession } from './chat.utils';
 import { SessionGuard } from './sessuon.guard';
 import { UseGuards } from '@nestjs/common';
+import { UserIdGuard } from './userId.guard';
 
 @UseGuards(SessionGuard)
 @WebSocketGateway({
@@ -71,8 +72,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('getDialogs')
-  async handleDialogs(client: Socket, session: any) {
-    console.log('session', session);
+  async handleDialogs(client: Socket) {
     const dialogs = await this.tgs[client.data.session].getDialogs({
       limit: 100,
     });
@@ -90,8 +90,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.emit('dialogs', result);
   }
 
+  @UseGuards(UserIdGuard)
   @SubscribeMessage('getMessages')
-  async handleGetMessages(client: Socket, payload: any): Promise<void> {
+  async handleGetMessages(client: Socket, payload: any) {
     if (client.data.session && payload[0].userId) {
       const messages = await this.tgs[client.data.session].getMessages(
         payload[0].userId,
@@ -138,6 +139,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
+  @UseGuards(UserIdGuard)
   @SubscribeMessage('getFile')
   async handleGetFile(client: Socket, payload: any): Promise<void> {
     if (client.data.session && payload.userId) {
