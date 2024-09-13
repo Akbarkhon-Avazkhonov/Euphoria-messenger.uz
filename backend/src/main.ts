@@ -1,35 +1,14 @@
 import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import * as cookieParser from 'cookie-parser';
+import { RedisIoAdapter } from './other/redis';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    snapshot: true,
-  });
+  const app = await NestFactory.create(AppModule);
+  const redisIoAdapter = new RedisIoAdapter(app);
+  await redisIoAdapter.connectToRedis();
 
-  const config = new DocumentBuilder()
-    .setTitle('Messanger API')
-    .setVersion('0.0.2')
-    .addApiKey(
-      {
-        type: 'apiKey',
-        name: 'session',
-        in: 'header',
-      },
-      'session',
-    )
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
-  app.use(cookieParser()); // Use cookie-parser middleware
+  app.useWebSocketAdapter(redisIoAdapter);
 
-  // awailable  cors
-  app.enableCors({
-    origin: 'http://localhost:3000',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true, // Allow credentials
-  });
-  await app.listen(5005);
+  await app.listen(4000);
 }
 bootstrap();
