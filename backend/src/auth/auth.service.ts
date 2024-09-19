@@ -5,7 +5,22 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 @Injectable()
 export class AuthService {
   async login(createAuthDto: CreateAuthDto) {
-    return 'token';
+    if (
+      createAuthDto.username === 'admin' &&
+      createAuthDto.password === 'secret'
+    ) {
+      return {
+        id: 1,
+        token: 'eyJ',
+        role: 'admin',
+      };
+    } else {
+      return {
+        id: 2,
+        token: 'eyJ',
+        role: 'user',
+      };
+    }
   }
 
   create(createAuthDto: CreateAuthDto) {
