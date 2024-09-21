@@ -1,18 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { SessionModule } from './session/session.module';
-
+import { UsersModule } from './users/users.module';
+import { AdminModule } from './admin/admin.module';
+import { PgModule } from './other/pg.modul';
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    AuthModule,
-    SessionModule,
-  ],
+  imports: [PgModule, AuthModule, SessionModule, UsersModule, AdminModule],
   controllers: [AppController],
   providers: [AppService],
 })

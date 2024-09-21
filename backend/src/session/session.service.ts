@@ -9,7 +9,7 @@ export class SessionService {
   }
 
   findAll() {
-    return `This action returns all session`;
+    return process.env.DB_HOST;
   }
 
   findOne(id: number) {

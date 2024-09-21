@@ -15,6 +15,15 @@ async function bootstrap() {
     .setDescription('POWERED BY PHOENIX SOLUTIONS and AKBARKHON !AVAZKHONOV')
     .addServer('/', 'Development server')
     .addServer('/api', 'Production server')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'Admin auth',
+    )
+
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {
@@ -27,6 +36,6 @@ async function bootstrap() {
     customfavIcon: 'https://phoenix-solutions.uz/image%2073.png',
   });
   app.enableCors();
-  await app.listen(4000);
+  await app.listen(process.env.PORT);
 }
 bootstrap();
