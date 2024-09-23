@@ -15,14 +15,12 @@ async function bootstrap() {
     .setDescription('POWERED BY PHOENIX SOLUTIONS and AKBARKHON !AVAZKHONOV')
     .addServer('/', 'Development server')
     .addServer('/api', 'Production server')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-      },
-      'Admin auth',
-    )
+    .addCookieAuth('token', {
+      type: 'apiKey', // Используем 'apiKey'
+      in: 'cookie', // Указываем, что это cookie
+      name: 'token', // Имя cookie
+      description: 'Authorization cookie',
+    })
 
     .build();
   const document = SwaggerModule.createDocument(app, config);
@@ -30,12 +28,16 @@ async function bootstrap() {
     swaggerOptions: {
       filter: true,
       showRequestDuration: true,
+      withCredentials: true,
     },
     customCss: '.swagger-ui .topbar { display: none }',
     customSiteTitle: 'Euphoria messenger API',
     customfavIcon: 'https://phoenix-solutions.uz/image%2073.png',
   });
-  app.enableCors();
+  app.enableCors({
+    credentials: true,
+    origin: 'http://localhost:4000', // Укажите ваш домен
+  });
   await app.listen(process.env.PORT);
 }
 bootstrap();

@@ -1,45 +1,37 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { HttpException, Injectable } from '@nestjs/common';
+import { LoginAuthDto } from './dto/create-auth.dto';
+import { PgService } from 'src/other/pg.service';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  async login(createAuthDto: CreateAuthDto) {
-    if (
-      createAuthDto.username === 'admin' &&
-      createAuthDto.password === 'secret'
-    ) {
-      return {
-        id: 1,
-        token: 'eyJ',
-        role: 'admin',
-      };
-    } else {
-      return {
-        id: 2,
-        token: 'eyJ',
-        role: 'user',
-      };
+  constructor(
+    private readonly pgService: PgService,
+    private jwtService: JwtService,
+  ) {}
+  async login(body: LoginAuthDto) {
+    const query = `
+      SELECT * FROM "Users" WHERE "login" = '${body.login}';
+    `;
+    const result = await this.pgService.query(query);
+    if (!result.rowCount) {
+      throw new HttpException('Пользователь не найден 👀', 404);
     }
-  }
-
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
-  }
-
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    const user = result.rows[0];
+    const isPasswordCorrect = await bcrypt.compare(
+      body.password,
+      user.password,
+    );
+    if (!isPasswordCorrect) {
+      throw new HttpException('Неверный пароль 🚫', 400);
+    }
+    const payload = { login: body.login, role: user.role };
+    const token = await this.jwtService.signAsync(payload);
+    return {
+      id: user.id,
+      token,
+      role: user.role,
+    };
   }
 }

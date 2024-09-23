@@ -2,7 +2,6 @@ import {
   WebSocketGateway,
   SubscribeMessage,
   MessageBody,
-  
 } from '@nestjs/websockets';
 import { SessionService } from './session.service';
 import { CreateSessionDto } from './dto/create-session.dto';

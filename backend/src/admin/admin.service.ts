@@ -1,6 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
 import { PgService } from 'src/other/pg.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -19,7 +18,7 @@ export class AdminService {
       "name" VARCHAR(255),
       "login" VARCHAR(255),
       "password" VARCHAR(60),
-      "role" VARCHAR(5) CHECK ("role" IN ('admin', 'user')) DEFAULT 'user',
+      "role" VARCHAR(255)  DEFAULT 'user',
       PRIMARY KEY ("login"),
       UNIQUE ("login")
     );
@@ -44,40 +43,17 @@ export class AdminService {
     const result = await this.pgService.query(query);
     if (!result.rowCount) {
       throw new HttpException(
-        'Пользователь с таким логином уже существует',
+        'Пользователь с таким логином уже существует 🤷‍♂️',
         400,
       );
     } else {
       //generate token
-      console.log('JWT Secret:', process.env.JWT_SECRET);
       const payload = { login: req.login, role: 'admin' };
       const access_token = await this.jwtService.signAsync(payload);
       return {
-        message: 'Пользователь успешно создан',
+        message: 'Пользователь успешно создан 👍',
         token: access_token,
       };
     }
-  }
-
-  async findAll() {
-    const tableName = 'Operator'; // Динамическое имя таблицы (ввод пользователя или из переменной)
-
-    const query = `SELECT * FROM "${tableName}"`; // Динамическое формирование запроса с именем таблицы
-
-    const result = await this.pgService.safeQuery(query, tableName); // Выполняем запрос
-    console.log(result.rows);
-    return `This action returns all admin`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} admin`;
-  }
-
-  update(id: number, updateAdminDto: UpdateAdminDto) {
-    return `This action updates a #${id} admin`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
   }
 }

@@ -7,8 +7,9 @@ import {
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class AdminGuard implements CanActivate {
+export class AuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
+
   private exractTokenFromCookies(cookies: string) {
     if (!cookies) {
       return null;
@@ -22,7 +23,9 @@ export class AdminGuard implements CanActivate {
   }
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+    console.log(request);
     const token = this.exractTokenFromCookies(request.headers.cookie);
+
     if (!token) {
       throw new UnauthorizedException();
     }
@@ -30,9 +33,6 @@ export class AdminGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
-      if (payload.role !== 'admin') {
-        throw new UnauthorizedException();
-      }
       request.login = payload.login;
       request.role = payload.role;
     } catch {
