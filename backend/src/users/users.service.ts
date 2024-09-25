@@ -28,7 +28,7 @@ export class UsersService {
     await this.pgService.query(insertQuery);
     return {
       message: 'Пользователь успешно создан',
-      login: body.login,
+      data: body.login,
     };
   }
 
@@ -37,7 +37,10 @@ export class UsersService {
       SELECT  name, login, role FROM "Users" WHERE "login" = '${login}';
     `;
     const result = await this.pgService.query(query);
-    return result.rows[0];
+    return {
+      message: 'Профиль пользователя',
+      data: result.rows[0],
+    };
   }
 
   async updatePassword(login: string, body: UpdateUserPasswordDto) {
@@ -81,7 +84,7 @@ export class UsersService {
     }
     return {
       message: 'Профиль успешно обновлен',
-      login: login,
+      data: login,
       password: body.password,
     };
   }

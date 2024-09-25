@@ -13,20 +13,6 @@ export class AdminService {
 
   async create(req: CreateAdminDto) {
     // create table user if not exists name varchar(255), login varchar(255), password varchar(60) , role enum('admin', 'user') default 'user' , primary key (login) , unique (login);
-    const query_create_table = `
-    CREATE TABLE IF NOT EXISTS "Users" (
-      "name" VARCHAR(255),
-      "login" VARCHAR(255),
-      "password" VARCHAR(60),
-      "role" VARCHAR(255)  DEFAULT 'user',
-      PRIMARY KEY ("login"),
-      UNIQUE ("login")
-    );
-  
-    CREATE INDEX IF NOT EXISTS idx_users_name ON "Users" ("name");
-    CREATE INDEX IF NOT EXISTS idx_users_role ON "Users" ("role");
-  `;
-    await this.pgService.safeQuery(query_create_table, 'Users');
 
     const hashed_password = await bcrypt.hash(
       req.password,

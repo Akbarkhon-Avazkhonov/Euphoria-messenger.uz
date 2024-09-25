@@ -19,7 +19,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Auth('admin')
-  @Post('createUser')
+  @Post('create-user')
   create(@Body() body: CreateUserDto) {
     return this.usersService.create(body);
   }
@@ -31,7 +31,7 @@ export class UsersController {
   }
 
   @Auth()
-  @Patch('/updatePassword')
+  @Patch('/update-password')
   updatePassword(
     @Body() body: UpdateUserPasswordDto,
     @Request() req: { login: string },
@@ -40,7 +40,7 @@ export class UsersController {
   }
 
   @Auth('admin')
-  @Patch('/updateProfile/:login')
+  @Patch('/update-profile/:login')
   updateProfile(
     @Param('login') login: string,
     @Body() updateUserDto: UpdateUserDto,

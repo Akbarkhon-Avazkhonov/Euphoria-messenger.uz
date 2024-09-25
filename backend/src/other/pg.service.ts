@@ -16,12 +16,6 @@ export class PgService implements OnModuleInit, OnModuleDestroy {
     });
   }
 
-  // host: process.env.DB_HOST, // Хост базы данных
-  // port: process.env.DB_PORT, // Порт PostgreSQL
-  // user: process.env.DB_USER, // Имя пользователя
-  // password: process.env.DB_PASSWORD, // Пароль
-  // database: process.env.DB_NAME, // Имя базы данных
-
   async onModuleInit() {
     await this.client.connect(); // Устанавливаем подключение при запуске модуля
   }
