@@ -12,9 +12,13 @@ export class AuthService {
   ) {}
   async login(body: LoginAuthDto) {
     const query = `
-      SELECT * FROM "Users" WHERE "login" = '${body.login}';
-    `;
+  SELECT u.*, r.* 
+  FROM "Users" u
+  JOIN "Roles" r ON u.role = r.name
+  WHERE u.login = '${body.login}';
+`;
     const result = await this.pgService.query(query);
+
     if (!result.rowCount) {
       throw new HttpException('Пользователь не найден 👀', 404);
     }
@@ -26,7 +30,7 @@ export class AuthService {
     if (!isPasswordCorrect) {
       throw new HttpException('Неверный пароль 🚫', 400);
     }
-    const payload = { login: body.login, role: user.role };
+    const payload = { login: body.login, role: user.role, access: user.access };
     const token = await this.jwtService.signAsync(payload);
     return {
       message: 'Вход выполнен успешно 👍',

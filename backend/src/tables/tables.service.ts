@@ -9,6 +9,7 @@ export class TablesService implements OnModuleInit {
     await this.createRoles();
     await this.createDefaultRoles(); // This should run after creating the Roles table
     await this.createUsers();
+    await this.createDefaultUsers();
     await this.createTgUsers();
   }
 
@@ -103,6 +104,16 @@ export class TablesService implements OnModuleInit {
     CREATE INDEX IF NOT EXISTS idx_users_role ON "Users" ("role");
     `;
     await this.pgService.safeQuery(query_create_table, 'Users');
+  }
+
+  async createDefaultUsers() {
+    const query_insert_users = `
+    INSERT INTO "Users" (name, login, password, role)
+    VALUES
+      ('Главный админ', 'admin', '$2a$10$UfYmSCVDFovTdfKwWjJjxenQpXVfYjfI0W7hDOcNqTKDV7kO8xRZu', 'Админ')
+    ON CONFLICT (login) DO NOTHING;  -- Avoid duplicates
+    `;
+    await this.pgService.query(query_insert_users);
   }
 
   // Создание таблицы TgUsers с внешним ключом на таблицу Users

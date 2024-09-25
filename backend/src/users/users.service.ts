@@ -2,15 +2,11 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PgService } from 'src/other/pg.service';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
 import { UpdateUserPasswordDto, UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly pgService: PgService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private readonly pgService: PgService) {}
   async create(body: CreateUserDto) {
     const query = `
       SELECT * FROM "Users" WHERE "login" = '${body.login}';
@@ -22,7 +18,7 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(body.password, 10);
     const insertQuery = `
       INSERT INTO "Users" (name, login, password, role)
-      VALUES ('${body.name}', '${body.login}', '${hashedPassword}', 'user')
+      VALUES ('${body.name}', '${body.login}', '${hashedPassword}', '${body.role}')
       RETURNING login;
     `;
     await this.pgService.query(insertQuery);
