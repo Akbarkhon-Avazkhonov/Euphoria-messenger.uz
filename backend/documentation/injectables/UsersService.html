@@ -136,19 +136,28 @@
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
+                                    <span class="modifier">Async</span>
                                 <a href="#create" >create</a>
                             </li>
                             <li>
-                                <a href="#findAll" >findAll</a>
+                                    <span class="modifier">Async</span>
+                                <a href="#getAll" >getAll</a>
                             </li>
                             <li>
-                                <a href="#findOne" >findOne</a>
+                                    <span class="modifier">Async</span>
+                                <a href="#getProfile" >getProfile</a>
                             </li>
                             <li>
-                                <a href="#remove" >remove</a>
+                                    <span class="modifier">Async</span>
+                                <a href="#getSome" >getSome</a>
                             </li>
                             <li>
-                                <a href="#update" >update</a>
+                                    <span class="modifier">Async</span>
+                                <a href="#updatePassword" >updatePassword</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#updateProfile" >updateProfile</a>
                             </li>
                         </ul>
                     </td>
@@ -162,6 +171,54 @@
     </table>
 </section>
 
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(pgService: <a href="../injectables/PgService.html" target="_self">PgService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="9" class="link-to-prism">src/users/users.service.ts:9</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>pgService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/PgService.html" target="_self" >PgService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
 
             <section data-compodoc="block-methods">
     
@@ -174,6 +231,7 @@
                 <td class="col-md-4">
                     <a name="create"></a>
                     <span class="name">
+                            <span class="modifier">Async</span>
                         <span ><b>create</b></span>
                         <a href="#create"><span class="icon ion-ios-link"></span></a>
                     </span>
@@ -181,15 +239,16 @@
             </tr>
             <tr>
                 <td class="col-md-4">
-<code>create(createUserDto: <a href="../classes/CreateUserDto.html" target="_self">CreateUserDto</a>)</code>
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>create(body: <a href="../classes/CreateUserDto.html" target="_self">CreateUserDto</a>)</code>
                 </td>
             </tr>
 
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="7"
-                                    class="link-to-prism">src/users/users.service.ts:7</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="50"
+                                    class="link-to-prism">src/users/users.service.ts:50</a></div>
                         </td>
                     </tr>
 
@@ -210,7 +269,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                                <td>createUserDto</td>
+                                                <td>body</td>
                                             <td>
                                                             <code><a href="../classes/CreateUserDto.html" target="_self" >CreateUserDto</a></code>
                                             </td>
@@ -225,7 +284,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                            <b>Returns : </b>    <code>unknown</code>
 
                         </div>
                             <div class="io-description">
@@ -239,16 +298,18 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="findAll"></a>
+                    <a name="getAll"></a>
                     <span class="name">
-                        <span ><b>findAll</b></span>
-                        <a href="#findAll"><span class="icon ion-ios-link"></span></a>
+                            <span class="modifier">Async</span>
+                        <span ><b>getAll</b></span>
+                        <a href="#getAll"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
-<code>findAll()</code>
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getAll()</code>
                 </td>
             </tr>
 
@@ -265,7 +326,7 @@
                 <td class="col-md-4">
 
                         <div class="io-description">
-                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                            <b>Returns : </b>    <code>unknown</code>
 
                         </div>
                 </td>
@@ -276,24 +337,26 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="findOne"></a>
+                    <a name="getProfile"></a>
                     <span class="name">
-                        <span ><b>findOne</b></span>
-                        <a href="#findOne"><span class="icon ion-ios-link"></span></a>
+                            <span class="modifier">Async</span>
+                        <span ><b>getProfile</b></span>
+                        <a href="#getProfile"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
-<code>findOne(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getProfile(req: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
                 </td>
             </tr>
 
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="15"
-                                    class="link-to-prism">src/users/users.service.ts:15</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="71"
+                                    class="link-to-prism">src/users/users.service.ts:71</a></div>
                         </td>
                     </tr>
 
@@ -314,7 +377,88 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                                <td>id</td>
+                                                <td>req</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getSome"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>getSome</b></span>
+                        <a href="#getSome"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getSome(take: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, skip: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="30"
+                                    class="link-to-prism">src/users/users.service.ts:30</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>take</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>skip</td>
                                             <td>
                                                             <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
                                             </td>
@@ -329,7 +473,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                            <b>Returns : </b>    <code>unknown</code>
 
                         </div>
                             <div class="io-description">
@@ -343,24 +487,26 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="remove"></a>
+                    <a name="updatePassword"></a>
                     <span class="name">
-                        <span ><b>remove</b></span>
-                        <a href="#remove"><span class="icon ion-ios-link"></span></a>
+                            <span class="modifier">Async</span>
+                        <span ><b>updatePassword</b></span>
+                        <a href="#updatePassword"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
-<code>remove(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updatePassword(login: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, body: <a href="../classes/UpdateUserPasswordDto.html" target="_self">UpdateUserPasswordDto</a>)</code>
                 </td>
             </tr>
 
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="23"
-                                    class="link-to-prism">src/users/users.service.ts:23</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="83"
+                                    class="link-to-prism">src/users/users.service.ts:83</a></div>
                         </td>
                     </tr>
 
@@ -381,9 +527,21 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                                <td>id</td>
+                                                <td>login</td>
                                             <td>
-                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>body</td>
+                                            <td>
+                                                            <code><a href="../classes/UpdateUserPasswordDto.html" target="_self" >UpdateUserPasswordDto</a></code>
                                             </td>
 
                                             <td>
@@ -396,7 +554,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                            <b>Returns : </b>    <code>unknown</code>
 
                         </div>
                             <div class="io-description">
@@ -410,24 +568,26 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="update"></a>
+                    <a name="updateProfile"></a>
                     <span class="name">
-                        <span ><b>update</b></span>
-                        <a href="#update"><span class="icon ion-ios-link"></span></a>
+                            <span class="modifier">Async</span>
+                        <span ><b>updateProfile</b></span>
+                        <a href="#updateProfile"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
-<code>update(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, updateUserDto: <a href="../classes/UpdateUserDto.html" target="_self">UpdateUserDto</a>)</code>
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateProfile(login: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, body: <a href="../classes/UpdateUserDto.html" target="_self">UpdateUserDto</a>)</code>
                 </td>
             </tr>
 
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="19"
-                                    class="link-to-prism">src/users/users.service.ts:19</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="99"
+                                    class="link-to-prism">src/users/users.service.ts:99</a></div>
                         </td>
                     </tr>
 
@@ -448,9 +608,9 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                                <td>id</td>
+                                                <td>login</td>
                                             <td>
-                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
                                             </td>
 
                                             <td>
@@ -460,7 +620,7 @@
 
                                         </tr>
                                         <tr>
-                                                <td>updateUserDto</td>
+                                                <td>body</td>
                                             <td>
                                                             <code><a href="../classes/UpdateUserDto.html" target="_self" >UpdateUserDto</a></code>
                                             </td>
@@ -475,7 +635,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                            <b>Returns : </b>    <code>unknown</code>
 
                         </div>
                             <div class="io-description">
@@ -491,30 +651,132 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@nestjs/common&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { HttpException, Injectable } from &#x27;@nestjs/common&#x27;;
 import { CreateUserDto } from &#x27;./dto/create-user.dto&#x27;;
-import { UpdateUserDto } from &#x27;./dto/update-user.dto&#x27;;
+import { PgService } from &#x27;src/other/pg.service&#x27;;
+import * as bcrypt from &#x27;bcrypt&#x27;;
+import { UpdateUserPasswordDto, UpdateUserDto } from &#x27;./dto/update-user.dto&#x27;;
+import { access } from &#x27;fs&#x27;;
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return &#x27;This action adds a new user&#x27;;
+  constructor(private readonly pgService: PgService) {}
+  async getAll() {
+    const query &#x3D; &#x60;
+  SELECT 
+    u.&quot;login&quot;, 
+    u.&quot;name&quot;, 
+    u.&quot;role&quot;,
+    u.&quot;created_at&quot;,
+    t.&quot;phoneNumber&quot; ,
+    t.&quot;verified&quot;
+  FROM &quot;Users&quot; u
+  LEFT JOIN &quot;TgUsers&quot; t ON u.&quot;login&quot; &#x3D; t.&quot;login&quot;;
+&#x60;;
+    const result &#x3D; await this.pgService.query(query);
+
+    return {
+      message: &#x27;Список пользователей&#x27;,
+      data: result.rows,
+    };
+  }
+  async getSome(take: number, skip: number) {
+    const query &#x3D; &#x60;
+    SELECT 
+      u.&quot;login&quot;, 
+      u.&quot;name&quot;, 
+      u.&quot;role&quot;,
+      u.&quot;created_at&quot;,
+      t.&quot;phoneNumber&quot;, 
+    FROM &quot;Users&quot; u
+    LEFT JOIN &quot;TgUsers&quot; t ON u.&quot;login&quot; &#x3D; t.&quot;login&quot;
+    ORDER BY u.&quot;created_at&quot; DESC
+    LIMIT ${take} OFFSET ${skip};
+  &#x60;;
+    const result &#x3D; await this.pgService.query(query);
+
+    return {
+      message: &#x27;Список пользователей&#x27;,
+      data: result.rows,
+    };
+  }
+  async create(body: CreateUserDto) {
+    const query &#x3D; &#x60;
+      SELECT * FROM &quot;Users&quot; WHERE &quot;login&quot; &#x3D; &#x27;${body.login}&#x27;;
+    &#x60;;
+    const result &#x3D; await this.pgService.query(query);
+    if (result.rowCount) {
+      throw new HttpException(&#x27;Пользователь уже существует&#x27;, 400);
+    }
+    const hashedPassword &#x3D; await bcrypt.hash(body.password, 10);
+    const insertQuery &#x3D; &#x60;
+      INSERT INTO &quot;Users&quot; (name, login, password, role)
+      VALUES (&#x27;${body.name}&#x27;, &#x27;${body.login}&#x27;, &#x27;${hashedPassword}&#x27;, &#x27;${body.role}&#x27;)
+      RETURNING login;
+    &#x60;;
+    await this.pgService.query(insertQuery);
+    return {
+      message: &#x27;Пользователь успешно создан&#x27;,
+      data: body.login,
+    };
   }
 
-  findAll() {
-    return &#x60;This action returns all users&#x60;;
+  async getProfile(req: any) {
+    const query &#x3D; &#x60;
+      SELECT  name, login, role FROM &quot;Users&quot; WHERE &quot;login&quot; &#x3D; &#x27;${req.login}&#x27;;
+    &#x60;;
+    const result &#x3D; await this.pgService.query(query);
+    return {
+      message: &#x27;Профиль пользователя&#x27;,
+      data: result.rows[0],
+      access: req.access,
+    };
   }
 
-  findOne(id: number) {
-    return &#x60;This action returns a #${id} user&#x60;;
+  async updatePassword(login: string, body: UpdateUserPasswordDto) {
+    if (body.password) {
+      const hashedPassword &#x3D; await bcrypt.hash(body.password, 10);
+      const query &#x3D; &#x60;
+        UPDATE &quot;Users&quot; SET  password &#x3D; &#x27;${hashedPassword}&#x27;
+        WHERE login &#x3D; &#x27;${login}&#x27;;
+      &#x60;;
+      await this.pgService.query(query);
+    } else {
+      throw new HttpException(&#x27;Пароль не может быть пустым&#x27;, 400);
+    }
+    return {
+      message: &#x27;Профиль успешно обновлен&#x27;,
+    };
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return &#x60;This action updates a #${id} user&#x60;;
-  }
-
-  remove(id: number) {
-    return &#x60;This action removes a #${id} user&#x60;;
+  async updateProfile(login: string, body: UpdateUserDto) {
+    if (body.password) {
+      const hashedPassword &#x3D; await bcrypt.hash(body.password, 10);
+      const query &#x3D; &#x60;
+        UPDATE &quot;Users&quot; SET  password &#x3D; &#x27;${hashedPassword}&#x27;
+        WHERE login &#x3D; &#x27;${login}&#x27;;
+      &#x60;;
+      await this.pgService.query(query);
+    }
+    if (body.name) {
+      const query &#x3D; &#x60;
+        UPDATE &quot;Users&quot; SET  name &#x3D; &#x27;${body.name}&#x27;
+        WHERE login &#x3D; &#x27;${login}&#x27;;
+      &#x60;;
+      await this.pgService.query(query);
+    }
+    if (body.role) {
+      const query &#x3D; &#x60;
+        UPDATE &quot;Users&quot; SET  role &#x3D; &#x27;${body.role}&#x27;
+        WHERE login &#x3D; &#x27;${login}&#x27;;
+      &#x60;;
+      await this.pgService.query(query);
+    }
+    return {
+      message: &#x27;Профиль успешно обновлен&#x27;,
+      data: login,
+      password: body.password,
+    };
   }
 }
 </code></pre>

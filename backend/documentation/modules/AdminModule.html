@@ -221,7 +221,7 @@ import &#x27;dotenv/config&#x27;;
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: &#x27;1d&#x27; },
+      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN },
     }),
   ],
   controllers: [AdminController],

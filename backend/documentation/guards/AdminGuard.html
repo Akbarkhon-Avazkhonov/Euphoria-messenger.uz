@@ -144,7 +144,7 @@
                             </li>
                             <li>
                                     <span class="modifier">Private</span>
-                                <a href="#extractTokenFromCookie" >extractTokenFromCookie</a>
+                                <a href="#extractTokenFromCookies" >extractTokenFromCookies</a>
                             </li>
                         </ul>
                     </td>
@@ -164,7 +164,7 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-<code>constructor(jwtService: JwtService)</code>
+<code>constructor(jwtService: JwtService, redisService: <a href="../injectables/RedisService.html" target="_self">RedisService</a>)</code>
                     </td>
                 </tr>
                         <tr>
@@ -191,6 +191,18 @@
                                                   
                                                         <td>
                                                                     <code>JwtService</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>redisService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/RedisService.html" target="_self" >RedisService</a></code>
                                                         </td>
                                                   
                                                     <td>
@@ -234,8 +246,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="14"
-                                    class="link-to-prism">src/admin/admin.guad.ts:14</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="27"
+                                    class="link-to-prism">src/admin/admin.guad.ts:27</a></div>
                         </td>
                     </tr>
 
@@ -285,26 +297,26 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="extractTokenFromCookie"></a>
+                    <a name="extractTokenFromCookies"></a>
                     <span class="name">
                             <span class="modifier">Private</span>
-                        <span ><b>extractTokenFromCookie</b></span>
-                        <a href="#extractTokenFromCookie"><span class="icon ion-ios-link"></span></a>
+                        <span ><b>extractTokenFromCookies</b></span>
+                        <a href="#extractTokenFromCookies"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
                         <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>extractTokenFromCookie(request: Request)</code>
+                    <code>extractTokenFromCookies(cookies: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
                 </td>
             </tr>
 
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="37"
-                                    class="link-to-prism">src/admin/admin.guad.ts:37</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="17"
+                                    class="link-to-prism">src/admin/admin.guad.ts:17</a></div>
                         </td>
                     </tr>
 
@@ -325,9 +337,9 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                                <td>request</td>
+                                                <td>cookies</td>
                                             <td>
-                                                        <code>Request</code>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
                                             </td>
 
                                             <td>
@@ -340,7 +352,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>string | undefined</code>
+                            <b>Returns : </b>    <code>string | null</code>
 
                         </div>
                             <div class="io-description">
@@ -362,39 +374,65 @@
   UnauthorizedException,
 } from &#x27;@nestjs/common&#x27;;
 import { JwtService } from &#x27;@nestjs/jwt&#x27;;
-import { Request } from &#x27;express&#x27;;
+import { RedisService } from &#x27;src/redis/redis.service&#x27;;
 
 @Injectable()
 export class AdminGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly redisService: RedisService,
+  ) {}
+
+  private extractTokenFromCookies(cookies: string): string | null {
+    if (!cookies) {
+      return null;
+    }
+    const token &#x3D; cookies
+      .split(&#x27;; &#x27;)
+      .find((cookie) &#x3D;&gt; cookie.startsWith(&#x27;token&#x3D;&#x27;));
+    return token ? token.split(&#x27;&#x3D;&#x27;)[1] : null;
+  }
 
   async canActivate(context: ExecutionContext): Promise&lt;boolean&gt; {
     const request &#x3D; context.switchToHttp().getRequest();
-    const token &#x3D; this.extractTokenFromCookie(request);
+    const token &#x3D; this.extractTokenFromCookies(request.headers.cookie);
+
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(&#x27;Token not found&#x27;);
     }
+    const redisClient &#x3D; this.redisService.getClient();
+
     try {
+      const tokenInRedis &#x3D; await redisClient.get(token);
+      if (tokenInRedis) {
+        const payload &#x3D; JSON.parse(tokenInRedis);
+        request.login &#x3D; payload.login;
+        request.role &#x3D; payload.role;
+        if (payload.role !&#x3D;&#x3D; &#x27;Админ&#x27;) {
+          throw new UnauthorizedException();
+        }
+        request.access &#x3D; payload.access;
+        return true;
+      }
+
       const payload &#x3D; await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
-
-      // 💡 We&#x27;re assigning the payload to the request object here
-      // so that we can access it in our route handlers
-      request[&#x27;admin&#x27;] &#x3D; payload;
-      if (payload.name !&#x3D;&#x3D; process.env.ADMIN_NAME) {
+      redisClient.set(token, JSON.stringify(payload), {
+        EX: 60 * 60 * 24, // 1 day
+      }); // Consider adding an expiration time
+      request.login &#x3D; payload.login;
+      request.role &#x3D; payload.role;
+      request.access &#x3D; payload.access;
+      if (payload.role !&#x3D;&#x3D; &#x27;Админ&#x27;) {
         throw new UnauthorizedException();
       }
-    } catch {
-      throw new UnauthorizedException();
+    } catch (error) {
+      console.error(&#x27;Error verifying token:&#x27;, error);
+      throw new UnauthorizedException(&#x27;Token verification failed&#x27;);
     }
-    return true;
-  }
 
-  private extractTokenFromCookie(request: Request): string | undefined {
-    console.log(request.headers.cookie);
-    const [type, token] &#x3D; request.headers.cookie?.split(&#x27; &#x27;) ?? [];
-    return type &#x3D;&#x3D;&#x3D; &#x27;Bearer&#x27; ? token : undefined;
+    return true;
   }
 }
 </code></pre>

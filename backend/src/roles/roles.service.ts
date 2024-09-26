@@ -20,25 +20,45 @@ export class RolesService {
 
   async findAll() {
     const query = `
-      SELECT * FROM "Roles";
+      SELECT 
+        r.*, 
+        COUNT(u.login) AS users_count 
+      FROM 
+        "Roles" r 
+      LEFT JOIN 
+        "Users" u ON r.name = u.role 
+      GROUP BY 
+        r.id;
     `;
+
     const result = await this.pgService.query(query);
     return {
-      message: 'Список ролей',
+      message: 'Список ролей с количеством пользователей',
       data: result.rows,
     };
   }
 
   async findSome(take: number, skip: number) {
     const query = `
-      SELECT * FROM "Roles" LIMIT ${take} OFFSET ${skip};
+      SELECT 
+        r.*, 
+        COUNT(u.login) AS users_count 
+      FROM 
+        "Roles" r 
+      LEFT JOIN 
+        "Users" u ON r.name = u.role 
+      GROUP BY 
+        r.id 
+      LIMIT ${take} OFFSET ${skip};
     `;
+
     const result = await this.pgService.query(query);
     return {
-      message: `Список ролей (take: ${take}, skip: ${skip})`,
+      message: `Список ролей с количеством пользователей (take: ${take}, skip: ${skip})`,
       data: result.rows,
     };
   }
+
   async findOne(id: number) {
     const query = `
       SELECT * FROM "Roles" WHERE id = ${id};

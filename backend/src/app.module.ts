@@ -9,6 +9,8 @@ import { PgModule } from './other/pg.modul';
 import { TgAuthModule } from './tg-auth/tg-auth.module';
 import { RolesModule } from './roles/roles.module';
 import { TablesModule } from './tables/tables.module';
+import { RedisModule } from './redis/redis.module';
+import { RedisService } from './redis/redis.service';
 @Module({
   imports: [
     PgModule,
@@ -19,6 +21,7 @@ import { TablesModule } from './tables/tables.module';
     TgAuthModule,
     RolesModule,
     TablesModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],

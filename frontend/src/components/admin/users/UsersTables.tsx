@@ -22,16 +22,24 @@ import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import NumbersRoundedIcon from '@mui/icons-material/NumbersRounded';
 import Option from '@mui/joy/Option';
+import AvatarWithStatus from '@/components/ui/AvatarWithStatus';
+interface UserProps {
+  login: string;
+  name: string;
+  role: string;
+  phoneNumber: string;
+  created_at: string;
+}
 interface UsersTableProps {
     users : any[];
 }
 import SwapVertRounded from '@mui/icons-material/SwapVertRounded';
 import { Select } from '@mui/joy';
 export default function UsersTable(
-  {users}:  UsersTableProps
+  {users}: UsersTableProps
 ) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredData, setFilteredData] = useState <any[]>([]);
+  const [filteredData, setFilteredData] = useState <any[]>(users);
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(10);
   const [sortDirection, setSortDirection] = useState('asc');
@@ -40,9 +48,10 @@ export default function UsersTable(
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
     setFilteredData(
-      users.filter((student) =>
-        student.name.toLowerCase().includes(query)
-        || student.login.toLowerCase().includes(query)
+      filteredData.filter((user) =>
+        user.name.toLowerCase().includes(query)
+        || user.login.toLowerCase().includes(query)
+        || user.phoneNumber.toLowerCase().includes(query)
       )
     );
     setCurrentPage(1); // Reset to first page on search
@@ -79,16 +88,15 @@ export default function UsersTable(
     setFilteredData(sortedData);
   };
 
-  const totalPages = Math.max(1, Math.ceil(filteredData.length / recordsPerPage)); // Ensure totalPages is at least 1
+  const totalPages = Math.max(1, Math.ceil((filteredData ? filteredData.length : 1 ) / recordsPerPage)); // Ensure totalPages is at least 1
   const startIndex = (currentPage - 1) * recordsPerPage;
-//   const currentData = filteredData.slice(startIndex, startIndex + recordsPerPage);
+  // const currentData = filteredData.slice(startIndex, startIndex + recordsPerPage);
 
   React.useEffect(() => {
-  
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/student `)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/all`)
     .then((response) => response.json())
     .then((data) => {
-      setFilteredData(data);
+      setFilteredData(data.data);
     });
   } , []);
   return (
@@ -160,7 +168,7 @@ export default function UsersTable(
                     <Typography>Роль</Typography>
                     
               </th>
-              <th style={{width: '15%', padding: '16px 20px'  }}>
+              <th style={{width: '15%', padding: '16px 6px'  }}>
                 Дата создания
               </th>
               
@@ -174,14 +182,14 @@ export default function UsersTable(
             </tr>
           </thead>
           <tbody>
-            {/* {currentData.map((row,index) => (
+            {users && users.map((row:any,index:any) => (
               <tr key={row.id}>
                 <td style={{ textAlign: 'center', width: 120 }}>
                   {index + 1}
                 </td>
                 <td>
                   <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <Avatar size="sm">{row.name[0]}</Avatar>
+                    <AvatarWithStatus size="sm" fullname={row.name[0]} />
                     <Typography level="body-xs">{row.name}</Typography>
                   </Box>
                 </td>
@@ -199,9 +207,9 @@ export default function UsersTable(
                   </Box>
                 </td>
                 <td>
-                  <Typography level="body-xs">{row.phone}</Typography>
+                  <Typography level="body-xs">{row.phoneNumber}</Typography>
                 </td>
-                <td>
+                {/* <td>
                   <Chip
                     size="sm"
                     variant={row.isActive ? 'soft' : 'outlined'}
@@ -211,19 +219,27 @@ export default function UsersTable(
                   >
                     {row.isActive ? 'Активен' : 'Неактивен'}
                   </Chip>
-                </td>
+                </td> */}
           
                 <td>
-                  <strong> {row.totalKiberonePoints}</strong>
+                  <Typography level="body-xs">{row.role}</Typography>
                 </td>
                 <td>
-                  <Typography level="body-xs">{row.group.name}</Typography>
+                  <Typography level="body-xs">{row.created_at.slice(0,10)}</Typography>
                 </td>
-                <td>
-                  <Typography level="body-xs">{row.parent ? row.parent.name : '' }</Typography>
+                <td style={{ textAlign: 'center' }}>
+                  <IconButton size="sm" color="primary" variant="soft">
+                    <EditRoundedIcon />
+                  </IconButton>
                 </td>
+                <td style={{ textAlign: 'center' }}>
+                  <IconButton size="sm" color="danger" variant="soft">
+                    <DeleteOutlineRoundedIcon />
+                  </IconButton>
+                </td>
+
               </tr>
-            ))} */}
+            ))}
           </tbody>
         </Table>
       </Sheet>

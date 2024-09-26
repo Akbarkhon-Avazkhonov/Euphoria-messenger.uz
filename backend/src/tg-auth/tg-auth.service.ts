@@ -34,7 +34,7 @@ export class TgAuthService {
 
     // send code to the phone number
     try {
-      const client = await telegramClient(''); // create new telegram client
+      const client = await telegramClient(''); // Create new Telegram client
       const { phoneCodeHash } = await client.sendCode(
         {
           apiId: +process.env.API_ID,
@@ -43,21 +43,33 @@ export class TgAuthService {
         phoneNumber,
       );
       console.log('phoneCodeHash', phoneCodeHash);
+
       const session = client.session.save();
-      // add user phone number to the table tg-users
+
+      // Use parameterized query to safely insert or update a user
       const query = `
-    -- Добавляем нового пользователя в таблицу TgUsers
-    INSERT INTO "TgUsers" ("phoneNumber","phoneCodeHash","session", "login")
-    SELECT '${phoneNumber}', '${phoneCodeHash}', '${session}', '${login}'
-    WHERE NOT EXISTS (
-        SELECT 1 FROM "TgUsers" WHERE "phoneNumber" = '${phoneNumber}'
-    );
-    `;
+  INSERT INTO "TgUsers" ("phoneNumber", "phoneCodeHash", "session", "login")
+  VALUES ($1, $2, $3, $4)
+  ON CONFLICT ("phoneNumber") 
+  DO UPDATE SET 
+    "phoneCodeHash" = EXCLUDED."phoneCodeHash",
+    "session" = EXCLUDED."session",
+    "login" = EXCLUDED."login";
+`;
+
+      // Execute the query with values
+      await this.pgService.query(query, [
+        phoneNumber,
+        phoneCodeHash,
+        session,
+        login,
+      ]);
+
+      // Disconnect the Telegram client after the operation
       await client.disconnect();
-      await this.pgService.query(query);
 
       return {
-        message: ' Код отправлен на номер 📲 ',
+        message: 'Код отправлен на номер 📲',
         phoneNumber: phoneNumber,
       };
     } catch (e) {
@@ -72,6 +84,7 @@ export class TgAuthService {
         SELECT * FROM "TgUsers" WHERE "login" = '${login}';
         `;
       const user = await this.pgService.query(query_find_user);
+      console.log('user', user.rows[0]);
       if (!user.rowCount) {
         throw new HttpException(
           `Пользователь не найден 🤷‍♂️`,

@@ -224,8 +224,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="29"
-                                    class="link-to-prism">src/other/pg.service.ts:29</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="23"
+                                    class="link-to-prism">src/other/pg.service.ts:23</a></div>
                         </td>
                     </tr>
 
@@ -263,8 +263,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="25"
-                                    class="link-to-prism">src/other/pg.service.ts:25</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="19"
+                                    class="link-to-prism">src/other/pg.service.ts:19</a></div>
                         </td>
                     </tr>
 
@@ -302,8 +302,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="33"
-                                    class="link-to-prism">src/other/pg.service.ts:33</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="27"
+                                    class="link-to-prism">src/other/pg.service.ts:27</a></div>
                         </td>
                     </tr>
 
@@ -383,8 +383,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="37"
-                                    class="link-to-prism">src/other/pg.service.ts:37</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="31"
+                                    class="link-to-prism">src/other/pg.service.ts:31</a></div>
                         </td>
                     </tr>
 
@@ -518,12 +518,6 @@ export class PgService implements OnModuleInit, OnModuleDestroy {
       database: process.env.DB_NAME, // Имя базы данных
     });
   }
-
-  // host: process.env.DB_HOST, // Хост базы данных
-  // port: process.env.DB_PORT, // Порт PostgreSQL
-  // user: process.env.DB_USER, // Имя пользователя
-  // password: process.env.DB_PASSWORD, // Пароль
-  // database: process.env.DB_NAME, // Имя базы данных
 
   async onModuleInit() {
     await this.client.connect(); // Устанавливаем подключение при запуске модуля

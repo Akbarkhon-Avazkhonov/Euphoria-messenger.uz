@@ -17,7 +17,11 @@ import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
+  @Auth('admin')
+  @Get('all')
+  getAll() {
+    return this.usersService.getAll();
+  }
   @Auth('admin')
   @Post('create-user')
   create(@Body() body: CreateUserDto) {
@@ -25,13 +29,13 @@ export class UsersController {
   }
 
   @Auth()
-  @Get('/profile')
-  getProfile(@Request() req: { login: string }) {
-    return this.usersService.getProfile(req.login);
+  @Get('profile')
+  getProfile(@Request() req: any) {
+    return this.usersService.getProfile(req);
   }
 
   @Auth()
-  @Patch('/update-password')
+  @Patch('update-password')
   updatePassword(
     @Body() body: UpdateUserPasswordDto,
     @Request() req: { login: string },
@@ -40,7 +44,7 @@ export class UsersController {
   }
 
   @Auth('admin')
-  @Patch('/update-profile/:login')
+  @Patch('update-profile/:login')
   updateProfile(
     @Param('login') login: string,
     @Body() updateUserDto: UpdateUserDto,

@@ -34,10 +34,7 @@ async function bootstrap() {
     customSiteTitle: 'Euphoria messenger API',
     customfavIcon: 'https://phoenix-solutions.uz/image%2073.png',
   });
-  app.enableCors({
-    credentials: true,
-    origin: 'http://localhost:4000', // Укажите ваш домен
-  });
+  app.enableCors();
   await app.listen(process.env.PORT);
 }
 bootstrap();

@@ -1,31 +1,31 @@
-import UsersTable from "@/components/admin/UsersTables";
+import UsersTable from "@/components/admin/users/UsersTables";
 import { Box, Button, Typography } from "@mui/joy";
+import { cookies } from "next/headers";
+async function fetchUsers(cookies: string) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/all`, {
+     method: 'GET',
+     headers: {
+         'Content-Type': 'application/json',
+         'Cookie': 'token=' + cookies,
+         
+     },
+     credentials: 'include',
+     cache: 'no-cache',
+ }).then((response) => response.json());
+ console.log(response);
+ return response;
+} 
+export default async function Admin() {
+  const cookieStore = cookies()
+  // get token from cookie
+  const token = cookieStore.get('token')?.value;
 
-const TestUsers = [
-    {
-        id: 1,
-        name: 'Иван Иванов',
-        login: 'ivanov',
-        phoneNumber: '+79999999999',
-        role: 'admin',
-    },
-    {
-        id: 2,
-        name: 'Петр Петров',
-        login: 'petrov',
-        phoneNumber: '+79999999999',
-        role: 'user',
-    } ,
-    {
-        id: 3,
-        name: 'Сидор Сидоров',
-        login: 'sidorov',
-        phoneNumber: '+79999999999',
-        role: 'user',
-    },
-]
+  if (!token) {
+    throw new Error("Token not found in cookies");
+  }
 
-export default function Admin() {
+  console.log(token);
+  const users = await fetchUsers(token);
     return (
     <Box
         component="main"
@@ -62,7 +62,7 @@ export default function Admin() {
               Все пользователи
             </Typography>
         </Box>
-        <UsersTable users={TestUsers} />
+        <UsersTable users={users.data}/>
     </Box>
     );
 }

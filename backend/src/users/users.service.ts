@@ -3,10 +3,50 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { PgService } from 'src/other/pg.service';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserPasswordDto, UpdateUserDto } from './dto/update-user.dto';
+import { access } from 'fs';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly pgService: PgService) {}
+  async getAll() {
+    const query = `
+  SELECT 
+    u."login", 
+    u."name", 
+    u."role",
+    u."created_at",
+    t."phoneNumber" ,
+    t."verified"
+  FROM "Users" u
+  LEFT JOIN "TgUsers" t ON u."login" = t."login";
+`;
+    const result = await this.pgService.query(query);
+
+    return {
+      message: 'Список пользователей',
+      data: result.rows,
+    };
+  }
+  async getSome(take: number, skip: number) {
+    const query = `
+    SELECT 
+      u."login", 
+      u."name", 
+      u."role",
+      u."created_at",
+      t."phoneNumber", 
+    FROM "Users" u
+    LEFT JOIN "TgUsers" t ON u."login" = t."login"
+    ORDER BY u."created_at" DESC
+    LIMIT ${take} OFFSET ${skip};
+  `;
+    const result = await this.pgService.query(query);
+
+    return {
+      message: 'Список пользователей',
+      data: result.rows,
+    };
+  }
   async create(body: CreateUserDto) {
     const query = `
       SELECT * FROM "Users" WHERE "login" = '${body.login}';
@@ -28,14 +68,15 @@ export class UsersService {
     };
   }
 
-  async getProfile(login: string) {
+  async getProfile(req: any) {
     const query = `
-      SELECT  name, login, role FROM "Users" WHERE "login" = '${login}';
+      SELECT  name, login, role FROM "Users" WHERE "login" = '${req.login}';
     `;
     const result = await this.pgService.query(query);
     return {
       message: 'Профиль пользователя',
       data: result.rows[0],
+      access: req.access,
     };
   }
 

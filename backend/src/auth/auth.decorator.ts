@@ -3,7 +3,7 @@ import { ApiCookieAuth, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { AuthGuard } from './auth.guard';
 import { AdminGuard } from 'src/admin/admin.guad';
 export function Auth(role?: string) {
-  if (role === 'admin') {
+  if (role === 'Админ') {
     return applyDecorators(
       UseGuards(AdminGuard),
       ApiCookieAuth(),

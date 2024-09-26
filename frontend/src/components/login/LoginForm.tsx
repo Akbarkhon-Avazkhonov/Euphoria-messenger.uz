@@ -12,7 +12,7 @@ import React from "react";
 
 
 export default function LoginForm(){
-    const [username, setUsername] = useState<string>('');
+    const [login, setLogin] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
     const [passwordVisible, setPasswordVisible] = React.useState(false);
@@ -27,7 +27,7 @@ export default function LoginForm(){
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            username: username,
+            login: login,
             password: password,
           }),
         });
@@ -35,12 +35,16 @@ export default function LoginForm(){
           const data = await response.json();
           document.cookie = `token=${data.token}; path=/; max-age=86400`;
           document.cookie = `role=${data.role}; path=/; max-age=86400`;
-          if (data.role === 'admin') {
+          if (data.role === 'Админ') {
             router.replace('/admin');
           } else {
             router.replace('/user');
-          }
+          } 
         }
+          else {
+            setSnackbarOpen(true);
+          }
+        
         
       };
       const togglePasswordVisibility = () => {
@@ -134,7 +138,7 @@ export default function LoginForm(){
                 <Input
                   type="text"
                   name="login"
-                  onChange={(event) => setUsername(event.target.value)}
+                  onChange={(event) => setLogin(event.target.value)}
                   endDecorator={
                     <LoginRounded/>
                   }
@@ -184,7 +188,7 @@ export default function LoginForm(){
                     onClose={() => setSnackbarOpen(false)}
                     size="md"
                 >
-                    {username === '' || password === '' ? 'Заполните все поля !' : 'Неверный логин или пароль'}
+                    {login === '' || password === '' ? 'Заполните все поля !' : 'Неверный логин или пароль'}
                 </Snackbar>
             </Stack>
             

@@ -66,7 +66,7 @@ export default function Sidebar() {
                     {!collapsed && 'Админ панель'}
                 </Typography>
                 <IconButton onClick={() => setCollapsed(!collapsed)} sx={collapsed ? {width:"100%"} : {ml:1}}>
-                    {collapsed ? <MenuOpenRoundedIcon /> : <MenuRoundedIcon />}
+                    {collapsed ? <MenuRoundedIcon /> : <MenuOpenRoundedIcon />}
                 </IconButton>
             </Box>
             <Divider />
