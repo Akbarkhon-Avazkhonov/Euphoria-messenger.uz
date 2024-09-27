@@ -1,4 +1,5 @@
 import UsersTable from "@/components/admin/users/UsersTables";
+import AddUser from "@/components/ui/admin/AddUser";
 import { Box, Button, Typography } from "@mui/joy";
 import { cookies } from "next/headers";
 async function fetchUsers(cookies: string) {
@@ -56,9 +57,11 @@ export default async function Admin() {
             justifyContent: 'space-between',
           }}
         >
+  
             <Typography level="h2" component="h1">
               Все пользователи
             </Typography>
+            <AddUser />
         </Box>
         <UsersTable users={users.data}/>
     </Box>

@@ -35,6 +35,7 @@ const isDarkColor = (hex: string): boolean => {
 type AvatarWithStatusProps = AvatarProps & {
   online?: boolean;
   fullname?: string;
+  nameOnly?: boolean;
 };
 
 export default function AvatarWithStatus(props: AvatarWithStatusProps) {
@@ -57,17 +58,28 @@ export default function AvatarWithStatus(props: AvatarWithStatusProps) {
 
   return (
     <div>
-      <Badge
-        color={online ? 'success' : 'neutral'}
-        variant={online ? 'solid' : 'soft'}
-        size="sm"
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        badgeInset="4px 4px"
-      >
-        <Avatar {...other} sx={{ bgcolor: avatarColor, color: textColor }}>
+      {
+        !props.nameOnly ? (
+          <Badge
+          color={online ? 'success' : 'neutral'}
+          variant={online ? 'solid' : 'soft'}
+          size="sm"
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          badgeInset="4px 4px"
+        >
+          <Avatar {...other} sx={{ bgcolor: avatarColor, color: textColor }}>
+            {fullname[0] || ''}
+          </Avatar>
+        </Badge>
+        )
+        :
+        (
+          <Avatar {...other} sx={{ bgcolor: avatarColor, color: textColor }}>
           {fullname[0] || ''}
         </Avatar>
-      </Badge>
+        )
+      }
+ 
     </div>
   );
 }

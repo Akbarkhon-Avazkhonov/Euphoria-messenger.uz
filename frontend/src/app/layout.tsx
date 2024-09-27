@@ -7,6 +7,7 @@ import React from 'react';
 import NextAppDirEmotionCacheProvider from '@/components/ThemeRegistry/EmotionCache';
 import { GlobalStyles } from '@mui/joy';
 import ThemeRegistry from "@/components/ThemeRegistry/ThemeRegistry";
+import { Toaster } from "react-hot-toast";
 
 
 
@@ -38,6 +39,31 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             }}
           />
           <CssVarsProvider>
+          <Toaster position="top-center" 
+      //border color for the toast
+      toastOptions={{
+        
+        duration: 2000,
+        success: {
+          style: {
+            border: "1px solid #00A4A6",
+          },
+          iconTheme: {
+            primary: '#00A4A6',
+            secondary: '#fff',
+          },
+        },
+        error: {
+          style: {
+            border: "1px solid #FF0000",
+          },
+          iconTheme: {
+            primary: '#FF0000',
+            secondary: '#fff',
+          },
+        },
+      }}
+      />
               {children} 
           </CssVarsProvider>
           

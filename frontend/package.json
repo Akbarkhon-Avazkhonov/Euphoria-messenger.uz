@@ -4,7 +4,7 @@
   "description": "euphoria-messenger-frontend",
   "author": "Akbarkhon !Avazkhonov",
   "private": true,
-    "scripts": {
+  "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -18,7 +18,8 @@
     "@mui/joy": "next",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "react-hot-toast": "^2.4.1"
   },
   "devDependencies": {
     "@types/node": "latest",

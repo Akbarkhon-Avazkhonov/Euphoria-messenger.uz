@@ -1,4 +1,4 @@
-import AddRoles from "@/components/admin/roles/AddRoles";
+import AddRoles from "@/components/admin/roles/AddRole";
 import RolesTables from "@/components/admin/roles/RolesTables";
 import { Box, Typography } from "@mui/joy";
 import { cookies } from "next/headers";
@@ -56,7 +56,7 @@ export default async function Admin() {
           }}
         >
             <Typography level="h2" component="h1">
-              Все пользователи
+              Все роли
             </Typography>
             <AddRoles />
         </Box>

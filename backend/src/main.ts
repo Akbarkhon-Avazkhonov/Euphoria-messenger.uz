@@ -34,7 +34,10 @@ async function bootstrap() {
     customSiteTitle: 'Euphoria messenger API',
     customfavIcon: 'https://phoenix-solutions.uz/image%2073.png',
   });
-  app.enableCors();
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
   await app.listen(process.env.PORT);
 }
 bootstrap();

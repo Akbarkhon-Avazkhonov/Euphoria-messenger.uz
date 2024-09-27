@@ -2,6 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { PgService } from 'src/other/pg.service';
+import { BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class RolesService {
@@ -9,10 +10,15 @@ export class RolesService {
   async create(body: CreateRoleDto) {
     const query = `
       INSERT INTO "Roles" (name, access, description)
-      VALUES ('${body.name}' , '${JSON.stringify(body.access)}', '${body.description}')
+      VALUES ('${body.name}', '${JSON.stringify(body.access)}', '${body.description}')
+      ON CONFLICT (name) DO NOTHING
       RETURNING *;
     `;
-    await this.pgService.query(query);
+    const result = await this.pgService.query(query);
+    if (!result.rows[0]) {
+      throw new BadRequestException('Роль с таким именем уже существует');
+    }
+
     return {
       message: 'Роль успешно создана',
     };

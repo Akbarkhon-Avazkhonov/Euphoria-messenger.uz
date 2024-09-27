@@ -14,7 +14,7 @@ import Typography from '@mui/joy/Typography';
 import SearchIcon from '@mui/icons-material/Search';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
-
+import RemoveRedEyeRoundedIcon from '@mui/icons-material/RemoveRedEyeRounded';
 import BlockIcon from '@mui/icons-material/Block';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -35,6 +35,8 @@ interface UsersTableProps {
 }
 import SwapVertRounded from '@mui/icons-material/SwapVertRounded';
 import { Select } from '@mui/joy';
+import EditRole from './EditRole';
+import DeleteButton from '@/components/ui/DeleteButton';
 export default function RolesTables(
   {roles}:any
 ) {
@@ -170,12 +172,12 @@ export default function RolesTables(
               <th style={{width: '15%', padding: '16px 6px'  }}>
                 Дата создания
               </th>
-              
-            
-              <th style={{ width: '6%', padding: '10px 6px', textAlign: 'center' }}>
+
+
+              <th style={{ width: '4%', padding: '10px 6px', textAlign: 'center' }}>
                 <SettingsRoundedIcon />
               </th>
-              <th style={{  width: '6%', padding: '10px 6px', textAlign: 'center' }}>
+              <th style={{  width: '4%', padding: '10px 6px', textAlign: 'center' }}>
                 <DeleteOutlineRoundedIcon />
               </th>
             </tr>
@@ -188,7 +190,7 @@ export default function RolesTables(
                 </td>
                 <td>
                   <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <AvatarWithStatus size="sm" fullname={row.name[0]} />
+                    <AvatarWithStatus size="sm" fullname={row.name[0]} nameOnly />
                     <Typography level="body-xs">{row.name}</Typography>
                   </Box>
                 </td>
@@ -208,17 +210,6 @@ export default function RolesTables(
                 <td>
                   <Typography level="body-xs">{row.access.can_manage_users ? 'Да' : 'Нет '}</Typography>
                 </td>
-                {/* <td>
-                  <Chip
-                    size="sm"
-                    variant={row.isActive ? 'soft' : 'outlined'}
-                    color={row.isActive ? 'success' : 'danger'}
-                    startDecorator={row.isActive ? <CheckRoundedIcon /> : <BlockIcon />}
-                    sx={{ textTransform: 'capitalize' }}
-                  >
-                    {row.isActive ? 'Активен' : 'Неактивен'}
-                  </Chip>
-                </td> */}
           
                 <td>
                   <Typography level="body-xs">{row.users_count}</Typography>
@@ -226,15 +217,14 @@ export default function RolesTables(
                 <td>
                   <Typography level="body-xs">{row.created_at.slice(0,10)}</Typography>
                 </td>
+
                 <td style={{ textAlign: 'center' }}>
-                  <IconButton size="sm" color="primary" variant="soft">
-                    <EditRoundedIcon />
-                  </IconButton>
+                  <EditRole id={row.id} name={row.name} description={row.description} access={row.access} />
+   
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  <IconButton size="sm" color="danger" variant="soft">
-                    <DeleteOutlineRoundedIcon />
-                  </IconButton>
+                  <DeleteButton id={row.id} canDelete={true} url={'roles/one'}/>
+  
                 </td>
 
               </tr>
