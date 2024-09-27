@@ -58,8 +58,7 @@ export class AdminGuard implements CanActivate {
       if (payload.role !== 'Админ') {
         throw new UnauthorizedException();
       }
-    } catch (error) {
-      console.error('Error verifying token:', error);
+    } catch {
       throw new UnauthorizedException('Token verification failed');
     }
 

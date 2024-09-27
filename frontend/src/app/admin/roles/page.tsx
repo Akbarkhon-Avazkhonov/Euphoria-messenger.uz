@@ -1,5 +1,6 @@
+import AddRoles from "@/components/admin/roles/AddRoles";
 import RolesTables from "@/components/admin/roles/RolesTables";
-import { Box, Button, Typography } from "@mui/joy";
+import { Box, Typography } from "@mui/joy";
 import { cookies } from "next/headers";
 async function fetchRoles(cookies: string) {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/roles/all`, {
@@ -18,12 +19,9 @@ export default async function Admin() {
   const cookieStore = cookies()
   // get token from cookie
   const token = cookieStore.get('token')?.value;
-
   if (!token) {
     throw new Error("Token not found in cookies");
   }
-
-  console.log(token);
   const roles = await fetchRoles(token);
     return (
     <Box
@@ -60,6 +58,7 @@ export default async function Admin() {
             <Typography level="h2" component="h1">
               Все пользователи
             </Typography>
+            <AddRoles />
         </Box>
         <RolesTables roles={roles.data}/>
     </Box>

@@ -134,7 +134,6 @@ export default function UsersTable(
           flexShrink: 1,
           overflow: 'auto',
           minHeight: 0,
-          // borderColor: '#00A4A6',
         }}
       >
         <Table
@@ -150,7 +149,7 @@ export default function UsersTable(
             '--TableCell-paddingX': '8px',
           }}
         >
-                    <thead>
+          <thead>
             <tr>
               <th style={{  width: '6%', textAlign: 'center', padding: '12px 6px' }}>
                 <NumbersRoundedIcon />
@@ -183,7 +182,7 @@ export default function UsersTable(
           </thead>
           <tbody>
             {users && users.map((row:any,index:any) => (
-              <tr key={row.id}>
+              <tr key={index}>
                 <td style={{ textAlign: 'center', width: 120 }}>
                   {index + 1}
                 </td>
