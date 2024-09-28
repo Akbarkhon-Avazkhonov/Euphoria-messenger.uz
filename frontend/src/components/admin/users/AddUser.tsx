@@ -47,6 +47,7 @@ export default function AddUser() {
   const [roles, setRoles] = React.useState<any[]>([]);
   const [submitting, setSubmitting] = React.useState<boolean>(false);
 
+  const [close, setClose] = React.useState<boolean>(false);
   React.useEffect(() => {
     const loadRoles = async () => {
       try {
@@ -61,17 +62,22 @@ export default function AddUser() {
     loadRoles();
   }, []);
 
-  // React.useEffect(() => {
-  //   if (submitting){
-  //     setOpen(false);
-  //   }
-  // }
-  // ,[submitting]);
-
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
+  React.useEffect(() => {
+    if (close) {
+      setOpen(false);
+      setSubmitting(false);
+      setName('');
+      setLogin('');
+      setPassword('');
+      setRole('');
+      setClose(false);
+      window.location.reload();
+    }
+  }, [close]);
 
 
   return (
@@ -154,17 +160,8 @@ export default function AddUser() {
               )}
             </Select>
 
-            <PhoneModal  name={name} login={login}  password={password} role={role} submitting={submitting} setSubmitting={setSubmitting} />
-            {/* <Button
-              aria-label="edit"
-              color="primary"
-              size="md"
-              disabled={submitting}
-              onClick={handleCreateUser}
-              endDecorator={submitting && <CircularProgress size="sm" />}
-            >
-              Добавить пользователя
-            </Button> */}
+            <PhoneModal  name={name} login={login}  password={password} role={role} submitting={submitting} setSubmitting={setSubmitting}  setClose={setClose}/>
+
           </Stack>
         </ModalDialog>
       </Modal>

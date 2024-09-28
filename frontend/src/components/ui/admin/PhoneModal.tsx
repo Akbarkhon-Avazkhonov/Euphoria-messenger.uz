@@ -1,8 +1,10 @@
 "use client";
-import { Modal, ModalDialog, DialogTitle, Stack, FormControl, Button } from "@mui/joy";
+import { Modal, ModalDialog, DialogTitle, Stack, FormControl, Button, Alert, Typography } from "@mui/joy";
 import React from "react";
 import PhoneInput from "./PhoneInput";
 import OTPModal from "./OTPModal";
+import toast from "react-hot-toast";
+import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 
 interface PhoneModalProps {
     name: string;
@@ -11,58 +13,55 @@ interface PhoneModalProps {
     role: string;
     submitting: boolean;
     setSubmitting: (submitting: boolean) => void;
+    setClose: (close: boolean) => void;
     }
 
-export default function PhoneModal(props: PhoneModalProps) {
-  const [phoneNumber, setPhoneNumber] = React.useState<string>('');
-  const [openOTPModal, setOpenOTPModal] = React.useState<boolean>(false);
-  const [openPhoneModal, setOpenPhoneModal] = React.useState<boolean>(true);
 
-  const handleAdd = async () => {
-    const data = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/tg-auth/register/${props.login}`, {
+async function fetchCreateUser(name: string, login: string, password: string, role: string) {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/create-user`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
       body: JSON.stringify({
-        phoneNumber: phoneNumber,
+        name,
+        login,
+        password,
+        role,
       }),
-    });
+    }).then((response) => response.json());
+    return response;
+  }
 
-    const response = await data.json();
-    if (response.success) {
-      console.log('success');
-      setOpenPhoneModal(false); // Закрываем PhoneModal
-      setOpenOTPModal(true); // Открываем OTPModal
-    }
-  };
+export default function PhoneModal(props: PhoneModalProps) {
+  const [phoneNumber, setPhoneNumber] = React.useState<string>('');
+  const [openOTPModal, setOpenOTPModal] = React.useState<boolean>(false);
+
+
+
+    
+
   const handleCreateUser = async () => {
-    props.setSubmitting(true);
+    if (!props.name || !props.login || !props.password || !props.role) {
+      toast.error('Все поля обязательны');
+      return;
+    }
+    try {
+            const response = await fetchCreateUser(props.name, props.login, props.password, props.role);
+            if (response.message) {
+              toast.success(response.message);
+              props.setSubmitting(true);
+            } else {
+              toast.error('Ошибка при создании пользователя');
+            }
+          } catch (error) {
+            console.error('Failed to create user:', error);
+            toast.error('Ошибка при создании пользователя');
+          }
   };
 
-//   const handleCreateUser = async () => {
-//     if (!name || !login || !password || !role) {
-//       toast.error('Все поля обязательны');
-//       return;
-//     }
 
-//     setSubmitting(true);
-//     try {
-//       const response = await fetchCreateUser(name, login, password, role);
-//       if (response.message) {
-//         setShowPhoneModal(true); // Trigger modal opening
-//         setOpen(false);
-//       } else {
-//         toast.error('Ошибка при создании пользователя');
-//       }
-//     } catch (error) {
-//       console.error('Failed to create user:', error);
-//       toast.error('Ошибка при создании пользователя');
-//     } finally {
-//       setSubmitting(false);
-//     }
-//   };
   return (
     <>
         
@@ -75,7 +74,7 @@ export default function PhoneModal(props: PhoneModalProps) {
             Добавить пользователя
         </Button>
 
-      <Modal open={props.submitting} onClose={() => setOpenPhoneModal(false)}>
+      <Modal open={props.submitting} >
         <ModalDialog
          sx={{
           maxWidth: { xs: '94%', sm: '400px' },
@@ -85,14 +84,26 @@ export default function PhoneModal(props: PhoneModalProps) {
           <DialogTitle color="primary" level="h4">
             Введите номер телефона
           </DialogTitle>
+          <Alert color="success" variant="soft"  sx={
+              {
+                fontSize: 14,
+                fontWeight: 600,
+              }
+            }
+            startDecorator={
+              <InfoRoundedIcon sx={{ fontSize: 24}} />
+            }
+            >
+                <Typography>
+                  На этот номер отправиться код ! 
+                </Typography>
+                
+            </Alert>
           <Stack spacing={2}>
             <FormControl>
               <PhoneInput phone={phoneNumber} setPhone={setPhoneNumber} />
             </FormControl>
-            <OTPModal open={openOTPModal} setOpen={setOpenOTPModal} login={props.login}/>
-            {/* <Button type="submit" color="primary" fullWidth onClick={handleAdd}>
-              Отправить код
-            </Button> */}
+            <OTPModal open={openOTPModal} setOpen={setOpenOTPModal} login={props.login} phoneNumber={phoneNumber} setClose={props.setClose}/>
           </Stack>
         </ModalDialog>
       </Modal>

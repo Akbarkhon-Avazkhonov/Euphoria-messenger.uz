@@ -12,18 +12,18 @@ function OTP({
   separator: React.ReactNode;
   length: number;
   value: string;
-  onChange: React.Dispatch<React.SetStateAction<string>>;
+  onChange: (value: string) => void;
 }) {
-  const inputRefs = React.useRef<HTMLInputElement[]>(new Array(length).fill(null));
+  const inputRefs = React.useRef<(HTMLInputElement | null)[]>(new Array(length).fill(null));
 
   const focusInput = (targetIndex: number) => {
     const targetInput = inputRefs.current[targetIndex];
-    targetInput.focus();
+    targetInput?.focus();
   };
 
   const selectInput = (targetIndex: number) => {
     const targetInput = inputRefs.current[targetIndex];
-    targetInput.select();
+    targetInput?.select();
   };
 
   const handleKeyDown = (
@@ -58,16 +58,15 @@ function OTP({
         }
         break;
       case "Delete":
-        event.preventDefault();
-        onChange((prevOtp) => prevOtp.slice(0, currentIndex) + prevOtp.slice(currentIndex + 1));
-        break;
       case "Backspace":
         event.preventDefault();
+        const newValue = value.split("");
+        newValue[currentIndex] = "";
+        onChange(newValue.join(""));
         if (currentIndex > 0) {
           focusInput(currentIndex - 1);
           selectInput(currentIndex - 1);
         }
-        onChange((prevOtp) => prevOtp.slice(0, currentIndex) + prevOtp.slice(currentIndex + 1));
         break;
       default:
         break;
@@ -84,21 +83,13 @@ function OTP({
       return;
     }
 
-    let indexToEnter = 0;
-
-    while (indexToEnter <= currentIndex) {
-      if (inputRefs.current[indexToEnter].value && indexToEnter < currentIndex) {
-        indexToEnter += 1;
-      } else {
-        break;
-      }
-    }
     onChange((prev) => {
       const otpArray = prev.split("");
       const lastValue = currentValue[currentValue.length - 1];
-      otpArray[indexToEnter] = lastValue;
+      otpArray[currentIndex] = lastValue;
       return otpArray.join("");
     });
+
     if (currentValue !== "" && currentIndex < length - 1) {
       focusInput(currentIndex + 1);
     }
@@ -121,21 +112,11 @@ function OTP({
     if (clipboardData.types.includes("text/plain")) {
       let pastedText = clipboardData.getData("text/plain").replace(/\D/g, "");
       pastedText = pastedText.substring(0, length).trim();
-      let indexToEnter = 0;
-
-      while (indexToEnter <= currentIndex) {
-        if (inputRefs.current[indexToEnter].value && indexToEnter < currentIndex) {
-          indexToEnter += 1;
-        } else {
-          break;
-        }
-      }
-
       const otpArray = value.split("");
 
-      for (let i = indexToEnter; i < length; i += 1) {
-        const lastValue = pastedText[i - indexToEnter] ?? " ";
-        otpArray[i] = lastValue;
+      for (let i = currentIndex; i < length; i++) {
+        const pastedValue = pastedText[i - currentIndex] ?? "";
+        otpArray[i] = pastedValue;
       }
 
       onChange(otpArray.join(""));
@@ -161,6 +142,8 @@ function OTP({
                 onClick: (event) => handleClick(event, index),
                 onPaste: (event) => handlePaste(event, index),
                 value: value[index] ?? "",
+                type: "tel",
+                maxLength: 1,
               },
             }}
           />
@@ -171,13 +154,12 @@ function OTP({
   );
 }
 
-export default function OTPInput() {
-  const [otp, setOtp] = React.useState("");
+interface OTPInputProps {
+  otp: string;
+  setOtp: (OTP: string) => void;
+}
 
-  React.useEffect(() => {
-    localStorage.setItem("phoneCode", otp);
-  }, [otp]);
-
+export default function OTPInput(props: OTPInputProps) {
   return (
     <Box
       sx={{
@@ -188,7 +170,7 @@ export default function OTPInput() {
         my: 2,
       }}
     >
-      <OTP separator={<span>-</span>} value={otp} onChange={setOtp} length={5} />
+      <OTP separator={<span>-</span>} value={props.otp} onChange={props.setOtp} length={5} />
     </Box>
   );
 }
@@ -206,9 +188,7 @@ const InputElement = styled("input")(
   color: ${theme.palette.mode === "dark" ? "#C7D0DD" : "#303740"};
   background: ${theme.palette.mode === "dark" ? "#303740" : "#fff"};
   border: 1px solid ${theme.palette.mode === "dark" ? "#434D5B" : "#DAE2ED"};
-  box-shadow: 0px 2px 4px ${
-    theme.palette.mode === "dark" ? "rgba(0,0,0, 0.5)" : "rgba(0,0,0, 0.05)"
-  };
+  box-shadow: 0px 2px 4px ${theme.palette.mode === "dark" ? "rgba(0,0,0, 0.5)" : "rgba(0,0,0, 0.05)"};
 
   &:hover {
     border-color: #3399FF;
@@ -216,9 +196,7 @@ const InputElement = styled("input")(
 
   &:focus {
     border-color: #3399FF;
-    box-shadow: 0 0 0 3px ${
-      theme.palette.mode === "dark" ? "#0072E5" : "#80BFFF"
-    };
+    box-shadow: 0 0 0 3px ${theme.palette.mode === "dark" ? "#0072E5" : "#80BFFF"};
   }
 
   &:focus-visible {
