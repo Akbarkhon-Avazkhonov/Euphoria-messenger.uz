@@ -93,7 +93,7 @@ export default function UsersTable(
   // const currentData = filteredData.slice(startIndex, startIndex + recordsPerPage);
 
   React.useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/all`)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/all`,{credentials: 'include'})
     .then((response) => response.json())
     .then((data) => {
       setFilteredData(data.data);

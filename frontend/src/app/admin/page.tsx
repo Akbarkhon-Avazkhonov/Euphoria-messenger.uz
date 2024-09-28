@@ -1,5 +1,5 @@
 import UsersTable from "@/components/admin/users/UsersTables";
-import AddUser from "@/components/ui/admin/AddUser";
+import AddUser from "@/components/admin/users/AddUser";
 import { Box, Button, Typography } from "@mui/joy";
 import { cookies } from "next/headers";
 async function fetchUsers(cookies: string) {

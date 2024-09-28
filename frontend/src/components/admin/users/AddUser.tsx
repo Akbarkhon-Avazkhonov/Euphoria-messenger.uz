@@ -1,75 +1,115 @@
 "use client";
 import * as React from 'react';
 import Modal from '@mui/joy/Modal';
-import { DialogTitle, IconButton, Input, ModalDialog, Select, Stack, Option } from '@mui/joy';
+import { DialogTitle, IconButton, Input, ModalDialog, Select, Stack, Option, Button, FormLabel } from '@mui/joy';
 import { LoginRounded, PersonAddRounded, VisibilityOffRounded, VisibilityRounded } from '@mui/icons-material';
-import PhoneInput from '@/components/ui/admin/PhoneInput';
-import OTPModal from '@/components/ui/admin/OTPModal';
+import BadgeIcon from '@mui/icons-material/Badge';
+import toast from 'react-hot-toast';
+import PhoneModal from '@/components/ui/admin/PhoneModal';
+import CircularProgress from '@mui/joy/CircularProgress';
+
+export async function fetchRoles() {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/roles/allNames`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  }).then((response) => response.json());
+  return response;
+}
+
+async function fetchCreateUser(name: string, login: string, password: string, role: string) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/create-user`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({
+      name,
+      login,
+      password,
+      role,
+    }),
+  }).then((response) => response.json());
+  return response;
+}
 
 export default function AddUser() {
   const [open, setOpen] = React.useState<boolean>(false);
   const [passwordVisible, setPasswordVisible] = React.useState(false);
   const [role, setRole] = React.useState<string>('');
-  const [username, setUsername] = React.useState<string>('');
+  const [name, setName] = React.useState<string>('');
+  const [login, setLogin] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
-  const [phone, setPhone] = React.useState<string>('');
+  const [loadingRoles, setLoadingRoles] = React.useState<boolean>(true);
+  const [roles, setRoles] = React.useState<any[]>([]);
+  const [submitting, setSubmitting] = React.useState<boolean>(false);
+
   React.useEffect(() => {
-    // Get values from local storage if available when component mounts
-    const storedRole = localStorage.getItem('roleInputValue');
-    const storedUsername = localStorage.getItem('usernameInputValue');
-    const storedPassword = localStorage.getItem('passwordInputValue');
-    if (storedRole) setRole(storedRole);
-    if (storedUsername) setUsername(storedUsername);
-    if (storedPassword) setPassword(storedPassword);
+    const loadRoles = async () => {
+      try {
+        const result = await fetchRoles();
+        setRoles(result.data);
+        setLoadingRoles(false);
+      } catch (error) {
+        console.error("Failed to fetch roles:", error);
+        setLoadingRoles(false);
+      }
+    };
+    loadRoles();
   }, []);
 
   React.useEffect(() => {
-    // Save the value to local storage on every change
-    localStorage.setItem('roleInputValue', role);
-    localStorage.setItem('usernameInputValue', username);
-    localStorage.setItem('passwordInputValue', password);
-    localStorage.setItem('phoneInputValue', phone);
-  }, [role, username, password, phone]);
+    if (submitting){
+      setOpen(false);
+    }
+  }
+  ,[submitting]);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleChange = (
-    event: React.SyntheticEvent | null,
-    newValue: string | null,
-  ) => {
-    if (newValue) {
-      setRole(newValue);
-    }
-  };
+
 
   return (
     <>
-      <IconButton
-        variant="plain"
-        aria-label="edit"
-        color="neutral"
-        size="md"
-        sx={{ display: { xs: 'none', sm: 'unset' } }}
-        onClick={() => setOpen(true)}
-      >
-        <PersonAddRounded />
-      </IconButton>
+      <Button startDecorator={<PersonAddRounded />} onClick={() => setOpen(true)} size="sm">
+        Добавить
+      </Button>
+
       <Modal open={open} onClose={() => setOpen(false)}>
-        <ModalDialog>
-          <DialogTitle color='primary' level='h4'>Добавить нового пользователя</DialogTitle>
+        <ModalDialog
+          sx={{
+            maxWidth: { xs: '94%', sm: '400px' },
+            width: '100%',
+            overflowY: 'auto',
+          }}
+        >
+          <DialogTitle color="primary" level="h4">
+            Добавить пользователя
+            <PersonAddRounded sx={{ fontSize: 24 }} color="primary" />
+          </DialogTitle>
           <Stack spacing={2}>
+            <FormLabel required>Имя пользователя</FormLabel>
             <Input
               autoFocus
               required
-              placeholder='Имя пользователя'
-              onChange={(event) => setUsername(event.target.value)}
-              value={username}
+              onChange={(event) => setName(event.target.value)}
+              value={name}
+              endDecorator={<BadgeIcon />}
+            />
+            <FormLabel required>Логин</FormLabel>
+            <Input
+              required
+              onChange={(event) => setLogin(event.target.value)}
+              value={login}
               endDecorator={<LoginRounded />}
             />
+            <FormLabel required>Пароль</FormLabel>
             <Input
-              placeholder="Пароль"
               required
               onChange={(event) => setPassword(event.target.value)}
               value={password}
@@ -86,23 +126,43 @@ export default function AddUser() {
                 </IconButton>
               }
             />
-            <PhoneInput phone={phone} setPhone={setPhone}/>
+            <FormLabel required>Выберите роль</FormLabel>
             <Select
-              placeholder="Выберите роль"
               name="role"
               required
               sx={{ minWidth: 200 }}
               value={role}
-              onChange={handleChange}
+              onChange={(event, newValue) => setRole(newValue as string)}
+              disabled={loadingRoles}
             >
-              <Option value="OPERATOR">Оператор</Option>
-              <Option value="ROP">Роп</Option>
-              <Option value="MANAGER">Менеджер</Option>
+              {loadingRoles ? (
+                <Option value="" disabled>
+                  Загрузка...
+                </Option>
+              ) : (
+                roles.map((role: any) => (
+                  <Option key={role.id} value={role.name}>
+                    {role.name}
+                  </Option>
+                ))
+              )}
             </Select>
-            <OTPModal />
+
+            <PhoneModal  name={name} login={login}  password={password} role={role} submitting={submitting} setSubmitting={setSubmitting} />
+            {/* <Button
+              aria-label="edit"
+              color="primary"
+              size="md"
+              disabled={submitting}
+              onClick={handleCreateUser}
+              endDecorator={submitting && <CircularProgress size="sm" />}
+            >
+              Добавить пользователя
+            </Button> */}
           </Stack>
         </ModalDialog>
       </Modal>
+
     </>
   );
 }

@@ -4,7 +4,9 @@ import React from "react";
 import OTPInput from "./OTPInput";
 
 
-export default function OTPModal() {
+export default function OTPModal(
+  props:{login: string} 
+) {
   const [open, setOpen] = React.useState<boolean>(false);
   const [phoneCodeHash, setPhoneCodeHash] = React.useState<string>('');
   const [session, setSession] = React.useState<string>('');
@@ -70,7 +72,7 @@ export default function OTPModal() {
         >
           Получить код
         </Button>
-        <Modal open={open} onClose={() => setOpen(false)}>
+        <Modal open={true} onClose={() => setOpen(false)}>
         <ModalDialog >
           <DialogTitle color='primary' level='h4' >Введите код </DialogTitle>
             <Stack spacing={2}>

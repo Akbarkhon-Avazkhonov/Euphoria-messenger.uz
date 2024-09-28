@@ -56,6 +56,7 @@ export class UsersService {
       throw new HttpException('Пользователь уже существует', 400);
     }
     const hashedPassword = await bcrypt.hash(body.password, 10);
+    console.log(body);
     const insertQuery = `
       INSERT INTO "Users" (name, login, password, role)
       VALUES ('${body.name}', '${body.login}', '${hashedPassword}', '${body.role}')

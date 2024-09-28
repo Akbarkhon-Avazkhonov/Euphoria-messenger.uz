@@ -31,6 +31,10 @@ export class RolesController {
   findAll() {
     return this.rolesService.findAll();
   }
+  @Get('allNames')
+  findAllNames() {
+    return this.rolesService.findAllNames();
+  }
 
   @Get('some/:take/:skip')
   findSome(@Param('take') take: string, @Param('skip') skip: string) {

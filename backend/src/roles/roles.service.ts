@@ -44,6 +44,19 @@ export class RolesService {
     };
   }
 
+  async findAllNames() {
+    const query = `
+    -- выборка всех имен ролей и id
+      SELECT id, name FROM "Roles";
+    `;
+
+    const result = await this.pgService.query(query);
+    return {
+      message: 'Список имен ролей',
+      data: result.rows,
+    };
+  }
+
   async findSome(take: number, skip: number) {
     const query = `
       SELECT 
