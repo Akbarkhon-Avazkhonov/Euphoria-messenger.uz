@@ -61,12 +61,12 @@ export default function AddUser() {
     loadRoles();
   }, []);
 
-  React.useEffect(() => {
-    if (submitting){
-      setOpen(false);
-    }
-  }
-  ,[submitting]);
+  // React.useEffect(() => {
+  //   if (submitting){
+  //     setOpen(false);
+  //   }
+  // }
+  // ,[submitting]);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -88,11 +88,14 @@ export default function AddUser() {
             overflowY: 'auto',
           }}
         >
+          
           <DialogTitle color="primary" level="h4">
             Добавить пользователя
             <PersonAddRounded sx={{ fontSize: 24 }} color="primary" />
           </DialogTitle>
+
           <Stack spacing={2}>
+
             <FormLabel required>Имя пользователя</FormLabel>
             <Input
               autoFocus
@@ -101,6 +104,7 @@ export default function AddUser() {
               value={name}
               endDecorator={<BadgeIcon />}
             />
+
             <FormLabel required>Логин</FormLabel>
             <Input
               required
@@ -108,6 +112,7 @@ export default function AddUser() {
               value={login}
               endDecorator={<LoginRounded />}
             />
+
             <FormLabel required>Пароль</FormLabel>
             <Input
               required
@@ -126,6 +131,7 @@ export default function AddUser() {
                 </IconButton>
               }
             />
+
             <FormLabel required>Выберите роль</FormLabel>
             <Select
               name="role"

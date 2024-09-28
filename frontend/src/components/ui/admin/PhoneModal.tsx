@@ -12,6 +12,7 @@ interface PhoneModalProps {
     submitting: boolean;
     setSubmitting: (submitting: boolean) => void;
     }
+
 export default function PhoneModal(props: PhoneModalProps) {
   const [phoneNumber, setPhoneNumber] = React.useState<string>('');
   const [openOTPModal, setOpenOTPModal] = React.useState<boolean>(false);
@@ -35,6 +36,9 @@ export default function PhoneModal(props: PhoneModalProps) {
       setOpenPhoneModal(false); // Закрываем PhoneModal
       setOpenOTPModal(true); // Открываем OTPModal
     }
+  };
+  const handleCreateUser = async () => {
+    props.setSubmitting(true);
   };
 
 //   const handleCreateUser = async () => {
@@ -66,13 +70,18 @@ export default function PhoneModal(props: PhoneModalProps) {
             aria-label="edit"
             color="primary"
             size="md"
-            // onClick={handleCreateUser}
+            onClick={handleCreateUser}
         >
             Добавить пользователя
         </Button>
 
       <Modal open={props.submitting} onClose={() => setOpenPhoneModal(false)}>
-        <ModalDialog>
+        <ModalDialog
+         sx={{
+          maxWidth: { xs: '94%', sm: '400px' },
+          width: '100%',
+          overflowY: 'auto',
+        }}>
           <DialogTitle color="primary" level="h4">
             Введите номер телефона
           </DialogTitle>
