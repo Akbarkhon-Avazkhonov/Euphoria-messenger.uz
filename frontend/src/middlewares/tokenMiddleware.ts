@@ -1,22 +1,18 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
 export function tokenMiddleware(request: NextRequest) {
-  // Get the role from cookies
-  const role = request.cookies.get('role')?.value;
-  const { pathname } = request.nextUrl;
+    const url = new URL(request.url);
 
-
-  // Redirect to the main page if trying to access /admin without the correct role
-  if (pathname.startsWith('/admin') && (!role || role !== 'Админ')) {
-    return NextResponse.redirect(new URL('/', request.url));
-  }
-
-  // Default behavior: continue to the requested page
-  return NextResponse.next();
+    if (request.cookies.has('token')) {
+        const role = request.cookies.get('role')?.value;
+        if (role === 'Админ') {
+            // Use an absolute URL for the redirect
+            return NextResponse.redirect(new URL('/admin', request.url));
+        }
+        return NextResponse.next();
+    } 
 }
 
-// Apply middleware to specific paths (adjust as needed)
 export const config = {
-  matcher: ['/admin/:path*', '/:path*'],
+    matcher: "/",
 };
