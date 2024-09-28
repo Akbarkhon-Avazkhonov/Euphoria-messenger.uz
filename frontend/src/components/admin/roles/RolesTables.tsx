@@ -190,7 +190,7 @@ export default function RolesTables(
                 </td>
                 <td>
                   <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <AvatarWithStatus size="sm" fullname={row.name[0]} nameOnly />
+                    <AvatarWithStatus size="sm" fullname={row.name[0]} nameOnly={true} />
                     <Typography level="body-xs">{row.name}</Typography>
                   </Box>
                 </td>

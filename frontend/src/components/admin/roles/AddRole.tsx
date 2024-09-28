@@ -71,7 +71,7 @@ export default function AddRole() {
   const [description, setDescription] = React.useState<string>("");
   const [access, setAccess] = React.useState(accessValues);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     fetchPostRole(text, description, access).then(() => {
       setOpen(false);
@@ -80,10 +80,11 @@ export default function AddRole() {
   };
 
   return (
-    <React.Fragment>
+    <>
       <Button startDecorator={<Add />} onClick={() => setOpen(true)} size="sm">
         Добавить
       </Button>
+
       <Modal open={open} onClose={() => setOpen(false)}>
         <ModalDialog
           sx={{
@@ -96,45 +97,46 @@ export default function AddRole() {
             Новый Роль
             <GroupAddRoundedIcon sx={{ fontSize: 24 }} color="primary" />
           </DialogTitle>
-          <form onSubmit={handleSubmit}>
-            <Stack spacing={2}>
-              
-                <FormLabel required>Имя роля</FormLabel>
-                <Textarea
-                  autoFocus
-                  required
-                  onChange={(event) => setText(event.target.value)}
-                />
-                <FormLabel required>Описание</FormLabel>
-                <Textarea
-                  required
-                  onChange={(event) => setDescription(event.target.value)}
-                />
+          <Stack spacing={2}>
 
-              {Object.keys(access).map((key) => {
-                const accessKey = key as AccessKeys;
-                return (
-                  <AccessSwitch
-                    key={accessKey}
-                    label={accessDescription[accessKey]}
-                    checked={access[accessKey]}
-                    setChecked={(value: boolean) => {
-                      setAccess((prevState) => ({
-                        ...prevState,
-                        [accessKey]: value,
-                      }));
-                    }}
-                  />
-                );
-              })}
+            <FormLabel required>Имя роля</FormLabel>
+            <Textarea
+              autoFocus
+              required
+              onChange={(event) => setText(event.target.value)}
+            />
 
-              <Button type="submit" size="sm">
-                Добавить
-              </Button>
-            </Stack>
-          </form>
+            <FormLabel required>Описание</FormLabel>
+            <Textarea
+              required
+              onChange={(event) => setDescription(event.target.value)}
+            />
+
+            {Object.keys(access).map((key) => {
+              const accessKey = key as AccessKeys;
+              return (
+                <AccessSwitch
+                  key={accessKey}
+                  label={accessDescription[accessKey]}
+                  checked={access[accessKey]}
+                  setChecked={(value: boolean) => {
+                    setAccess((prevState) => ({
+                      ...prevState,
+                      [accessKey]: value,
+                    }));
+                  }}
+                />
+              );
+            })}
+
+            <Button type="submit" size="sm" onClick={handleSubmit}>
+              Добавить
+            </Button>
+
+          </Stack>
+
         </ModalDialog>
       </Modal>
-    </React.Fragment>
+    </>
   );
 }
