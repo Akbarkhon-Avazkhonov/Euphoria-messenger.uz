@@ -3,9 +3,14 @@ import { Modal, ModalDialog, DialogTitle, Stack, FormControl, Button } from "@mu
 import React from "react";
 import OTPInput from "./OTPInput";
 
+interface OTPModalProps {
+    login: string;
+    open: boolean;
+    setOpen: (open: boolean) => void;
+    }
 
 export default function OTPModal(
-  props:{login: string} 
+  props: OTPModalProps
 ) {
   const [open, setOpen] = React.useState<boolean>(false);
   const [phoneCodeHash, setPhoneCodeHash] = React.useState<string>('');
@@ -14,50 +19,10 @@ export default function OTPModal(
   
   const handleOpen = async () => {
     setOpen(true);
-    const data = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/sendCode`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(
-        {
-          username: localStorage.getItem('usernameInputValue'),
-          password: localStorage.getItem('passwordInputValue'),
-          phoneNumber: localStorage.getItem('phoneInputValue')
-        }
-      ),
-    });
-    const response = await data.json();
-    localStorage.setItem('phoneCodeHash', response.phoneCodeHash);
-    localStorage.setItem('session', response.session);
+    props.setOpen(true);
   }
 
   const handleAdd = async () => {
-    const data = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signInWithCode`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(
-        {
-          phoneNumber: localStorage.getItem('phoneInputValue'),
-          phoneCodeHash: localStorage.getItem('phoneCodeHash'),
-          phoneCode: localStorage.getItem('phoneCode'),
-          session: localStorage.getItem('session')
-        }
-      ),
-    });
-    const response = await data.json();
-    if (response.session){
-      localStorage.setItem('session', response.session);
-      localStorage.removeItem('phoneCode');
-      localStorage.removeItem('phoneCodeHash');
-      localStorage.removeItem('phoneInputValue');
-      localStorage.removeItem('nameInputValue');
-    }
-    else {
-      
-      setOpenToast(true);}
   }
   
   return (
@@ -72,11 +37,15 @@ export default function OTPModal(
         >
           Получить код
         </Button>
-        <Modal open={true} onClose={() => setOpen(false)}>
-        <ModalDialog >
+        <Modal open={props.open} onClose={() => setOpen(false)}>
+        <ModalDialog  sx={{
+            maxWidth: { xs: '94%', sm: '400px' },
+            width: '100%',
+            overflowY: 'auto',
+          }}>
           <DialogTitle color='primary' level='h4' >Введите код </DialogTitle>
             <Stack spacing={2}>
-              <FormControl>
+              <FormControl sx={{textAlign:'center'}}>
               <OTPInput  />
               </FormControl>
               <Button type="submit" color="primary" fullWidth onClick={handleAdd}>

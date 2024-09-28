@@ -89,14 +89,14 @@ export default function PhoneModal(props: PhoneModalProps) {
             <FormControl>
               <PhoneInput phone={phoneNumber} setPhone={setPhoneNumber} />
             </FormControl>
-            <Button type="submit" color="primary" fullWidth onClick={handleAdd}>
+            <OTPModal open={openOTPModal} setOpen={setOpenOTPModal} login={props.login}/>
+            {/* <Button type="submit" color="primary" fullWidth onClick={handleAdd}>
               Отправить код
-            </Button>
+            </Button> */}
           </Stack>
         </ModalDialog>
       </Modal>
 
-      {openOTPModal && <OTPModal login={props.login} />}
     </>
   );
 }

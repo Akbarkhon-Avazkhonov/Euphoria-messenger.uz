@@ -34,6 +34,9 @@ export default function PhoneInput(props:{
 }) {
   return (
     <Input
+    sx={{
+      my: 2,
+    }}
       placeholder="Номер телефона"
       value={props.phone}
       onChange={(event) => props.setPhone(event.target.value)}

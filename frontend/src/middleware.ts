@@ -1,18 +1,22 @@
-import { NextResponse, type NextRequest } from 'next/server';
+// src/middleware.ts
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+// Import individual middleware functions
+import { tokenMiddleware } from './middlewares/tokenMiddleware';
+
 
 export function middleware(request: NextRequest) {
-    const url = new URL(request.url);
+  // Execute tokenMiddleware and check if it returns a response
+  const tokenResponse = tokenMiddleware(request);
+  if (tokenResponse) return tokenResponse;
 
-    if (request.cookies.has('token')) {
-        const role = request.cookies.get('role')?.value;
-        if (role === 'admin') {
-            // Use an absolute URL for the redirect
-            return NextResponse.redirect(new URL('/admin', request.url));
-        }
-        return NextResponse.next();
-    } 
+
+  // Default: Continue with the request if no middleware returned a response
+  return NextResponse.next();
 }
 
+// Apply middleware to specific paths
 export const config = {
-    matcher: "/",
+  matcher: ['/admin/:path*', '/user/:path*', '/:path*'], // Adjust the matcher as needed
 };
