@@ -16,15 +16,18 @@
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
     "@mui/joy": "next",
+    "get-blob-duration": "^1.2.0",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "react-hot-toast": "^2.4.1"
+    "react-hot-toast": "^2.4.1",
+    "socket.io-client": "^4.8.0"
   },
   "devDependencies": {
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@types/socket.io-client": "^3.0.0",
     "eslint": "latest",
     "eslint-config-next": "latest",
     "typescript": "latest"

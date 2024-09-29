@@ -8,7 +8,7 @@ import NextAppDirEmotionCacheProvider from '@/components/ThemeRegistry/EmotionCa
 import { GlobalStyles } from '@mui/joy';
 import ThemeRegistry from "@/components/ThemeRegistry/ThemeRegistry";
 import { Toaster } from "react-hot-toast";
-
+import './globals.css'
 
 
 export const metadata = {
