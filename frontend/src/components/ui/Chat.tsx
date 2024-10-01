@@ -4,6 +4,7 @@ import { List, Box, Stack } from '@mui/joy';
 import Sheet from '@mui/joy/Sheet';
 
 import { socket } from '@/socket';
+import Typography from '@mui/material/Typography';
 import DialogsSearch from '@/components/ui/dialogs/DialogsSearch';
 import DialogsHeader from '@/components/ui/dialogs/DialogsHeader';
 import DialogsItem from '@/components/ui/dialogs/DialogsItem';
@@ -16,6 +17,7 @@ import { Socket } from 'socket.io-client';
 import DialogsSkeleton from '@/components/ui/dialogs/DialogsSkeleton';
 import ChatBubble from '@/components/ui/messages/ChatBubble';
 import ChatBubbleSkeleton from '@/components/ui/messages/ChatBubbleSkeleton';
+import { fetchAccess } from '@/utils/access';
 
 
 interface ChatProps {
@@ -29,15 +31,20 @@ export default function Chat(props: ChatProps) {
   const [newMessage, setNewMessage] = React.useState<any>();
   const [isConnected, setIsConnected] = React.useState(false);
   const [textAreaValue, setTextAreaValue] = React.useState('');
-  
+
   const [chatMessages, setChatMessages] = React.useState<any[]>([]);
+
+  const [canWrite, setCanWrite] = React.useState<boolean | null>(null);
   const setSelectedUserId = (userId: string) => {
     // find the chat with the given userId
     const chat = dialogs.find((chat) => chat.userId === userId);
     setSelectedChat(chat);
-   
- 
   };
+
+  // Эффект для получения доступа при монтировании компонента
+  React.useEffect(() => {
+    fetchAccess('can_write', setCanWrite);
+  }, []);
 
   const sendNewMessage = (message: string, userId: string) => {
     props.socket.emit('sendMessage', { message, userId });
@@ -47,7 +54,7 @@ export default function Chat(props: ChatProps) {
       {
         message,
         out: true,
-        date: new Date().toISOString(),
+        date: new Date(),
         peerId: { userId: userId },
       },
     ]);
@@ -105,159 +112,166 @@ export default function Chat(props: ChatProps) {
     });
   }, []);
   React.useLayoutEffect(() => {
+    setChatMessages([]);
+    props.socket.emitWithAck('getMessages', { userId: selectedChat.userId }, () => {
       setChatMessages([]);
-    props.socket.emitWithAck('getMessages', {userId:selectedChat.userId}, () => {
-      setChatMessages([]);
-      }
+    }
     );
   }, [selectedChat]);
   React.useLayoutEffect(() => {
     props.socket.on('getMessages', (messages) => {
-      setChatMessages(messages);});
+      setChatMessages(messages);
+    });
   }, []);
   React.useEffect(() => {
     props.socket.on('newMessage', (message) => {
-      onNewMessage(message);  
+      onNewMessage(message);
     });
   }, []);
 
   React.useEffect(() => {
-    props.socket.on('getFile', (data:any) => {
+    props.socket.on('getFile', (data: any) => {
 
-    //@ts-ignore
-    window.open(data, '_blank');
-      
-      })
+      //@ts-ignore
+      window.open(data, '_blank');
+
+    })
   }, []);
-  
+
   return (
     <Sheet
-    sx={{
-      flex: 1,
-      width: '100%',
-      mx: 'auto',
-      pt: { xs: 'var(--Header-height)', sm: 0 },
-      display: 'grid',
-      gridTemplateColumns: {
-        xs: '1fr',
-        sm: 'minmax(min-content, min(30%, 400px)) 1fr',
-      },
-    }}
-  >
-    <Sheet
       sx={{
-        position: { xs: 'fixed', sm: 'sticky' },
-        transition: 'transform 0.4s, width 0.4s',
-        zIndex: 100,
-        width: '400px',
-        top: 52,
-        
-      }}
-    >
-        <Sheet
-    sx={{
-      borderRight: '1px solid',
-      borderColor: 'divider',
-      height: 'calc(100dvh)',
-      overflowY: 'scroll',
-    }}
-  >
-
-      <DialogsHeader/>
-      <DialogsSearch/>
-      <List
-      sx={{
-        py: 0,
-        '--ListItem-paddingY': '0.75rem',
-        '--ListItem-paddingX': '1rem',
-      }}
-    >
-      {
-         dialogs.length ? (dialogs.map((chat) => (
-            chat &&
-            <DialogsItem 
-              key={chat.userId.toString()}
-              title={chat.title}
-              phone={chat.phone}
-              message={chat.message}
-              date={chat.date}
-              unreadCount={chat.unreadCount}
-              selected={selectedChat.userId == chat.userId.toString()}
-              setSelectedUserId={(userId) => setSelectedUserId(userId)}
-              userId={chat.userId.toString()}
-            />
-
-          ))) :
-          <DialogsSkeleton/>
-
-       
-      }
-       </List>
-       </Sheet>
-       
-       <NewDialogModal socket = {socket}/>
-       
-    </Sheet>
-      <Sheet
-    sx={{
-      height: { xs: 'calc(100dvh)', lg: '100dvh' },
-      display: 'flex',
-      flexDirection: 'column',
-      backgroundColor: 'background.level3',
-    }}
-  >
-    
-    <MessageHeader title={selectedChat.title} />
-    <Box
-      sx={{
-        display: 'flex',
         flex: 1,
-        minHeight: 0,
-        px: 2,
-        py: 3,
-        overflowY: 'scroll',
-        flexDirection: 'column-reverse',
+        width: '100%',
+        mx: 'auto',
+        pt: { xs: 'var(--Header-height)', sm: 0 },
+        display: 'grid',
+        gridTemplateColumns: {
+          xs: '1fr',
+          sm: 'minmax(min-content, min(30%, 400px)) 1fr',
+        },
       }}
     >
-      <Stack spacing={2} justifyContent="flex-end">
+      <Sheet
+        sx={{
+          position: { xs: 'fixed', sm: 'sticky' },
+          transition: 'transform 0.4s, width 0.4s',
+          zIndex: 100,
+          width: '400px',
+          top: 52,
+
+        }}
+      >
+        <Sheet
+          sx={{
+            borderRight: '1px solid',
+            borderColor: 'divider',
+            height: 'calc(100dvh)',
+            overflowY: 'scroll',
+          }}
+        >
+
+          <DialogsHeader />
+          <DialogsSearch />
+          <List
+            sx={{
+              py: 0,
+              '--ListItem-paddingY': '0.75rem',
+              '--ListItem-paddingX': '1rem',
+            }}
+          >
+            {
+              dialogs.length ? (dialogs.map((chat) => (
+                chat &&
+                <DialogsItem
+                  key={chat.userId.toString()}
+                  title={chat.title}
+                  phone={chat.phone}
+                  message={chat.message}
+                  date={chat.date}
+                  unreadCount={chat.unreadCount}
+                  selected={selectedChat.userId == chat.userId.toString()}
+                  setSelectedUserId={(userId) => setSelectedUserId(userId)}
+                  userId={chat.userId.toString()}
+                />
+
+              ))) :
+                <DialogsSkeleton />
+            }
+          </List>
+        </Sheet>
+        <NewDialogModal socket={socket} />
+      </Sheet>
+      <Sheet
+        sx={{
+          height: { xs: 'calc(100dvh)', lg: '100dvh' },
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: 'background.level3',
+        }}
+      >
+        <MessageHeader title={selectedChat.title} />
+        <Box
+          sx={{
+            display: 'flex',
+            flex: 1,
+            minHeight: 0,
+            px: 2,
+            py: 3,
+            overflowY: 'scroll',
+            flexDirection: 'column-reverse',
+          }}
+        >
+          <Stack spacing={2} justifyContent="flex-end" sx={{ flex: 1 }}>
+            {
+              !selectedChat.userId &&
+              <>
+                <Box sx={{ width: "100%", flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <Box sx={{ padding: "10px 20px", borderRadius: "50px", backgroundColor: "background.level2" }}>
+                    <Typography>
+                      Выберите, кому бы хотели написать
+                    </Typography>
+                  </Box>
+                </Box>
+              </>
+            }
+            {
+              (chatMessages.length < 1 && selectedChat.userId)  &&
+              <>
+                <ChatBubbleSkeleton variant='received' />
+              </>
+            }
+
+            {chatMessages.map((message: any, index: number) => {
+              const isYou = message.out;
+              const show = message.peerId.userId == selectedChat.userId;
+              if (show) {
+                return (
+                  <Stack
+                    key={index}
+                    direction="row"
+                    spacing={2}
+                    flexDirection={isYou ? 'row-reverse' : 'row'}
+                  >
+                    <ChatBubble variant={isYou ? 'sent' : 'received'} {...message} userId={selectedChat.userId} />
+                  </Stack>
+                );
+              }
+            })}
+          </Stack>
+        </Box>
         {
-          chatMessages.length ? null : 
-          <>
-          <ChatBubbleSkeleton variant='sent'/>
-          <ChatBubbleSkeleton variant='received'/></>
+          (canWrite && selectedChat.userId) && <MessageInput
+            textAreaValue={textAreaValue}
+            setTextAreaValue={setTextAreaValue}
+            userId={selectedChat.userId}
+            onSubmit={sendNewMessage}
+          />
         }
-        
-        {chatMessages.map((message: any, index: number) => {
-          const isYou = message.out;
-          const show = message.peerId.userId == selectedChat.userId;
-          if(show){
-          return (
-            <Stack
-              key={index}
-              direction="row"
-              spacing={2}
-              flexDirection={isYou ? 'row-reverse' : 'row'}
-            >
-              <ChatBubble variant={isYou ? 'sent' : 'received'} {...message} userId = {selectedChat.userId} />
-            </Stack>
-          );
-        }
-        })}
-      </Stack>
-    </Box>
-    <MessageInput
-      textAreaValue={textAreaValue}
-      setTextAreaValue={setTextAreaValue}
-      userId={selectedChat.userId}
-      onSubmit={sendNewMessage}
-    />
-    
+      </Sheet>
+      <ConnectedModal isConnected={isConnected} setIsConnected={setIsConnected} />
+      <NewIncomeMessageModal newMessage={newMessage} setNewMessage={setNewMessage} />
 
-    
-  </Sheet>
-    <ConnectedModal isConnected={isConnected} setIsConnected={setIsConnected}/>
-    <NewIncomeMessageModal newMessage={newMessage} setNewMessage={setNewMessage} />
-
-  </Sheet>
+    </Sheet>
   );
 }

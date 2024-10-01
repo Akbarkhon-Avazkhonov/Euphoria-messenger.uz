@@ -71,6 +71,7 @@ interface EditRoleProps {
   name: string;
   description: string;
   access: Record<AccessKeys, boolean>;
+  disabled?: boolean;
 
 }
 
@@ -92,9 +93,18 @@ export default function EditRole(
 
   return (
     <React.Fragment>
-         <IconButton size="sm" color="primary"  onClick={() => setOpen(true)} >
+      {
+        !props.disabled ? (
+          <IconButton size="sm" color="primary"  onClick={() => setOpen(true)} >
                     <EditRoundedIcon />
             </IconButton>
+        ) : (
+          <IconButton size="sm" color="danger"  disabled >
+                    <EditRoundedIcon />
+            </IconButton>
+        )
+      }
+         
   
       <Modal open={open} onClose={() => setOpen(false)}>
         <ModalDialog

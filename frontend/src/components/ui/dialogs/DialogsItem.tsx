@@ -7,23 +7,23 @@ import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 import AvatarWithStatus from '../AvatarWithStatus';
 import { Chip, ListDivider } from '@mui/joy';
-import  {convertDate}  from '@/utils/date';
+import { convertDate } from '@/utils/date';
 interface DialogsItemProps {
-    avatar?: string | undefined;
-    userId: string ;
-    title: string;
-    unreadCount: string | number | undefined;
-    phone: string | undefined;
-    message: string | undefined;
-    selected: boolean;
-    date: Date;
-    setSelectedUserId: (userId: string) => void;
-    
+  avatar?: string | undefined;
+  userId: string;
+  title: string;
+  unreadCount: string | number | undefined;
+  phone: string | undefined;
+  message: string | undefined;
+  selected: boolean;
+  date: Date;
+  setSelectedUserId: (userId: string) => void;
+
 }
 
 export default function DialogsItem(props: DialogsItemProps) {
-  if (props.userId === '777000'){
-    return;
+  if (props.userId === '777000') {
+    return null;
   }
   return (
     <>
@@ -41,7 +41,7 @@ export default function DialogsItem(props: DialogsItemProps) {
           }}
         >
           <Stack direction="row" spacing={1.5}>
-            <AvatarWithStatus fullname={props.title} />
+            <AvatarWithStatus fullname={props.title} online={true} />
             <Box sx={{ flex: 1 }}>
               <Typography level="title-sm">{props.title}</Typography>
               <Typography level="body-sm">{props.phone}</Typography>
@@ -52,23 +52,23 @@ export default function DialogsItem(props: DialogsItemProps) {
                 textAlign: 'right',
               }}
             >
-              { props.unreadCount ? (
-                <Chip 
-                  variant="solid" 
-                  color="primary" 
-                  size="sm" 
-                 
+              {props.unreadCount ? (
+                <Chip
+                  variant="solid"
+                  color="primary"
+                  size="sm"
+
                 >
                   {props.unreadCount}
                 </Chip>
               ) : null
-            }
+              }
               <Typography
                 level="body-xs"
                 display={{ xs: 'none', md: 'block' }}
                 noWrap
               >
-               {convertDate(props.date) }
+                {convertDate(props.date)}
               </Typography>
             </Box>
           </Stack>
@@ -80,16 +80,16 @@ export default function DialogsItem(props: DialogsItemProps) {
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              
+
             }}
           >
             {props.message}
           </Typography>
         </ListItemButton>
       </ListItem>
-                    <ListDivider sx={{margin: 0 }} inset='gutter'/>
-</>
-      
+      <ListDivider sx={{ margin: 0 }} inset='gutter' />
+    </>
+
 
   );
 }

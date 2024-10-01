@@ -10,7 +10,7 @@ export default function LogoutModal() {
   const [open, setOpen] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
   const handleLogout = () => {
-    window.location.href = '/login';
+    window.location.href = '/';
   }
 
 

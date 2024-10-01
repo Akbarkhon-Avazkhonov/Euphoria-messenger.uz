@@ -83,12 +83,10 @@ function OTP({
       return;
     }
 
-    onChange((prev) => {
-      const otpArray = prev.split("");
-      const lastValue = currentValue[currentValue.length - 1];
-      otpArray[currentIndex] = lastValue;
-      return otpArray.join("");
-    });
+    const newValue = value.split("");
+    const lastValue = currentValue[currentValue.length - 1];
+    newValue[currentIndex] = lastValue;
+    onChange(newValue.join(""));
 
     if (currentValue !== "" && currentIndex < length - 1) {
       focusInput(currentIndex + 1);

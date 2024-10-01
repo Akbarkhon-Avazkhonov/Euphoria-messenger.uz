@@ -4,6 +4,7 @@ import Modal from '@mui/joy/Modal';
 import { DialogTitle, IconButton, Input, ModalDialog, Select, Stack, Option, Textarea, Button } from '@mui/joy';
 import { CreateRounded, LoginRounded, PersonAddRounded, VisibilityOffRounded, VisibilityRounded } from '@mui/icons-material';
 import PhoneInput from '../admin/PhoneInput';
+import { fetchAccess } from '@/utils/access';
 
 
 export default function NewDialogModal(props: any) {
@@ -11,6 +12,7 @@ export default function NewDialogModal(props: any) {
   const [username, setUsername] = React.useState<string>('');
   const [message, setMessage] = React.useState<string>('');
   const [phone, setPhone] = React.useState<string>('');
+  const [canWrite, setCanWrite] = React.useState<boolean | null>(null);
     const handleSend = async () => {
       props.socket.emit('sendFirstMessage', 
       {
@@ -26,20 +28,31 @@ export default function NewDialogModal(props: any) {
     
     }
 
+  React.useEffect(() => {
+    fetchAccess('can_write', setCanWrite);
+  }, []);
+
+
+
   return (
     <>
-      <IconButton
-        aria-label="add"
-        color="primary"
-        variant='solid'
-        size="md"
-        sx={{ position: 'fixed', bottom: 32, left: 348 }}
-        onClick={() => setOpen(true)}
-      >
-        <CreateRounded />
-      </IconButton>
+      {
+        canWrite ? (
+          <IconButton
+          aria-label="add"
+          color="primary"
+          variant='solid'
+          size="md"
+          sx={{ position: 'fixed', bottom: 20, left: 345 }}
+          onClick={() => setOpen(true)}
+        >
+          <CreateRounded />
+        </IconButton>
+        ) : null
+      }
+  
       <Modal open={open} onClose={() => setOpen(false)}>
-        <ModalDialog>
+        <ModalDialog sx={{width: { xs: '90vw', sm: '550px' }}}>
           <DialogTitle color='primary' level='h4'>Отправить новое сообщение </DialogTitle>
           <Stack spacing={2}>
             <Input
@@ -64,7 +77,6 @@ export default function NewDialogModal(props: any) {
           aria-label="send"
           color="primary"
           size="md"
-          sx={{ display: { xs: 'none', sm: 'unset' } }}
           onClick={handleSend}
         >
           Отправить сообщение

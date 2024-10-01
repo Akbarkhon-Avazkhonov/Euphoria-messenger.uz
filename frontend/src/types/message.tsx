@@ -1,11 +1,11 @@
-type UserProps = {
+export type UserProps = {
     name: string;
     username: string;
     avatar: string;
     online: boolean;
   };
   
-type MessageProps = {
+  export type MessageProps = {
     id: string;
     message: string;
     out: boolean;
@@ -14,7 +14,7 @@ type MessageProps = {
     media?: any;
   };
   
-type ChatProps = {
+  export type ChatProps = {
     id: string;
     userId: string;
     title: string;

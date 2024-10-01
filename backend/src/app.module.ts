@@ -10,7 +10,12 @@ import { TgAuthModule } from './tg-auth/tg-auth.module';
 import { RolesModule } from './roles/roles.module';
 import { TablesModule } from './tables/tables.module';
 import { RedisModule } from './redis/redis.module';
-import { RedisService } from './redis/redis.service';
+import { DialogsModule } from './dialogs/dialogs.module';
+import { TelegramService } from './telegram/telegram.service';
+import { TelegramModule } from './telegram/telegram.module';
+import { MessagesModule } from './messages/messages.module';
+import { AudioModule } from './audio/audio.module';
+import { FileModule } from './file/file.module';
 @Module({
   imports: [
     PgModule,
@@ -22,8 +27,13 @@ import { RedisService } from './redis/redis.service';
     RolesModule,
     TablesModule,
     RedisModule,
+    DialogsModule,
+    TelegramModule,
+    MessagesModule,
+    AudioModule,
+    FileModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TelegramService],
 })
 export class AppModule {}

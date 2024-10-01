@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Box from '@mui/joy/Box';
 import Divider from '@mui/joy/Divider';
 import IconButton from '@mui/joy/IconButton';
@@ -15,6 +15,8 @@ import MenuOpenRoundedIcon from '@mui/icons-material/MenuOpenRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import QuestionAnswerRoundedIcon from '@mui/icons-material/QuestionAnswerRounded';
+import { usePathname } from "next/navigation";
+
 const SidebarItems = [
     {
         title: 'Пользователи',
@@ -30,12 +32,22 @@ const SidebarItems = [
         title: 'Чат',
         href: "/admin/chat",
         icon: <QuestionAnswerRoundedIcon />
-
     }
 ];
 
+
+
 export default function Sidebar() {
+
     const [collapsed, setCollapsed] = useState(false);
+    const url = usePathname();
+
+    useLayoutEffect(() => {
+        if(url==="/admin/chat"){
+            setCollapsed(true);
+        }   
+    }, [url]);
+    
 
     return (
         <Sheet
@@ -103,8 +115,6 @@ export default function Sidebar() {
                 paddingY: "8px"
             }}/>
             <LogoutModal admin/>
-
-
         </Sheet>
     );
 }

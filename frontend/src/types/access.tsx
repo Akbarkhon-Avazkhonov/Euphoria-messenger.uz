@@ -1,4 +1,4 @@
-type AccessKeys =
+export type AccessKeys =
   | "can_manage_user"
   | "can_write"
   | "can_read"

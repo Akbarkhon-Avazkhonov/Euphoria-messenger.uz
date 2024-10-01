@@ -16,6 +16,7 @@ import ModalNewUser from "@/components/login/ModalNewUser";
 import ColorSchemeToggle from "@/components/ui/ColorSchemeToggle";
 import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
 import { useRouter } from "next/navigation";
+import { setEncryptedCookie } from "@/utils/access";
 import {
   LoginRounded,
   VisibilityOffRounded,
@@ -51,6 +52,9 @@ export default function LoginForm() {
       const data = await response.json();
       document.cookie = `token=${data.token}; path=/; max-age=86400`;
       document.cookie = `role=${data.role}; path=/; max-age=86400`;
+      console.log(data.access);
+      await setEncryptedCookie("access", data.access);
+      // document.cookie = `access=${JSON.stringify(data.access)}; path=/; max-age=86400`;
       if (data.role === "Админ") {
         router.replace("/admin");
       } else {

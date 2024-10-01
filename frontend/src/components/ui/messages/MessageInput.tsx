@@ -6,51 +6,57 @@ import Button from '@mui/joy/Button';
 import FormControl from '@mui/joy/FormControl';
 import Textarea from '@mui/joy/Textarea';
 import { IconButton, Stack } from '@mui/joy';
-
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { AttachFileRounded, ImageRounded } from '@mui/icons-material';
 import SendFile from './SendFile';
-import { socket } from '@/socket';
 import SendAudio from './SendAudio';
-
-
+import { fetchAccess, getDecryptedCookie } from '@/utils/access';
 
 export type MessageInputProps = {
   textAreaValue: string;
-  userId : string;
+  userId: string;
   setTextAreaValue: (value: string) => void;
-  onSubmit: (
-    message: string,
-    userId: string
-  ) => void;
+  onSubmit: (message: string, userId: string) => void;
 };
 
 export default function MessageInput(props: MessageInputProps) {
-  const { textAreaValue, setTextAreaValue, onSubmit } = props;
+  const { textAreaValue, setTextAreaValue, onSubmit, userId } = props;
   const textAreaRef = React.useRef<HTMLDivElement>(null);
-  const handleClick = async () => {
-    if (textAreaValue.trim() !== '') {
-      onSubmit(
-        textAreaValue,
-        props.userId
-      );
-      setTextAreaValue('');
 
-     }
+  // Локальное состояние для хранения информации о правах доступа
+  const [access, setAccess] = React.useState<boolean | null>(null);
+
+
+
+  // Эффект для получения доступа при монтировании компонента
+  React.useEffect(() => {
+    fetchAccess('can_write', setAccess);
+  }, []);
+
+  // Обработчик отправки сообщения
+  const handleClick = () => {
+    if (textAreaValue.trim() !== '' && access) {
+      onSubmit(textAreaValue, userId);
+      setTextAreaValue(''); // Очищаем текстовое поле после отправки
+    }
   };
 
+  // Возврат `null`, если доступ не проверен или отсутствует
+  if (access === null) {
+    return <></>;
+  }
+
   return (
-    <Box sx={{ px: 2, pb: 3 }}>
+    <Box sx={{ px: 2, pb: 2 }}>
       <FormControl>
         <Textarea
           placeholder="Введите сообщение..."
           aria-label="Message"
           ref={textAreaRef}
-          onChange={(e) => {
-            setTextAreaValue(e.target.value);
-          }}
+          onChange={(e) => setTextAreaValue(e.target.value)}
           value={textAreaValue}
           maxRows={15}
+          disabled={!access} // Отключаем поле ввода, если доступ запрещен
           endDecorator={
             <Stack
               direction="row"
@@ -64,38 +70,28 @@ export default function MessageInput(props: MessageInputProps) {
                 borderColor: 'divider',
               }}
             >
-              <Stack direction='row'>
-                <SendAudio 
-                userId={props.userId}
-                setTextAreaValue={setTextAreaValue}
-                textAreaValue={textAreaValue}
-                />
-              
-
-              
-    
-                <SendFile userId={props.userId}/>
-                {/* <IconButton size="sm" variant="plain" color="neutral">
-                  <ImageRounded />
-                </IconButton> */}
-               
-               
-    
+              <Stack direction="row">
+                {/* Компонент для отправки аудио */}
+                <SendAudio userId={userId} setTextAreaValue={setTextAreaValue} textAreaValue={textAreaValue} />
+                {/* Компонент для отправки файла */}
+                <SendFile userId={userId} />
               </Stack>
-              
+
+              {/* Кнопка отправки сообщения */}
               <Button
                 size="sm"
                 color="primary"
                 sx={{ alignSelf: 'center', borderRadius: 'sm' }}
                 endDecorator={<SendRoundedIcon />}
                 onClick={handleClick}
+                disabled={!access} // Отключаем кнопку, если доступ запрещен
               >
                 Отправить
               </Button>
-
             </Stack>
           }
           onKeyDown={(event) => {
+            // Отправка сообщения при нажатии "Ctrl + Enter" или "Cmd + Enter"
             if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
               handleClick();
             }

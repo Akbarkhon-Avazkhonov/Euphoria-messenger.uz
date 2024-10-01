@@ -4,10 +4,11 @@ import React from "react";
 import MicRoundedIcon from '@mui/icons-material/MicRounded';
 import StopCircleRoundedIcon from '@mui/icons-material/StopCircleRounded';
 import getBlobDuration from 'get-blob-duration'
+import { fetchAccess } from '@/utils/access';
 
-const AudioRecorder = (props:any) => {
+const AudioRecorder = (props: any) => {
+  const [access, setAccess] = React.useState<boolean | null>(null);
   const [isRecording, setIsRecording] = React.useState<boolean>(false);
-
   const [stream, setStream] = React.useState<MediaStream | null>(null);
   const [voiceRecorder, setVoiceRecorder] =
     React.useState<MediaRecorder | null>(null);
@@ -45,6 +46,10 @@ const AudioRecorder = (props:any) => {
     setIsRecording(false);
   };
 
+  React.useEffect(() => {
+    fetchAccess('can_send_audio', setAccess);
+  }, []);
+
   /**
    * This hook is triggered when we start the recording
    */
@@ -69,23 +74,24 @@ const AudioRecorder = (props:any) => {
         blob: content,  // The audio blob
         caption: props.caption,
         duration: duration,
-  
+
       };
       socket.emit('sendAudio', payload);
       props.setTextAreaValue('');
     });
 
-    
+
 
     setStream(null);
     setContent(null);
   }, [isRecording, content]);
 
   return (
-    <IconButton onClick={!isRecording ? onAudioClick : onStopRecording} sx={{width:24,height:24}}>
-      {!isRecording ? <MicRoundedIcon /> : <StopCircleRoundedIcon />}
-    </IconButton>
-
+    access && (
+      <IconButton onClick={!isRecording ? onAudioClick : onStopRecording} sx={{ width: 24, height: 24 }}>
+        {!isRecording ? <MicRoundedIcon /> : <StopCircleRoundedIcon />}
+      </IconButton>
+    )
   );
 };
 
