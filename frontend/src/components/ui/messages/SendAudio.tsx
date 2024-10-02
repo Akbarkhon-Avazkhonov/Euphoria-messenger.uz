@@ -87,11 +87,12 @@ const AudioRecorder = (props: any) => {
   }, [isRecording, content]);
 
   return (
-    access && (
+    access ? (
       <IconButton onClick={!isRecording ? onAudioClick : onStopRecording} sx={{ width: 24, height: 24 }}>
         {!isRecording ? <MicRoundedIcon /> : <StopCircleRoundedIcon />}
       </IconButton>
-    )
+    ) :
+      <></>
   );
 };
 

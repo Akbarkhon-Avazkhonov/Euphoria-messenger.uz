@@ -12,6 +12,7 @@ import { EventAvailableRounded, EventRepeatRounded, GroupRounded, KeyboardArrowD
 // import AddUser from './AddUser';
 import AvatarWithStatus from '../AvatarWithStatus';
 import Snackbar from '@mui/joy/Snackbar';
+import { ChatProps } from '@/types/message';
 
 
 function Toggler(props: {

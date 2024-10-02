@@ -16,8 +16,15 @@ import { TelegramModule } from './telegram/telegram.module';
 import { MessagesModule } from './messages/messages.module';
 import { AudioModule } from './audio/audio.module';
 import { FileModule } from './file/file.module';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
+
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'), // Path to the uploads directory
+      serveRoot: '/uploads', // URL path to serve the files from
+    }),
     PgModule,
     AuthModule,
     SessionModule,

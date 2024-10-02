@@ -11,6 +11,7 @@ import GroupAddRoundedIcon from "@mui/icons-material/GroupAddRounded";
 import { IconButton, Textarea } from "@mui/joy";
 import AccessSwitch from "@/components/ui/admin/AccessSwitch";
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import { AccessKeys } from "@/types/access";
 
 
 const accessValues: Record<AccessKeys, boolean> = {

@@ -17,7 +17,7 @@ interface Dialog {
 @UseGuards(SessionGuard)
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'https://admin.socket.io'],
     methods: ['GET', 'POST'],
     credentials: true,
   },

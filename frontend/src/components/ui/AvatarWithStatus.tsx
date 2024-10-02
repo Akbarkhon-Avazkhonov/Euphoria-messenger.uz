@@ -35,11 +35,11 @@ const isDarkColor = (hex: string): boolean => {
 type AvatarWithStatusProps = AvatarProps & {
   online?: boolean;
   fullname?: string;
-  nameOnly?: boolean;
+  nameonly?: boolean;
 };
 
 export default function AvatarWithStatus(props: AvatarWithStatusProps) {
-  const { online = false, fullname = '', ...other } = props;
+  const { online = false, fullname = '', nameonly = false, ...other } = props;
 
   // Get a unique color for the first letter of the fullname
   const getColorByFullname = (name: string) => {
@@ -59,7 +59,7 @@ export default function AvatarWithStatus(props: AvatarWithStatusProps) {
   return (
     <div>
       {
-        !props.nameOnly ? (
+        !props.nameonly ? (
           <Badge
             color={online ? 'success' : 'neutral'}
             variant={online ? 'solid' : 'soft'}

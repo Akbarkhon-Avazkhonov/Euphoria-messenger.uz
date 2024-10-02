@@ -27,15 +27,9 @@ export function convertDate(timestamp: any): string {
         minute: '2-digit',
       });
     }
-    // if (`${date.toLocaleString('en-GB').slice(0,10)}` == 'Invalid Date Invalid Date') {
-    //   return 'Только что';
-    // }
-    // if the date is yesterday, return 'Yesterday'
     if (new Date().getDate() - 1 === date.getDate()) {
       return 'Вчера';
     }
-    // otherwise, return the full date 
-    
     return `${date.toLocaleString('en-GB').slice(0,10)}`;
   }
 

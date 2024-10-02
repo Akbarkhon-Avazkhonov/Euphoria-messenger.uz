@@ -78,7 +78,9 @@ export default function Chat(props: ChatProps) {
       return newDialogs;
     });
   };
+  
   const onNewMessage = (message: any) => {
+    console.log(message);
     setNewMessage(message);
     setDialogs((prev) => {
       const newDialogs = [...prev];
@@ -101,16 +103,30 @@ export default function Chat(props: ChatProps) {
     });
     setChatMessages((prev) => [...prev, message]);
   };
+
   React.useLayoutEffect(() => {
     props.socket.on('connection', () => {
       setIsConnected(true);
     });
-  }, []);
-  React.useLayoutEffect(() => {
+
     props.socket.on('dialogs', (dialogs) => {
       setDialogs(dialogs);
     });
+
+    props.socket.on('getMessages', (messages) => {
+      setChatMessages(messages);
+    });
+
+    props.socket.on('newMessage', (message) => {
+      onNewMessage(message);
+    });
+
+    props.socket.on('getFile', (data: any) => {
+      //@ts-ignore
+      window.open(data, '_blank');
+    })
   }, []);
+
   React.useLayoutEffect(() => {
     setChatMessages([]);
     props.socket.emitWithAck('getMessages', { userId: selectedChat.userId }, () => {
@@ -118,25 +134,6 @@ export default function Chat(props: ChatProps) {
     }
     );
   }, [selectedChat]);
-  React.useLayoutEffect(() => {
-    props.socket.on('getMessages', (messages) => {
-      setChatMessages(messages);
-    });
-  }, []);
-  React.useEffect(() => {
-    props.socket.on('newMessage', (message) => {
-      onNewMessage(message);
-    });
-  }, []);
-
-  React.useEffect(() => {
-    props.socket.on('getFile', (data: any) => {
-
-      //@ts-ignore
-      window.open(data, '_blank');
-
-    })
-  }, []);
 
   return (
     <Sheet

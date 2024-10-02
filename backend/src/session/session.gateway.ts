@@ -13,14 +13,16 @@ import { RedisService } from 'src/redis/redis.service';
 import { telegramClient } from 'src/other/telegramClient';
 import { NewMessage, NewMessageEvent } from 'telegram/events';
 import { TelegramService } from '../telegram/telegram.service'; // Import TelegramService
+import { instrument } from '@socket.io/admin-ui';
 
 @Injectable()
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'https://admin.socket.io'],
     methods: ['GET', 'POST'],
     credentials: true,
   },
+  transports: ['websocket', 'polling'], // Allow multiple transports
 })
 @UseGuards(SessionGuard)
 export class SessionGateway
@@ -33,9 +35,15 @@ export class SessionGateway
     private readonly sessionService: SessionService,
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
-    private readonly telegramService: TelegramService, // Inject TelegramService
+    private readonly telegramService: TelegramService,
   ) {}
 
+  afterInit() {
+    instrument(this.server, {
+      auth: false,
+      mode: 'development',
+    });
+  }
   // Handle new client connections
   async handleConnection(client: Socket) {
     const session = await this.getSessionFromCookie(
@@ -47,25 +55,33 @@ export class SessionGateway
     }
 
     const redisClient = this.redisService.getClient();
+
+    // Add client to the session room and set the session data
+    client.join(session);
     await redisClient.sAdd(`session:clients:${session}`, client.id);
     await redisClient.set(`client:session:${client.id}`, session);
 
+    // Initialize Telegram client for the session if it doesn't exist
     let telegramInstance = this.telegramService.getTelegramClient(session);
     if (!telegramInstance) {
       telegramInstance = await telegramClient(session);
       this.telegramService.setTelegramClient(session, telegramInstance);
     }
 
-    telegramInstance.addEventHandler(
-      (event: NewMessageEvent) =>
-        eventPrint(event, client, session, this.redisService),
-      new NewMessage({}),
-    );
+    // Add event handler for new messages, if not already added
+    if (!client.data.hasTelegramHandler) {
+      console.log('Adding event handler for new messages');
+      telegramInstance.addEventHandler(
+        (event: NewMessageEvent) => this.handleNewMessage(event, session),
+        new NewMessage({}),
+      );
+      client.data.hasTelegramHandler = true; // Mark the handler as attached
+    }
 
-    client.join(session);
-    client.to(session).emit('connection', 'Connected to Telegram');
+    // Notify client of successful connection
     client.emit('connection', 'Connected to Telegram');
 
+    // Get initial dialogs and send to the client
     const dialogs = await telegramInstance.getDialogs({ limit: 100 });
     const result = dialogs.map(
       (dialog) =>
@@ -82,6 +98,7 @@ export class SessionGateway
     console.log('Client connected:', session);
   }
 
+  // Handle client disconnection
   async handleDisconnect(client: Socket) {
     console.log(`Client disconnected: ${client.id}`);
 
@@ -91,6 +108,7 @@ export class SessionGateway
     if (session) {
       await redisClient.sRem(`session:clients:${session}`, client.id);
       await redisClient.del(`client:session:${client.id}`);
+      client.leave(session); // Remove client from the session room
 
       const clientsInSession = await redisClient.sCard(
         `session:clients:${session}`,
@@ -102,16 +120,16 @@ export class SessionGateway
       }
     }
   }
+
+  // Extract session from cookie
   private async getSessionFromCookie(cookie: string): Promise<string | null> {
-    if (!cookie) {
-      return null;
-    }
+    if (!cookie) return null;
+
     const tokenCookie = cookie
       .split(';')
       .find((c) => c.trim().startsWith('token='));
-    if (!tokenCookie) {
-      throw new Error('Token not found in cookies');
-    }
+    if (!tokenCookie) throw new Error('Token not found in cookies');
+
     const token = tokenCookie.split('=')[1];
     try {
       const payload = await this.jwtService.verifyAsync(token, {
@@ -123,32 +141,19 @@ export class SessionGateway
       return null;
     }
   }
-}
 
-async function eventPrint(
-  event: NewMessageEvent,
-  client: Socket,
-  session: string,
-  redisService: RedisService, // Accept redisService as a parameter
-) {
-  try {
-    if (event.isPrivate) {
-      const redisClient = redisService.getClient();
-
-      // Get all clients in the session room
-      const clientsInSession = await redisClient.sMembers(
-        `session:clients:${session}`,
-      );
-
-      // Emit the new message to all clients in the session
-      clientsInSession.forEach((clientId) => {
-        if (clientId !== client.id) {
-          // Prevent sending the message back to the same client
-          client.to(clientId).emit('newMessage', event.message);
-        }
-      });
+  // Handle new messages and broadcast to all clients in the session room
+  private async handleNewMessage(
+    event: NewMessageEvent,
+    session: string,
+  ): Promise<void> {
+    try {
+      if (event.isPrivate) {
+        // Emit the new message to all clients in the session room
+        this.server.to(session).emit('newMessage', event.message);
+      }
+    } catch (error) {
+      console.error('Error handling new message event:', error);
     }
-  } catch (error) {
-    console.error('Error handling event:', error);
   }
 }

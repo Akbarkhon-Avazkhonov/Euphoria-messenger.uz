@@ -12,6 +12,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import InsertDriveFileRoundedIcon from '@mui/icons-material/InsertDriveFileRounded';
 import relativeDate from '@/utils/date';
 import { socket } from "@/socket";
+import { MessageProps } from '@/types/message';
 
 type ChatBubbleProps = MessageProps & {
   userId: string;

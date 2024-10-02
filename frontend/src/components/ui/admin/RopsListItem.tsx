@@ -7,6 +7,7 @@ import ListItemButton, { ListItemButtonProps } from '@mui/joy/ListItemButton';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 import AvatarWithStatus from '../AvatarWithStatus';
+import { ChatProps } from '@/types/message';
 // import { setCookie } from 'cookies-next';
 // import { getCookie } from 'cookies-next';
 type RopListItemProps = ListItemButtonProps & {

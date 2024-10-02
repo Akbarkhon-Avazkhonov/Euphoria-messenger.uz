@@ -18,7 +18,6 @@ interface DialogsItemProps {
   selected: boolean;
   date: Date;
   setSelectedUserId: (userId: string) => void;
-
 }
 
 export default function DialogsItem(props: DialogsItemProps) {
@@ -41,7 +40,7 @@ export default function DialogsItem(props: DialogsItemProps) {
           }}
         >
           <Stack direction="row" spacing={1.5}>
-            <AvatarWithStatus fullname={props.title} online={true} />
+            <AvatarWithStatus nameonly={true} fullname={props.title} online={true} />
             <Box sx={{ flex: 1 }}>
               <Typography level="title-sm">{props.title}</Typography>
               <Typography level="body-sm">{props.phone}</Typography>
