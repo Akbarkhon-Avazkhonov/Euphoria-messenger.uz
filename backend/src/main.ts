@@ -4,7 +4,9 @@ import { AppModule } from './app.module';
 import { RedisIoAdapter } from './other/redis';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    snapshot: true,
+  });
   const redisIoAdapter = new RedisIoAdapter(app);
   await redisIoAdapter.connectToRedis();
 

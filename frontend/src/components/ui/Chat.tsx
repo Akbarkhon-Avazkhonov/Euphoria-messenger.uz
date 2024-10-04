@@ -111,6 +111,7 @@ export default function Chat(props: ChatProps) {
 
     props.socket.on('dialogs', (dialogs) => {
       setDialogs(dialogs);
+      console.log(dialogs);
     });
 
     props.socket.on('getMessages', (messages) => {
@@ -121,8 +122,8 @@ export default function Chat(props: ChatProps) {
       onNewMessage(message);
     });
 
-    props.socket.on('getFile', (data: any) => {
-      //@ts-ignore
+    props.socket.on('sendFile', (data: any) => {
+      console.log(data);
       window.open(data, '_blank');
     })
   }, []);
@@ -190,6 +191,7 @@ export default function Chat(props: ChatProps) {
                   selected={selectedChat.userId == chat.userId.toString()}
                   setSelectedUserId={(userId) => setSelectedUserId(userId)}
                   userId={chat.userId.toString()}
+                  status={chat.status}
                 />
 
               ))) :

@@ -17,6 +17,7 @@ interface DialogsItemProps {
   message: string | undefined;
   selected: boolean;
   date: Date;
+  status: any;
   setSelectedUserId: (userId: string) => void;
 }
 
@@ -40,7 +41,7 @@ export default function DialogsItem(props: DialogsItemProps) {
           }}
         >
           <Stack direction="row" spacing={1.5}>
-            <AvatarWithStatus nameonly={true} fullname={props.title} online={true} />
+            <AvatarWithStatus status={props.status} fullname={props.title} online={true} />
             <Box sx={{ flex: 1 }}>
               <Typography level="title-sm">{props.title}</Typography>
               <Typography level="body-sm">{props.phone}</Typography>
@@ -51,6 +52,14 @@ export default function DialogsItem(props: DialogsItemProps) {
                 textAlign: 'right',
               }}
             >
+              
+              <Typography
+                level="body-xs"
+                display={{ xs: 'none', md: 'block' }}
+                noWrap
+              >
+                {convertDate(props.date)}
+              </Typography>
               {props.unreadCount ? (
                 <Chip
                   variant="solid"
@@ -62,13 +71,6 @@ export default function DialogsItem(props: DialogsItemProps) {
                 </Chip>
               ) : null
               }
-              <Typography
-                level="body-xs"
-                display={{ xs: 'none', md: 'block' }}
-                noWrap
-              >
-                {convertDate(props.date)}
-              </Typography>
             </Box>
           </Stack>
           <Typography

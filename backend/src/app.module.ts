@@ -18,9 +18,15 @@ import { AudioModule } from './audio/audio.module';
 import { FileModule } from './file/file.module';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { PhotoModule } from './photo/photo.module';
+import { VideoModule } from './video/video.module';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
 
 @Module({
   imports: [
+    DevtoolsModule.register({
+      port: 4000,
+    }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'), // Path to the uploads directory
       serveRoot: '/uploads', // URL path to serve the files from
@@ -39,6 +45,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     MessagesModule,
     AudioModule,
     FileModule,
+    PhotoModule,
+    VideoModule,
   ],
   controllers: [AppController],
   providers: [AppService, TelegramService],

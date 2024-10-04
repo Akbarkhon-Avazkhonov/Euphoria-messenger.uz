@@ -14,16 +14,10 @@ import { telegramClient } from 'src/other/telegramClient';
 import { NewMessage, NewMessageEvent } from 'telegram/events';
 import { TelegramService } from '../telegram/telegram.service'; // Import TelegramService
 import { instrument } from '@socket.io/admin-ui';
+import { stringify as flattedStringify } from 'flatted'; // Используем для безопасной сериализации
 
 @Injectable()
-@WebSocketGateway({
-  cors: {
-    origin: ['http://localhost:3000', 'https://admin.socket.io'],
-    methods: ['GET', 'POST'],
-    credentials: true,
-  },
-  transports: ['websocket', 'polling'], // Allow multiple transports
-})
+@WebSocketGateway()
 @UseGuards(SessionGuard)
 export class SessionGateway
   implements OnGatewayConnection, OnGatewayDisconnect
@@ -39,11 +33,13 @@ export class SessionGateway
   ) {}
 
   afterInit() {
+    // this.server.setMaxListeners(12);
     instrument(this.server, {
       auth: false,
       mode: 'development',
     });
   }
+
   // Handle new client connections
   async handleConnection(client: Socket) {
     const session = await this.getSessionFromCookie(
@@ -56,6 +52,7 @@ export class SessionGateway
 
     const redisClient = this.redisService.getClient();
 
+    client.on('disconnect', async () => await this.handleDisconnect(client));
     // Add client to the session room and set the session data
     client.join(session);
     await redisClient.sAdd(`session:clients:${session}`, client.id);
@@ -66,16 +63,12 @@ export class SessionGateway
     if (!telegramInstance) {
       telegramInstance = await telegramClient(session);
       this.telegramService.setTelegramClient(session, telegramInstance);
-    }
-
-    // Add event handler for new messages, if not already added
-    if (!client.data.hasTelegramHandler) {
-      console.log('Adding event handler for new messages');
+      // Remove previous handlers if they exist
+      telegramInstance.removeEventHandler(this.handleNewMessage);
       telegramInstance.addEventHandler(
         (event: NewMessageEvent) => this.handleNewMessage(event, session),
         new NewMessage({}),
       );
-      client.data.hasTelegramHandler = true; // Mark the handler as attached
     }
 
     // Notify client of successful connection
@@ -83,25 +76,24 @@ export class SessionGateway
 
     // Get initial dialogs and send to the client
     const dialogs = await telegramInstance.getDialogs({ limit: 100 });
+
     const result = dialogs.map(
       (dialog) =>
         dialog.isUser && {
           userId: dialog.id,
           title: dialog.title,
           unreadCount: dialog.unreadCount,
-          phone: dialog.entity.phone,
-          message: dialog.message.message,
-          date: dialog.date,
+          phone: dialog.entity?.phone,
+          message: dialog.message?.message,
+          date: dialog.message?.date,
+          status: dialog.entity?.status,
         },
     );
     client.emit('dialogs', result);
-    console.log('Client connected:', session);
   }
 
   // Handle client disconnection
   async handleDisconnect(client: Socket) {
-    console.log(`Client disconnected: ${client.id}`);
-
     const redisClient = this.redisService.getClient();
     const session = await redisClient.get(`client:session:${client.id}`);
 
@@ -116,7 +108,6 @@ export class SessionGateway
       if (clientsInSession === 0) {
         this.telegramService.deleteTelegramClient(session);
         await redisClient.del(`session:clients:${session}`);
-        console.log(`Session ${session} has no more clients. Cleaning up...`);
       }
     }
   }
@@ -149,6 +140,12 @@ export class SessionGateway
   ): Promise<void> {
     try {
       if (event.isPrivate) {
+        // Безопасная сериализация сообщения
+        const safeMessage = flattedStringify(event.message.photo);
+        console.log('New message:', safeMessage);
+
+        if (event.message.photo) {
+        }
         // Emit the new message to all clients in the session room
         this.server.to(session).emit('newMessage', event.message);
       }

@@ -10,7 +10,6 @@ export class AuthController {
 
   @Post('login')
   login(@Body() body: LoginAuthDto) {
-    console.log(process.env.FRONTEND_URL);
     return this.authService.login(body);
   }
 }

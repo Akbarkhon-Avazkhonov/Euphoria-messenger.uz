@@ -6,6 +6,7 @@ import Avatar, { AvatarProps } from '@mui/joy/Avatar';
 // Combine Latin and Russian alphabet
 const alphabet = 'abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщьыэюя'.split('');
 
+
 // Function to generate lighter, unique hex colors
 const letterToHexColor = (letter: string): string => {
   const charCode = letter.charCodeAt(0);
@@ -18,6 +19,7 @@ const letterToHexColor = (letter: string): string => {
   // Convert RGB to hex
   return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
 };
+
 
 // Function to check if the background color is dark based on luminance
 const isDarkColor = (hex: string): boolean => {
@@ -32,14 +34,15 @@ const isDarkColor = (hex: string): boolean => {
   return luminance < 128;
 };
 
+
 type AvatarWithStatusProps = AvatarProps & {
   online?: boolean;
   fullname?: string;
-  nameonly?: boolean;
+  status?: any;
 };
 
 export default function AvatarWithStatus(props: AvatarWithStatusProps) {
-  const { online = false, fullname = '', nameonly = false, ...other } = props;
+  const { online = false, fullname = '', status, ...other } = props;
 
   // Get a unique color for the first letter of the fullname
   const getColorByFullname = (name: string) => {
@@ -55,13 +58,12 @@ export default function AvatarWithStatus(props: AvatarWithStatusProps) {
 
   // Determine if text should be white based on the avatar background color
   const textColor = isDarkColor(avatarColor) ? '#FFFFFF' : '#000000';
-
   return (
     <div>
       {
-        !props.nameonly ? (
+        status ? (
           <Badge
-            color={online ? 'success' : 'neutral'}
+            color={status.className === 'UserStatusOnline' ? 'success' : 'neutral'}
             variant={online ? 'solid' : 'soft'}
             size="sm"
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}

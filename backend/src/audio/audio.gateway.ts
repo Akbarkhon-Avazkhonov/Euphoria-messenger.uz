@@ -29,11 +29,19 @@ export class AudioGateway {
       !client.data.session ||
       !payload.userId ||
       !payload.blob ||
-      !payload.caption ||
       !payload.duration
-    )
+    ) {
+      client.emit(
+        'error',
+        'No session or userId or blob or caption or duration',
+      );
+      client.emit('error', 'client.data.session', client.data.session);
+      client.emit('error', 'payload.userId', payload.userId);
+      client.emit('error', 'payload.blob', payload.blob);
+      client.emit('error', 'payload.caption', payload.caption);
+      client.emit('error', 'payload.duration', payload.duration);
       return;
-
+    }
     const telegramInstance = this.telegramService.getTelegramClient(
       client.data.session,
     );
@@ -43,7 +51,7 @@ export class AudioGateway {
     }
 
     const buffer: any = await blobToBuffer(payload.blob);
-    const filePath = 'audio.ogg';
+    const filePath = 'audio.mp3';
 
     // Сохраняем аудиофайл временно на диск
     fs.writeFileSync(filePath, buffer);
@@ -60,7 +68,6 @@ export class AudioGateway {
       ],
     });
 
-    client.emit('sendAudio', { status: 'success', data: result });
-    fs.unlinkSync(filePath); // Удаление временного файла после отправки
+    // fs.unlinkSync(filePath); // Удаление временного файла после отправки
   }
 }

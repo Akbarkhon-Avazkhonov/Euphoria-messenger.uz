@@ -11,6 +11,8 @@ import { AttachFileRounded, ImageRounded } from '@mui/icons-material';
 import SendFile from './SendFile';
 import SendAudio from './SendAudio';
 import { fetchAccess, getDecryptedCookie } from '@/utils/access';
+import SendPhoto from './SendPhoto';
+import SendVideo from './SendVideo';
 
 export type MessageInputProps = {
   textAreaValue: string;
@@ -73,8 +75,13 @@ export default function MessageInput(props: MessageInputProps) {
               <Stack direction="row">
                 {/* Компонент для отправки аудио */}
                 <SendAudio userId={userId} setTextAreaValue={setTextAreaValue} textAreaValue={textAreaValue} />
+                {/* Компонент для отправки видео */}
+                <SendVideo userId={userId}  setTextAreaValue={setTextAreaValue} textAreaValue={textAreaValue} />
                 {/* Компонент для отправки файла */}
                 <SendFile userId={userId} />
+                {/* Компонент для отправки фото */}
+                <SendPhoto userId={userId} />
+
               </Stack>
 
               {/* Кнопка отправки сообщения */}

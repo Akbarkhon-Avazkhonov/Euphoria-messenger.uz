@@ -45,6 +45,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
 
   const handleGetFile = () => {
     socket.emit('getFile', {userId: props.userId, messageId: props.id})
+    console.log('getFile',props.id)
   }
   return (
     <Box sx={{ maxWidth: '60%', minWidth: 'auto' }}>

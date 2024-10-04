@@ -15,13 +15,7 @@ interface Dialog {
 }
 
 @UseGuards(SessionGuard)
-@WebSocketGateway({
-  cors: {
-    origin: ['http://localhost:3000', 'https://admin.socket.io'],
-    methods: ['GET', 'POST'],
-    credentials: true,
-  },
-})
+@WebSocketGateway()
 export class DialogsGateway {
   constructor(
     private readonly dialogsService: DialogsService,

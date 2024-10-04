@@ -7,14 +7,11 @@ export class SessionGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    console.log('SessionGuard activated');
     const client: Socket = context.switchToWs().getClient<Socket>();
     const cookie = client.handshake.headers?.cookie;
-    console.log('Client ID:', client.id);
 
     // Check if the cookie is present
     if (!cookie) {
-      console.log('No cookie found, disconnecting client');
       client.disconnect();
       return false;
     }

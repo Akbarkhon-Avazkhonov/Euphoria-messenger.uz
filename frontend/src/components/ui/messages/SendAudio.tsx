@@ -76,6 +76,7 @@ const AudioRecorder = (props: any) => {
         duration: duration,
 
       };
+      console.log('send audio', payload);
       socket.emit('sendAudio', payload);
       props.setTextAreaValue('');
     });
@@ -88,7 +89,7 @@ const AudioRecorder = (props: any) => {
 
   return (
     access ? (
-      <IconButton onClick={!isRecording ? onAudioClick : onStopRecording} sx={{ width: 24, height: 24 }}>
+      <IconButton onClick={!isRecording ? onAudioClick : onStopRecording} >
         {!isRecording ? <MicRoundedIcon /> : <StopCircleRoundedIcon />}
       </IconButton>
     ) :

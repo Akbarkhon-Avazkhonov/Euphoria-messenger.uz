@@ -42,7 +42,6 @@ export class TgAuthService {
         },
         phoneNumber,
       );
-      console.log('phoneCodeHash', phoneCodeHash);
 
       const session = client.session.save();
 
@@ -84,7 +83,6 @@ export class TgAuthService {
         SELECT * FROM "TgUsers" WHERE "login" = '${login}';
         `;
       const user = await this.pgService.query(query_find_user);
-      console.log('user', user.rows[0]);
       if (!user.rowCount) {
         throw new HttpException(
           `Пользователь не найден 🤷‍♂️`,

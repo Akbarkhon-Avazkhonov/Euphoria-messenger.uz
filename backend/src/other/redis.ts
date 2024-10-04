@@ -16,7 +16,19 @@ export class RedisIoAdapter extends IoAdapter {
   }
 
   createIOServer(port: number, options?: ServerOptions): any {
-    const server = super.createIOServer(port, options);
+    const server = super.createIOServer(port, {
+      ...options,
+      cors: {
+        origin: ['http://localhost:3000', 'https://admin.socket.io'],
+        methods: ['GET', 'POST'],
+        credentials: true,
+        maxHttpBufferSize: 1e8,
+      },
+      transports: ['websocket', 'polling'], // Allow multiple transports
+    });
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('events').EventEmitter.defaultMaxListeners = 15;
+
     server.adapter(this.adapterConstructor);
     return server;
   }

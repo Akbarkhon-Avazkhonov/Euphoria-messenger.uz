@@ -9,13 +9,7 @@ import { generateRandomBytes, readBigIntFromBuffer } from 'telegram/Helpers';
 import { Api } from 'telegram';
 
 @UseGuards(SessionGuard)
-@WebSocketGateway({
-  cors: {
-    origin: ['http://localhost:3000', 'https://admin.socket.io'],
-    methods: ['GET', 'POST'],
-    credentials: true,
-  },
-})
+@WebSocketGateway()
 export class MessagesGateway {
   constructor(
     private readonly messagesService: MessagesService,
@@ -23,7 +17,6 @@ export class MessagesGateway {
   ) {}
   @SubscribeMessage('getMessages')
   async handleGetMessages(client: Socket, payload: any) {
-    console.log('getMessages', payload);
     if (client.data.session && payload[0].userId) {
       const telegramInstance = this.telegramService.getTelegramClient(
         client.data.session,
@@ -54,8 +47,6 @@ export class MessagesGateway {
   @SubscribeMessage('sendMessage')
   async handleSendMessage(client: Socket, payload: any): Promise<void> {
     try {
-      console.log('sendMessage payload:', payload);
-
       if (client.data.session && payload?.userId && payload?.message) {
         // Получение экземпляра Telegram-клиента
         const telegramInstance = this.telegramService.getTelegramClient(
@@ -76,7 +67,6 @@ export class MessagesGateway {
 
           // Эмит сообщения обратно клиенту с подтверждением успешной отправки
           client.emit('sendMessage', { status: 'success', data: result });
-          console.log(`Message sent successfully to user: ${payload.userId}`);
         } else {
           client.emit('sendMessage', {
             status: 'error',
