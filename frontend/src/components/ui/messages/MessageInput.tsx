@@ -74,9 +74,9 @@ export default function MessageInput(props: MessageInputProps) {
             >
               <Stack direction="row">
                 {/* Компонент для отправки аудио */}
-                <SendAudio userId={userId} setTextAreaValue={setTextAreaValue} textAreaValue={textAreaValue} />
+                <SendAudio userId={userId} setTextAreaValue={setTextAreaValue}  />
                 {/* Компонент для отправки видео */}
-                <SendVideo userId={userId}  setTextAreaValue={setTextAreaValue} textAreaValue={textAreaValue} />
+                <SendVideo userId={userId}  setTextAreaValue={setTextAreaValue} />
                 {/* Компонент для отправки файла */}
                 <SendFile userId={userId} />
                 {/* Компонент для отправки фото */}
