@@ -18,6 +18,7 @@ export class RedisIoAdapter extends IoAdapter {
   createIOServer(port: number, options?: ServerOptions): any {
     const server = super.createIOServer(port, {
       ...options,
+
       cors: {
         origin: ['http://localhost:3000', 'https://admin.socket.io'],
         methods: ['GET', 'POST'],

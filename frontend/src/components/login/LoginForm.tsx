@@ -50,10 +50,11 @@ export default function LoginForm() {
     );
     if (response.status === 201) {
       const data = await response.json();
-      document.cookie = `token=${data.token}; path=/; max-age=86400`;
-      document.cookie = `role=${data.role}; path=/; max-age=86400`;
+    
+      document.cookie = `token=${data.token}; path=/; max-age=86400 Secure; SameSite=None`;
+      document.cookie = `role=${data.role}; path=/; max-age=86400 max-age=86400; Secure; SameSite=None`;
       console.log(data.access);
-      await setEncryptedCookie("access", data.access);
+      await setEncryptedCookie("access", data.access );
       // document.cookie = `access=${JSON.stringify(data.access)}; path=/; max-age=86400`;
       if (data.role === "Админ") {
         router.replace("/admin");
@@ -239,7 +240,6 @@ export default function LoginForm() {
           transition:
             "background-image var(--Transition-duration), left var(--Transition-duration) !important",
           transitionDelay: "calc(var(--Transition-duration) + 0.1s)",
-          backgroundColor: "background.level1",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
