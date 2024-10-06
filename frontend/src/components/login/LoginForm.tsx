@@ -55,6 +55,8 @@ export default function LoginForm() {
       document.cookie = `role=${data.role}; path=/; max-age=86400`;
       console.log(data.access);
       await setEncryptedCookie("access", data.access);
+      console.log(111111111111111111111111111);
+
       // document.cookie = `access=${JSON.stringify(data.access)}; path=/; max-age=86400`;
       if (data.role === "Админ") {
         router.replace("/admin");
