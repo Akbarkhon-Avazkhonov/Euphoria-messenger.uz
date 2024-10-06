@@ -53,6 +53,7 @@ export async function setEncryptedCookie(name: string, value: Record<string, any
   const jsonString = JSON.stringify(value); // Преобразуем объект в строку JSON
   const encryptedValue = await encryptData(jsonString); // Шифруем JSON-строку
 
+  console.log('Encrypted Value:', encryptedValue);
   // Устанавливаем зашифрованное значение в куки
   document.cookie = `${name}=${encryptedValue}; path=/; max-age=${maxAge}`;
 }
