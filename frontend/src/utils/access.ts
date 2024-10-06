@@ -50,6 +50,7 @@ async function encryptData(data: string): Promise<string> {
 
 // Функция для сохранения зашифрованных данных в куки
 export async function setEncryptedCookie(name: string, value: Record<string, any>, maxAge: number = 86400): Promise<void> {
+  console.log('Value:', value);
   const jsonString = JSON.stringify(value); // Преобразуем объект в строку JSON
   const encryptedValue = await encryptData(jsonString); // Шифруем JSON-строку
 
