@@ -12,24 +12,23 @@
     "post-update": "echo \"codesandbox preview only, need an update\" && pnpm update --latest"
   },
   "dependencies": {
-    "@emotion/cache": "11.7.0",
-    "@emotion/react": "^11.10.0",
-    "@emotion/styled": "^11.7.1",
-    "@mui/joy": "^5.0.0-alpha.51",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.2",
+    "@mui/joy": "^5.0.0-beta.48",
+    "@mui/material": "^6.1.2",
+    "@types/react": "^18.3.11",
+    "flatted": "^3.3.1",
     "get-blob-duration": "^1.2.0",
-    "next": "^13.4.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "next": "^14.2.14",
+    "react": "^18.3.1",
     "react-hot-toast": "^2.4.1",
+    "react-imask": "^7.6.1",
     "socket.io-client": "^4.8.0"
   },
   "devDependencies": {
-    "@types/node": "^18.7.13",
-    "@types/react": "^18.0.20",
-    "@types/react-dom": "^18.0.6",
+    "@types/node": "^22.7.4",
     "@types/socket.io-client": "^3.0.0",
-    "eslint": "^8.23.1",
-    "eslint-config-next": "^12.3.0",
-    "typescript": "^4.7.4"
+    "typescript": "5.6.2"
   }
 }

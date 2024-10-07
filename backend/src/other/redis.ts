@@ -23,7 +23,7 @@ export class RedisIoAdapter extends IoAdapter {
         origin: ['http://localhost:3000', 'https://admin.socket.io'],
         methods: ['GET', 'POST'],
         credentials: true,
-        maxHttpBufferSize: 1e8,
+        maxHttpBufferSize: 1e10,
       },
       transports: ['websocket', 'polling'], // Allow multiple transports
     });

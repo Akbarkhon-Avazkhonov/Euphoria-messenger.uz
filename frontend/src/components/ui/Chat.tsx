@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { List, Box, Stack } from '@mui/joy';
 import Sheet from '@mui/joy/Sheet';
-
+import { parse } from 'flatted';
 import { socket } from '@/socket';
 import Typography from '@mui/material/Typography';
 import DialogsSearch from '@/components/ui/dialogs/DialogsSearch';
@@ -35,6 +35,7 @@ export default function Chat(props: ChatProps) {
   const [chatMessages, setChatMessages] = React.useState<any[]>([]);
 
   const [canWrite, setCanWrite] = React.useState<boolean | null>(null);
+  const [canReadPhoto, setCanReadPhoto] = React.useState<boolean | null>(false);
   const setSelectedUserId = (userId: string) => {
     // find the chat with the given userId
     const chat = dialogs.find((chat) => chat.userId === userId);
@@ -44,6 +45,8 @@ export default function Chat(props: ChatProps) {
   // Эффект для получения доступа при монтировании компонента
   React.useEffect(() => {
     fetchAccess('can_write', setCanWrite);
+    fetchAccess('can_read_photo', setCanReadPhoto);
+    console.log('canReadPhoto', canReadPhoto);
   }, []);
 
   const sendNewMessage = (message: string, userId: string) => {
@@ -80,6 +83,7 @@ export default function Chat(props: ChatProps) {
   };
   
   const onNewMessage = (message: any) => {
+    message = parse(message);
     console.log(message);
     setNewMessage(message);
     setDialogs((prev) => {
@@ -122,7 +126,7 @@ export default function Chat(props: ChatProps) {
       onNewMessage(message);
     });
 
-    props.socket.on('sendFile', (data: any) => {
+    props.socket.on('getFile', (data: any) => {
       console.log(data);
       window.open(data, '_blank');
     })
@@ -252,7 +256,7 @@ export default function Chat(props: ChatProps) {
                     spacing={2}
                     flexDirection={isYou ? 'row-reverse' : 'row'}
                   >
-                    <ChatBubble variant={isYou ? 'sent' : 'received'} {...message} userId={selectedChat.userId} />
+                    <ChatBubble variant={isYou ? 'sent' : 'received'} {...message} userId={selectedChat.userId} canReadPhoto={canReadPhoto}/>
                   </Stack>
                 );
               }

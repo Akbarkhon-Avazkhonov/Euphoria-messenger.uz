@@ -14,7 +14,9 @@ import { telegramClient } from 'src/other/telegramClient';
 import { NewMessage, NewMessageEvent } from 'telegram/events';
 import { TelegramService } from '../telegram/telegram.service'; // Import TelegramService
 import { instrument } from '@socket.io/admin-ui';
-import { stringify as flattedStringify } from 'flatted'; // Используем для безопасной сериализации
+import { stringify as flattedStringify, parse } from 'flatted'; // Используем для безопасной сериализации
+
+import * as fs from 'fs';
 
 @Injectable()
 @WebSocketGateway()
@@ -66,7 +68,8 @@ export class SessionGateway
       // Remove previous handlers if they exist
       telegramInstance.removeEventHandler(this.handleNewMessage);
       telegramInstance.addEventHandler(
-        (event: NewMessageEvent) => this.handleNewMessage(event, session),
+        (event: NewMessageEvent) =>
+          this.handleNewMessage(event, session, telegramInstance),
         new NewMessage({}),
       );
     }
@@ -137,14 +140,35 @@ export class SessionGateway
   private async handleNewMessage(
     event: NewMessageEvent,
     session: string,
+    telegramInstance: any,
   ): Promise<void> {
     try {
       if (event.isPrivate) {
         // Безопасная сериализация сообщения
-        const safeMessage = flattedStringify(event.message.photo);
-        console.log('New message:', safeMessage);
+        const safeMessage = flattedStringify(event.message);
 
         if (event.message.photo) {
+          const photoBuffer = await telegramInstance.downloadMedia(
+            event.message.photo,
+          );
+          fs.writeFileSync(
+            `uploads/${event.message.photo.id}.jpg`,
+            photoBuffer,
+          );
+          const newMessage = parse(safeMessage);
+          newMessage.photoUrl = `${event.message.photo.id}.jpg`;
+          newMessage.media = true;
+          this.server
+            .to(session)
+            .emit('newMessage', flattedStringify(newMessage));
+
+          // if (photoPath) {
+          //   // Отправка фото во все клиенты в комнате сессии
+          //   this.server.to(session).emit('newMessage', {
+          //     ...event.message,
+          //     photo: photoPath,
+          //   });
+          // }
         }
         // Emit the new message to all clients in the session room
         this.server.to(session).emit('newMessage', event.message);

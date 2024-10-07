@@ -1,6 +1,6 @@
 import UsersTable from "@/components/admin/users/UsersTables";
 import AddUser from "@/components/admin/users/AddUser";
-import { Box, Button, Typography } from "@mui/joy";
+import { Box, Typography } from "@mui/joy";
 import { cookies } from "next/headers";
 async function fetchUsers(cookies: string) {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/all`, {

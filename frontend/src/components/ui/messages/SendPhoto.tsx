@@ -38,6 +38,7 @@ export default function SendPhoto(props: { userId: string; }) {
       });
     };
     reader.readAsArrayBuffer(photo);
+    window.location.reload();
   };
 
   return (

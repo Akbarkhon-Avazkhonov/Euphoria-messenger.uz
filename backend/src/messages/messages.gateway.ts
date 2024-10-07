@@ -25,17 +25,42 @@ export class MessagesGateway {
         const messages = await telegramInstance.getMessages(payload[0].userId, {
           limit: 10,
         });
-        fs.writeFileSync('round.json', JSON.stringify(messages[0]));
-        const result = messages.map((message) => ({
-          id: message.id,
-          out: message.out,
-          fromId: message.fromId,
-          toId: message.toId,
-          message: message.message,
-          date: message.date,
-          peerId: message.peerId,
-          media: JSON.stringify(message.media),
-        }));
+        const result = await Promise.all(
+          messages.map(async (message) => {
+            const messageData: any = {
+              id: message.id,
+              out: message.out,
+              fromId: message.fromId,
+              toId: message.toId,
+              message: message.message,
+              date: message.date,
+              peerId: message.peerId,
+              media: JSON.stringify(message.media),
+            };
+
+            // Check if the message has a photo
+            if (message.photo) {
+              const photoPath = `uploads/${message.photo.id}.jpg`;
+
+              // Check if the photo file already exists
+              if (!fs.existsSync(photoPath)) {
+                const photoBuffer = await telegramInstance.downloadMedia(
+                  message.photo,
+                );
+
+                // Save the photo to the file system
+                fs.writeFileSync(photoPath, photoBuffer);
+              }
+
+              // Add the photo URL to the message data
+              messageData.photoUrl = photoPath;
+              messageData.media = true; // Indicate that this message contains media
+            }
+
+            return messageData; // Return the constructed message data
+          }),
+        );
+
         result.sort((a, b) => a.date - b.date);
 
         client.emit('getMessages', result);

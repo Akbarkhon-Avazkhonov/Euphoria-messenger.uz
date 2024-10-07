@@ -13,19 +13,23 @@ import InsertDriveFileRoundedIcon from '@mui/icons-material/InsertDriveFileRound
 import relativeDate from '@/utils/date';
 import { socket } from "@/socket";
 import { MessageProps } from '@/types/message';
-
+import Image from 'next/image';
+import { Card, CardCover } from '@mui/joy';
 type ChatBubbleProps = MessageProps & {
   userId: string;
   variant: 'sent' | 'received';
+  photoUrl?: any;
+  canReadPhoto?: boolean;
 };
 
 export default function ChatBubble(props: ChatBubbleProps) {
-  const { message, variant,media = undefined ,date} = props;
+  const { message, variant,media = undefined ,date, photoUrl=undefined ,canReadPhoto} = props;
   const isSent = variant === 'sent';
   const [isHovered, setIsHovered] = React.useState<boolean>(false);
   const [isLiked, setIsLiked] = React.useState<boolean>(false);
   const [isCelebrated, setIsCelebrated] = React.useState<boolean>(false);
   let fileName = 'Отправленный файл'
+  console.log('canReadPhoto',canReadPhoto)
   if (media != 'null' && media) {
     try{
     const mediaObj = JSON.parse(media)
@@ -43,9 +47,34 @@ export default function ChatBubble(props: ChatBubbleProps) {
     }
   }
 
+  if (photoUrl && !canReadPhoto) {
+    return  <Sheet
+    variant="outlined"
+    sx={{
+      px: 1.75,
+      py: 1.25,
+      borderRadius: 'lg',
+      borderTopRightRadius: isSent ? 0 : 'lg',
+      borderTopLeftRadius: isSent ? 'lg' : 0,
+    }}
+  >
+    <Stack direction="row" spacing={1.5} alignItems="center"  sx={
+      {
+        cursor: 'pointer'
+      }
+    }>
+      <Avatar color="primary" size="lg">
+        <InsertDriveFileRoundedIcon />
+      </Avatar>
+      <div>
+        <Typography fontSize="sm">{'Вам не разрешено просматривать фото'}</Typography>
+        {/* <Typography level="body-sm">{media.size}</Typography> */}
+      </div>
+    </Stack>
+  </Sheet>
+  }
   const handleGetFile = () => {
     socket.emit('getFile', {userId: props.userId, messageId: props.id})
-    console.log('getFile',props.id)
   }
   return (
     <Box sx={{ maxWidth: '60%', minWidth: 'auto' }}>
@@ -62,32 +91,47 @@ export default function ChatBubble(props: ChatBubbleProps) {
 
         <Typography level="body-xs">{}</Typography>
       </Stack>
-      {media != 'null' && media ? (
-        
-        <Sheet
-          variant="outlined"
-          sx={{
-            px: 1.75,
-            py: 1.25,
-            borderRadius: 'lg',
-            borderTopRightRadius: isSent ? 0 : 'lg',
-            borderTopLeftRadius: isSent ? 'lg' : 0,
-          }}
-        >
-          <Stack direction="row" spacing={1.5} alignItems="center" onClick={handleGetFile} sx={
-            {
-              cursor: 'pointer'
-            }
-          }>
-            <Avatar color="primary" size="lg">
-              <InsertDriveFileRoundedIcon />
-            </Avatar>
-            <div>
-              <Typography fontSize="sm">{fileName}</Typography>
-              {/* <Typography level="body-sm">{media.size}</Typography> */}
-            </div>
-          </Stack>
-        </Sheet>
+      {media != 'null' && media && canReadPhoto ? (
+         <>
+        {
+          photoUrl ? (
+            <Card sx={{ maxWidth: 600, flexGrow: 1, height: '200px' }}>
+              <CardCover>
+                <img
+                  loading='lazy'
+                  alt={photoUrl}
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/${photoUrl}`}
+                  style={{ objectFit: 'contain', height: '100%', width: '100%' }}
+                />
+              </CardCover>
+            </Card>
+
+          ): (<Sheet
+            variant="outlined"
+            sx={{
+              px: 1.75,
+              py: 1.25,
+              borderRadius: 'lg',
+              borderTopRightRadius: isSent ? 0 : 'lg',
+              borderTopLeftRadius: isSent ? 'lg' : 0,
+            }}
+          >
+            <Stack direction="row" spacing={1.5} alignItems="center" onClick={handleGetFile} sx={
+              {
+                cursor: 'pointer'
+              }
+            }>
+              <Avatar color="primary" size="lg">
+                <InsertDriveFileRoundedIcon />
+              </Avatar>
+              <div>
+                <Typography fontSize="sm">{fileName}</Typography>
+                {/* <Typography level="body-sm">{media.size}</Typography> */}
+              </div>
+            </Stack>
+          </Sheet>)
+        }
+        </>
       ) : (
         <Box
           sx={{ position: 'relative' }}
@@ -120,6 +164,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
               {message}
             </Typography>
           </Sheet>
+
           :
           <Sheet
             color={isSent  ? 'primary' : 'neutral' }
@@ -179,4 +224,4 @@ export default function ChatBubble(props: ChatBubbleProps) {
       )}
     </Box>
   );
-}
+} 

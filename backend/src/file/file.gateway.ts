@@ -5,7 +5,6 @@ import { UseGuards } from '@nestjs/common';
 import { TelegramService } from 'src/telegram/telegram.service';
 import { Socket } from 'socket.io';
 import * as fs from 'fs/promises'; // Используем fs.promises для асинхронных операций
-import { CustomFile } from 'telegram/client/uploads';
 import * as path from 'path';
 import { stringify } from 'querystring';
 
@@ -44,44 +43,56 @@ export class FileGateway {
     try {
       // Проверка наличия сеанса и userId в payload
       if (!client.data.session || !payload.userId) return;
-
-      const telegramInstance = this.telegramService.getTelegramClient(
+      console.log('client here 1');
+      const telegramInstance = await this.telegramService.getTelegramClient(
         client.data.session,
       );
+      console.log('client here 2');
+
       if (!telegramInstance) {
-        client.emit('error', 'Telegram instance not found');
+        console.log('Telegram instance not found');
         return;
       }
+
+      console.log('client here 3');
 
       // Получение сообщения по userId и messageId
       const result = await telegramInstance.getMessages(payload.userId, {
         ids: [payload.messageId],
       });
+      console.log('client here 4');
 
       // Проверка, что сообщение и медиафайл существуют
       if (!result || result.length === 0 || !result[0].media) {
-        client.emit('error', 'No media found in the message');
         return;
+      }
+      if (result.length > 0) {
+        const message = result[0];
+        if (message.voice) {
+          // Download the voice message
+          const filePath = `voice_${message.id}.ogg`;
+          const fullPath = path.join(__dirname, '../../uploads/', filePath);
+          const file = await telegramInstance.downloadMedia(message.voice, {
+            workers: 1,
+          });
+          fs.writeFile(fullPath, file);
+          client.emit(
+            'getFile',
+            `${process.env.BACKEND_URL}/uploads/${filePath}`,
+          );
+          return;
+        } else {
+          console.log('The specified message is not a voice message.');
+        }
       }
 
       const media = result[0].media;
-      // if (!media.document) {
-      //   client.emit('error', 'No document found in the media');
-      //   console.log('No media found in the message');
-
-      //   return;
-      // }
-
-      const documentAttributes = media.document.attributes;
-      // if (!documentAttributes || documentAttributes.length === 0) {
-      //   client.emit('error', 'No document attributes found');
-      //   return;
-      // }
 
       const fileName =
-        documentAttributes[documentAttributes.length - 1].fileName;
-      const uploadPath = path.join(__dirname, '..', 'uploads', fileName);
+        media.document.id + '.' + media.document.mimeType.split('/')[1];
+      const uploadPath = path.join(__dirname, '../..', 'uploads', fileName);
 
+      // take only uploads/fileName
       // Проверка, существует ли уже файл в директории uploads
       const isExist = await this.fileExists(uploadPath);
       if (isExist) {
@@ -89,11 +100,11 @@ export class FileGateway {
           'getFile',
           `${process.env.BACKEND_URL}/uploads/${fileName}`,
         );
-        return;
       }
 
       // Загрузка медиафайла из Telegram
-      const file = await telegramInstance.downloadMedia(media, { workers: 1 });
+      const file = await telegramInstance.downloadMedia(result);
+
       await fs.writeFile(uploadPath, file);
 
       client.emit('getFile', `${process.env.BACKEND_URL}/uploads/${fileName}`);

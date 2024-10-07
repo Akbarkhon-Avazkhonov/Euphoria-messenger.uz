@@ -104,7 +104,7 @@ async function decryptData(encryptedData: string): Promise<string | null> {
     const decryptedValue = await decryptData(encryptedValue);
   
     if (!decryptedValue) return null;
-  
+    console.log('Decrypted Value:', decryptedValue);
     return JSON.parse(decryptedValue);
   }
   
