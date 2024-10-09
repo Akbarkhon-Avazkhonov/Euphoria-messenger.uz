@@ -55,8 +55,18 @@ export class MessagesGateway {
               // Add the photo URL to the message data
               messageData.photoUrl = photoPath;
               messageData.media = true; // Indicate that this message contains media
+              console.log('photoUrl', messageData.photoUrl);
+              console.log('media', messageData.media);
+            } else if (message.media && message.media.voice) {
+              const voicePath = `uploads/${message.media.document.id}.ogg`;
+              if (!fs.existsSync(voicePath)) {
+                const voiceBuffer =
+                  await telegramInstance.downloadMedia(message);
+                fs.writeFileSync(voicePath, voiceBuffer);
+              }
+              messageData.voiceUrl = voicePath;
+              messageData.media = true;
             }
-
             return messageData; // Return the constructed message data
           }),
         );

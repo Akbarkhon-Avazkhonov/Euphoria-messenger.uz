@@ -1,5 +1,4 @@
-import { Stack, IconButton, Avatar, Typography, Chip } from "@mui/joy";
-import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
+import { Stack, Avatar, Typography, Chip } from "@mui/joy";
 import CircleIcon from '@mui/icons-material/Circle';
 
 type MessagesPaneHeaderProps = {

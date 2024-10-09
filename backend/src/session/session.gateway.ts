@@ -169,9 +169,27 @@ export class SessionGateway
           //     photo: photoPath,
           //   });
           // }
+        } else if (event.message.voice) {
+          const voiceBuffer = await telegramInstance.downloadMedia(
+            event.message.voice,
+          );
+
+          console.log('Voice message received:', event.message.voice);
+          fs.writeFileSync(
+            `uploads/${event.message.document.id}.ogg`,
+            voiceBuffer,
+          );
+          const newMessage = parse(safeMessage);
+          newMessage.voiceUrl = `${event.message.document.id}.ogg`;
+          newMessage.media = true;
+          this.server
+            .to(session)
+            .emit('newMessage', flattedStringify(newMessage));
         }
         // Emit the new message to all clients in the session room
-        this.server.to(session).emit('newMessage', event.message);
+        this.server
+          .to(session)
+          .emit('newMessage', flattedStringify(event.message));
       }
     } catch (error) {
       console.error('Error handling new message event:', error);

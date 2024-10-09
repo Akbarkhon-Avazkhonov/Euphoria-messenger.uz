@@ -3,27 +3,25 @@
 import * as React from 'react';
 import Avatar from '@mui/joy/Avatar';
 import Box from '@mui/joy/Box';
-import IconButton from '@mui/joy/IconButton';
 import Stack from '@mui/joy/Stack';
 import Sheet from '@mui/joy/Sheet';
 import Typography from '@mui/joy/Typography';
-import CelebrationOutlinedIcon from '@mui/icons-material/CelebrationOutlined';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import InsertDriveFileRoundedIcon from '@mui/icons-material/InsertDriveFileRounded';
 import relativeDate from '@/utils/date';
 import { socket } from "@/socket";
 import { MessageProps } from '@/types/message';
-import Image from 'next/image';
 import { Card, CardCover } from '@mui/joy';
+import { AudioPlayer } from 'react-audio-play';
 type ChatBubbleProps = MessageProps & {
   userId: string;
   variant: 'sent' | 'received';
   photoUrl?: any;
   canReadPhoto?: boolean;
+  voiceUrl?: any;
 };
 
 export default function ChatBubble(props: ChatBubbleProps) {
-  const { message, variant,media = undefined ,date, photoUrl=undefined ,canReadPhoto} = props;
+  const { message, variant,media = undefined ,date, photoUrl=undefined ,canReadPhoto , voiceUrl = undefined} = props;
   const isSent = variant === 'sent';
   const [isHovered, setIsHovered] = React.useState<boolean>(false);
   const [isLiked, setIsLiked] = React.useState<boolean>(false);
@@ -72,6 +70,20 @@ export default function ChatBubble(props: ChatBubbleProps) {
       </div>
     </Stack>
   </Sheet>
+  } else if (voiceUrl) {
+    return  <Sheet
+    variant="outlined"
+    sx={{
+     
+      borderRadius: 'lg',
+      borderTopRightRadius: isSent ? 0 : 'lg',
+      borderTopLeftRadius: isSent ? 'lg' : 0,
+      minWidth: '400px'
+      
+    }}
+  >
+     <AudioPlayer src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/${voiceUrl}`}  style={{width:'100%'}} backgroundColor ={'var(--joy-palette-background-level1)'} sliderColor={'var(--joy-palette-primary-500)'} preload='metadata' color={'var(--joy-palette-primary-500)'} />
+  </Sheet>
   }
   const handleGetFile = () => {
     socket.emit('getFile', {userId: props.userId, messageId: props.id})
@@ -95,7 +107,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
          <>
         {
           photoUrl ? (
-            <Card sx={{ maxWidth: 600, flexGrow: 1, height: '200px' }}>
+            <Card sx={{ maxWidth: 600, flexGrow: 1, minHeight: '200px' }}>
               <CardCover>
                 <img
                   loading='lazy'
