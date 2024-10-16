@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: euphoria-messenger.uz
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/euphoria-messenger.uz
+    depends_on:
+      - postgres
+    ports:
+      - "4000:4000"  # Бэкенд доступен на порту 4000
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"  # Фронтенд доступен на порту 3000
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
