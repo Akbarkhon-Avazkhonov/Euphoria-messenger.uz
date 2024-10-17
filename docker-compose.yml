@@ -1,17 +1,28 @@
 version: '3.8'
 
+
 services:
   postgres:
     image: postgres:latest
-    restart: always
+    # restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: euphoria-messenger.uz
+      POSTGRES_DB: euphoria-messenger.uz  # Default database that will be created
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d  # Mount the initdb directory
     ports:
       - "5432:5432"
+
+
+  redis-stack:
+    image: redis/redis-stack-server:latest  # Use the Redis Stack image
+    restart: always
+    ports:
+      - "6379:6379"  # Redis доступен на порту 6379
+      - "8001:8001"  # Web интерфейс Redis Stack доступен на порту 8001
+
 
   backend:
     build:
@@ -19,11 +30,14 @@ services:
       dockerfile: Dockerfile
     restart: always
     environment:
-      DATABASE_URL: postgres://postgres:postgres@postgres:5432/euphoria-messenger.uz
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/euphoria-messenger.uz  # Correct port for PostgreSQL
+      REDIS_URL: redis://redis-stack:6379  # Keep the Redis URL as is
     depends_on:
       - postgres
+      - redis-stack  # Ensure backend starts after Redis Stack
     ports:
-      - "4000:4000"  # Бэкенд доступен на порту 4000
+      - "4000:4000"  # Backend доступен на порту 4000
+
 
   frontend:
     build:
@@ -31,9 +45,22 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "3000:3000"  # Фронтенд доступен на порту 3000
+      - "3000:3000"  # Frontend доступен на порту 3000
     depends_on:
       - backend
+
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    # restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+    ports:
+      - "5050:80"  # pgAdmin доступен на порту 5050
+    depends_on:
+      - postgres
+
 
 volumes:
   postgres_data:
