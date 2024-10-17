@@ -20,7 +20,11 @@ export class RedisIoAdapter extends IoAdapter {
       ...options,
 
       cors: {
-        origin: ['http://localhost:3000', 'https://admin.socket.io'],
+        origin: [
+          'http://localhost:3000',
+          'https://admin.socket.io',
+          'https://euphoria-messenger.uz',
+        ],
         methods: ['GET', 'POST'],
         credentials: true,
         maxHttpBufferSize: 1e10,
