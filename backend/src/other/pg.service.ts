@@ -8,12 +8,11 @@ export class PgService implements OnModuleInit, OnModuleDestroy {
 
   constructor() {
     this.client = new Client({
-      connectionString: process.env.DATABASE_URL, // Строка подключения к базе данных
-      // host: process.env.DB_HOST, // Хост базы данных
-      // port: +5433, // Порт PostgreSQL
-      // user: process.env.DB_USER, // Имя пользователя
-      // password: process.env.DB_PASSWORD, // Пароль
-      // database: process.env.DB_NAME, // Имя базы данных
+      host: process.env.DB_HOST, // Хост базы данных
+      port: +process.env.DB_PORT, // Порт PostgreSQL
+      user: process.env.DB_USER, // Имя пользователя
+      password: process.env.DB_PASSWORD, // Пароль
+      database: process.env.DB_NAME, // Имя базы данных
     });
   }
 

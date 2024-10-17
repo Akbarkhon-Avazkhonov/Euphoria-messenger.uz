@@ -40,6 +40,8 @@ async function bootstrap() {
     origin: true,
     credentials: true,
   });
-  await app.listen(process.env.PORT);
+  await app.listen(4000, '0.0.0.0', () => {
+    console.log('Server is running on port ' + process.env.PORT);
+  });
 }
 bootstrap();

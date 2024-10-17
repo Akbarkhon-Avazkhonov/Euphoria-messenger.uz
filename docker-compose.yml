@@ -1,66 +1,73 @@
 version: '3.8'
 
-
 services:
   postgres:
     image: postgres:latest
-    # restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: euphoria-messenger.uz  # Default database that will be created
+      POSTGRES_DB: euphoria-messenger.uz
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./initdb:/docker-entrypoint-initdb.d  # Mount the initdb directory
+      - ./initdb:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
-
+    networks:
+      - app-network
 
   redis-stack:
-    image: redis/redis-stack-server:latest  # Use the Redis Stack image
+    image: redis/redis-stack-server:latest
     restart: always
     ports:
-      - "6379:6379"  # Redis доступен на порту 6379
-      - "8001:8001"  # Web интерфейс Redis Stack доступен на порту 8001
-
+      - "6379:6379"
+      - "8001:8001"
+    networks:
+      - app-network
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     restart: always
-    environment:
-      DATABASE_URL: postgres://postgres:postgres@postgres:5432/euphoria-messenger.uz  # Correct port for PostgreSQL
-      REDIS_URL: redis://redis-stack:6379  # Keep the Redis URL as is
     depends_on:
       - postgres
-      - redis-stack  # Ensure backend starts after Redis Stack
+      - redis-stack
+    env_file:  # Load environment variables from the .env.production file
+      - ./backend/.env.production
     ports:
-      - "4000:4000"  # Backend доступен на порту 4000
-
+      - "4000:4000"
+    networks:
+      - app-network
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     restart: always
+    env_file:  # Load environment variables from the .env.production file
+      - ./frontend/.env.production
     ports:
-      - "3000:3000"  # Frontend доступен на порту 3000
+      - "3000:3000"
     depends_on:
       - backend
-
+    networks:
+      - app-network
 
   pgadmin:
     image: dpage/pgadmin4:latest
-    # restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: secret
+      PGADMIN_DEFAULT_EMAIL: postgres
+      PGADMIN_DEFAULT_PASSWORD: postgres
     ports:
-      - "5050:80"  # pgAdmin доступен на порту 5050
+      - "5050:80"
     depends_on:
       - postgres
-
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
