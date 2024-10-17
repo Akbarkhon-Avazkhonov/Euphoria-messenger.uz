@@ -2,15 +2,33 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { RedisIoAdapter } from './other/redis';
+import * as fs from 'fs';
 
 async function bootstrap() {
+  let httpsOptions = undefined;
+
+  // Используем SSL, если установлена переменная окружения PRODUCTION
+  if (process.env.PRODUCTION) {
+    httpsOptions = {
+      key: fs.readFileSync(
+        '/etc/letsencrypt/live/euphoria-messenger.uz/privkey.pem',
+      ),
+      cert: fs.readFileSync(
+        '/etc/letsencrypt/live/euphoria-messenger.uz/fullchain.pem',
+      ),
+    };
+  }
+
   const app = await NestFactory.create(AppModule, {
     snapshot: true,
+    ...(httpsOptions && { httpsOptions }), // Добавляем httpsOptions, если SSL включен
   });
+
   const redisIoAdapter = new RedisIoAdapter(app);
   await redisIoAdapter.connectToRedis();
 
   app.useWebSocketAdapter(redisIoAdapter);
+
   const config = new DocumentBuilder()
     .setTitle('Euphoria messenger API')
     .setVersion(process.env.npm_package_version)
@@ -23,8 +41,8 @@ async function bootstrap() {
       name: 'token', // Имя cookie
       description: 'Authorization cookie',
     })
-
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {
     swaggerOptions: {
@@ -36,12 +54,13 @@ async function bootstrap() {
     customSiteTitle: 'Euphoria messenger API',
     customfavIcon: 'https://phoenix-solutions.uz/image%2073.png',
   });
+
   app.enableCors({
     origin: true,
     credentials: true,
   });
-  await app.listen(4000, '0.0.0.0', () => {
-    console.log('Server is running on port ' + process.env.PORT);
-  });
+
+  await app.listen(process.env.PORT || 4000);
 }
+
 bootstrap();
