@@ -34,6 +34,8 @@ services:
       - redis-stack
     env_file:  # Load environment variables from the .env.production file
       - ./backend/.env.production
+    volumes:
+      - /etc/letsencrypt/live/euphoria-messenger.uz:/etc/letsencrypt/live/euphoria-messenger.uz:ro  # Примонтировать сертификаты
     ports:
       - "4000:4000"
     networks:
