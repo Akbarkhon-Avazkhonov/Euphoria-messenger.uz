@@ -34,7 +34,6 @@ services:
       - redis-stack
     env_file:  # Load environment variables from the .env.production file
       - ./backend/.env.production
-    volumes:
     ports:
       - "4000:4000"
     networks:
