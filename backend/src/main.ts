@@ -10,12 +10,8 @@ async function bootstrap() {
   // Используем SSL, если установлена переменная окружения PRODUCTION
   if (process.env.PRODUCTION) {
     httpsOptions = {
-      key: fs.readFileSync(
-        '/etc/letsencrypt/live/euphoria-messenger.uz/privkey.pem',
-      ),
-      cert: fs.readFileSync(
-        '/etc/letsencrypt/live/euphoria-messenger.uz/fullchain.pem',
-      ),
+      key: fs.readFileSync('live/euphoria-messenger.uz/privkey.pem'),
+      cert: fs.readFileSync('live/euphoria-messenger.uz/fullchain.pem'),
     };
   }
 
