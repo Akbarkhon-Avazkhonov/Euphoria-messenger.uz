@@ -90,12 +90,12 @@ export class TablesService implements OnModuleInit {
   async createUsers() {
     const query_create_table = `
     CREATE TABLE IF NOT EXISTS "Users" (
+      "id" SERIAL PRIMARY KEY,
       "name" VARCHAR(255),
       "login" VARCHAR(255) UNIQUE,
       "password" VARCHAR(60),
       "role" VARCHAR(255),  -- Здесь оставляем 'role' для связи с таблицей Roles
       "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      PRIMARY KEY ("login"),
       -- Внешний ключ для связи с таблицей Roles
       FOREIGN KEY ("role") REFERENCES "Roles"("name") ON DELETE SET NULL
     );
@@ -126,12 +126,12 @@ export class TablesService implements OnModuleInit {
       "session" VARCHAR(511),
       "verified" BOOLEAN DEFAULT FALSE,
       "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      "login" VARCHAR(255),
+      "user_id" INTEGER,  -- Используем user_id для связи с таблицей Users
       -- Внешний ключ для связи с таблицей Users
-      FOREIGN KEY ("login") REFERENCES "Users"("login") ON DELETE CASCADE
+      FOREIGN KEY ("user_id") REFERENCES "Users"("id") ON DELETE CASCADE
     );
 
-    CREATE INDEX IF NOT EXISTS idx_tg_users_login ON "TgUsers" ("login");
+    CREATE INDEX IF NOT EXISTS idx_tg_users_user_id ON "TgUsers" ("user_id");
     `;
     await this.pgService.safeQuery(query_create_table, 'TgUsers');
   }

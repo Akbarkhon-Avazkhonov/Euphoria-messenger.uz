@@ -19,10 +19,23 @@ export class TgAuthService {
         return `Такой номер уже используется 📵`;
       }
 
+      // get user_id from users table
+      const query_get_user_id = `
+        -- Получаем id пользователя по логину
+        SELECT "id" FROM "Users" WHERE "login" = '${login}';
+        `;
+      const user_id = await this.pgService.query(query_get_user_id);
+      if (!user_id.rowCount) {
+        throw new HttpException(
+          'Пользователь не найден 🤷‍♂️',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       const query = `
         -- Добавляем нового пользователя в таблицу Tg-Users
-        INSERT INTO "TgUsers" ("phoneNumber", "login")
-        SELECT '${phoneNumber}', '${login}'
+        INSERT INTO "TgUsers" ("phoneNumber", "user_id")
+        SELECT '${phoneNumber}', '${user_id.rows[0].id}'
         WHERE NOT EXISTS (
             SELECT 1 FROM "TgUsers" WHERE "phoneNumber" = '${phoneNumber}'
         );
@@ -45,15 +58,28 @@ export class TgAuthService {
 
       const session = client.session.save();
 
+      // get user_id from users table
+      const query_get_user_id = `
+       -- Получаем id пользователя по логину
+       SELECT "id" FROM "Users" WHERE "login" = '${login}';
+       `;
+      const user_id = await this.pgService.query(query_get_user_id);
+      if (!user_id.rowCount) {
+        throw new HttpException(
+          'Пользователь не найден 🤷‍♂️',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       // Use parameterized query to safely insert or update a user
       const query = `
-  INSERT INTO "TgUsers" ("phoneNumber", "phoneCodeHash", "session", "login")
+  INSERT INTO "TgUsers" ("phoneNumber", "phoneCodeHash", "session", "user_id")
   VALUES ($1, $2, $3, $4)
   ON CONFLICT ("phoneNumber") 
   DO UPDATE SET 
     "phoneCodeHash" = EXCLUDED."phoneCodeHash",
     "session" = EXCLUDED."session",
-    "login" = EXCLUDED."login";
+    "user_id" = EXCLUDED."user_id";
 `;
 
       // Execute the query with values
@@ -61,7 +87,7 @@ export class TgAuthService {
         phoneNumber,
         phoneCodeHash,
         session,
-        login,
+        user_id.rows[0].id,
       ]);
 
       // Disconnect the Telegram client after the operation
@@ -80,7 +106,7 @@ export class TgAuthService {
     try {
       // find user by login
       const query_find_user = `
-        SELECT * FROM "TgUsers" WHERE "login" = '${login}';
+        SELECT * FROM "Users" WHERE "login" = '${login}';
         `;
       const user = await this.pgService.query(query_find_user);
       if (!user.rowCount) {
@@ -90,12 +116,18 @@ export class TgAuthService {
         );
       }
 
-      const client = await telegramClient(user.rows[0].session);
+      // get session from tg-users
+      const query_get_session = `
+        SELECT * FROM "TgUsers" WHERE "user_id" = '${user.rows[0].id}';
+        `;
+      const session = await this.pgService.query(query_get_session);
+
+      const client = await telegramClient(session.rows[0].session);
       try {
         await client.invoke(
           new Api.auth.SignIn({
-            phoneNumber: user.rows[0].phoneNumber,
-            phoneCodeHash: user.rows[0].phoneCodeHash,
+            phoneNumber: session.rows[0].phoneNumber,
+            phoneCodeHash: session.rows[0].phoneCodeHash,
             phoneCode: phoneCode,
           }),
         );
@@ -105,7 +137,7 @@ export class TgAuthService {
           `UPDATE "TgUsers"
           SET "session" = '${newSession}',
               "verified" = TRUE
-          WHERE "login" = '${login}';`,
+          WHERE "user_id" = '${user.rows[0].id}';`,
         );
 
         if (client.isUserAuthorized()) {

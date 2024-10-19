@@ -47,6 +47,7 @@ export class SessionGateway
     const session = await this.getSessionFromCookie(
       client.handshake.headers.cookie,
     );
+    console.log('Session:', session);
     if (!session) {
       client.disconnect();
       return;
@@ -129,6 +130,7 @@ export class SessionGateway
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
+      console.log('Payload:', payload);
       return payload.session;
     } catch (err) {
       console.error('JWT verification failed:', err);

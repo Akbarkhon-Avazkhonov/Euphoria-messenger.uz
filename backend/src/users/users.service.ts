@@ -3,7 +3,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { PgService } from 'src/other/pg.service';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserPasswordDto, UpdateUserDto } from './dto/update-user.dto';
-import { access } from 'fs';
 
 @Injectable()
 export class UsersService {
@@ -18,7 +17,7 @@ export class UsersService {
     t."phoneNumber" ,
     t."verified"
   FROM "Users" u
-  LEFT JOIN "TgUsers" t ON u."login" = t."login";
+  LEFT JOIN "TgUsers" t ON u."id" = t."user_id";
 `;
     const result = await this.pgService.query(query);
 
@@ -36,7 +35,7 @@ export class UsersService {
       u."created_at",
       t."phoneNumber", 
     FROM "Users" u
-    LEFT JOIN "TgUsers" t ON u."login" = t."login"
+    LEFT JOIN "TgUsers" t ON u."id" = t."user_id"
     ORDER BY u."created_at" DESC
     LIMIT ${take} OFFSET ${skip};
   `;

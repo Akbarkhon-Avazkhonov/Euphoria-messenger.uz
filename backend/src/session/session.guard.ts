@@ -20,6 +20,7 @@ export class SessionGuard implements CanActivate {
     try {
       const session = await this.getSessionFromCookie(cookie);
       client.data.session = session;
+      console.log('Session:', client.data.session);
       if (!session) {
         client.disconnect();
         return false;

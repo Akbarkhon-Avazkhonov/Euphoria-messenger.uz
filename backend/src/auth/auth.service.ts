@@ -3,7 +3,6 @@ import { LoginAuthDto } from './dto/create-auth.dto';
 import { PgService } from 'src/other/pg.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { access } from 'fs';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +12,7 @@ export class AuthService {
   ) {}
   async login(body: LoginAuthDto) {
     const query = `
-  SELECT u.*, r.* 
+  SELECT u.*, r.* , u.id as id
   FROM "Users" u
   JOIN "Roles" r ON u.role = r.name 
   WHERE u.login = '${body.login}';
@@ -31,16 +30,18 @@ export class AuthService {
     if (!isPasswordCorrect) {
       throw new HttpException('Неверный пароль 🚫', 400);
     }
+    console.log('user', user);
     // get session from tg-users
     const sessionQuery = await this.pgService.query(
-      `SELECT * FROM "TgUsers" WHERE "login" = '${body.login}';`,
+      `SELECT * FROM "TgUsers" WHERE "user_id" = '${user.id}';`,
     );
 
+    console.log('sessionQuery', sessionQuery);
     if (sessionQuery.rowCount) {
       const session = sessionQuery.rows[0].session;
-
+      console.log('session', session);
       const payload = {
-        login: body.login,
+        user_id: user.id,
         role: user.role,
         access: user.access,
         session,
@@ -55,7 +56,7 @@ export class AuthService {
       };
     } else {
       const payload = {
-        login: body.login,
+        user_id: user.id,
         role: user.role,
         access: user.access,
       };

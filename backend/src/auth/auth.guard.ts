@@ -37,7 +37,7 @@ export class AuthGuard implements CanActivate {
       const tokenInRedis = await redisClient.get(token);
       if (tokenInRedis) {
         const payload = JSON.parse(tokenInRedis);
-        request.login = payload.login;
+        request.user_id = payload.user_id;
         request.role = payload.role;
         request.access = payload.access;
         return true;
@@ -49,7 +49,7 @@ export class AuthGuard implements CanActivate {
       redisClient.set(token, JSON.stringify(payload), {
         EX: 60 * 60 * 24, // 1 day
       }); // Consider adding an expiration time
-      request.login = payload.login;
+      request.user_id = payload.user_id;
       request.role = payload.role;
       request.access = payload.access;
     } catch {
