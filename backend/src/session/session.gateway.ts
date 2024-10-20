@@ -122,15 +122,14 @@ export class SessionGateway
 
     const tokenCookie = cookie
       .split(';')
-      .find((c) => c.trim().startsWith('token='));
-    if (!tokenCookie) throw new Error('Token not found in cookies');
+      .find((c) => c.trim().startsWith('session='));
+    if (!tokenCookie) return null;
 
     const token = tokenCookie.split('=')[1];
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
-      console.log('Payload:', payload);
       return payload.session;
     } catch (err) {
       console.error('JWT verification failed:', err);

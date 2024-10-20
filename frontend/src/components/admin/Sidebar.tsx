@@ -28,11 +28,11 @@ const SidebarItems = [
         href: "/admin/roles",
         icon: <TuneRoundedIcon />
     },
-    // {
-    //     title: 'Чат',
-    //     href: "/admin/chat",
-    //     icon: <QuestionAnswerRoundedIcon />
-    // }
+    {
+        title: 'Чат',
+        href: "/admin/chat",
+        icon: <QuestionAnswerRoundedIcon />
+    }
 ];
 
 

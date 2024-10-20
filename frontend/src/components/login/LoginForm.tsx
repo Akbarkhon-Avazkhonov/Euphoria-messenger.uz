@@ -53,9 +53,8 @@ export default function LoginForm() {
     
       document.cookie = `token=${data.token}; path=/; max-age=86400`;
       document.cookie = `role=${data.role}; path=/; max-age=86400`;
-      console.log(data.access);
+      document.cookie = `session=${data.session}; path=/; max-age=86400`;
       await setEncryptedCookie("access", data.access);
-      console.log(111111111111111111111111111);
 
       // document.cookie = `access=${JSON.stringify(data.access)}; path=/; max-age=86400`;
       if (data.role === "Админ") {

@@ -37,7 +37,7 @@ export class SessionGuard implements CanActivate {
     // Extract the token from the cookie string
     const tokenCookie = cookie
       .split(';')
-      .find((c) => c.trim().startsWith('token='));
+      .find((c) => c.trim().startsWith('session='));
     if (!tokenCookie) {
       throw new Error('Token not found in cookies');
     }

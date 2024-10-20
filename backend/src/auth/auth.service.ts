@@ -30,27 +30,25 @@ export class AuthService {
     if (!isPasswordCorrect) {
       throw new HttpException('Неверный пароль 🚫', 400);
     }
-    console.log('user', user);
     // get session from tg-users
     const sessionQuery = await this.pgService.query(
       `SELECT * FROM "TgUsers" WHERE "user_id" = '${user.id}';`,
     );
 
-    console.log('sessionQuery', sessionQuery);
     if (sessionQuery.rowCount) {
       const session = sessionQuery.rows[0].session;
-      console.log('session', session);
       const payload = {
         user_id: user.id,
         role: user.role,
         access: user.access,
-        session,
       };
       const token = await this.jwtService.signAsync(payload);
+      const jwtSession = await this.jwtService.signAsync({ session });
       return {
         message: 'Вход выполнен успешно 👍',
         id: user.id,
         token,
+        session: jwtSession,
         access: user.access,
         role: user.role,
       };

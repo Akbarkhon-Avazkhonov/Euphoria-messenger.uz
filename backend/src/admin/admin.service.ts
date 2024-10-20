@@ -42,4 +42,34 @@ export class AdminService {
       };
     }
   }
+
+  async getAllUsers() {
+    const query = `
+  SELECT  
+  u.id as id , 
+  u.name as name , 
+  u.login as login , 
+  u.role as role ,
+  u.created_at as created_at ,
+  t."phoneNumber" as "phoneNumber" 
+  FROM "Users" u
+  JOIN "TgUsers" t ON u.id = t.user_id 
+`;
+    const result = await this.pgService.query(query);
+    return result.rows;
+  }
+
+  async getUserSession(id: number) {
+    const query = `
+    SELECT session FROM "TgUsers" WHERE user_id = ${id}
+    `;
+    const result = await this.pgService.query(query);
+    const jwtSession = await this.jwtService.signAsync({
+      session: result.rows[0].session,
+    });
+
+    return {
+      session: jwtSession,
+    };
+  }
 }
