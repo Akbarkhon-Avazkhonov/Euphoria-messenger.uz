@@ -6,6 +6,7 @@ import {
   Request,
   Patch,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -32,6 +33,42 @@ export class UsersController {
   @Get('profile')
   getProfile(@Request() req: any) {
     return this.usersService.getProfile(req);
+  }
+
+  @Get('getOperators')
+  getOperators() {
+    return this.usersService.getOperators();
+  }
+
+  @Get('getOperatorsNotRop/:id')
+  getOperatorsNotRop(@Param('id') id: string) {
+    return this.usersService.getOperatorsNotRop(+id);
+  }
+
+  @Get('getRops')
+  getRops() {
+    return this.usersService.getRops();
+  }
+
+  @Get('getRopOperators/:id')
+  getRopOperators(@Param('id') id: string) {
+    return this.usersService.getRopOperators(+id);
+  }
+
+  @Post('addRopOperator/:ropId/:userId')
+  addRopOperator(
+    @Param('ropId') ropId: string,
+    @Param('userId') userId: string,
+  ) {
+    return this.usersService.addRopOperator(+ropId, +userId);
+  }
+
+  @Delete('removeRopOperator/:ropId/:userId')
+  removeRopOperator(
+    @Param('ropId') ropId: string,
+    @Param('userId') userId: string,
+  ) {
+    return this.usersService.removeRopOperator(+ropId, +userId);
   }
 
   @Auth()

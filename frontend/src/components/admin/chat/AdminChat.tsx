@@ -14,56 +14,52 @@ async function fetchUserSession(id: number) {
        method: 'GET',
        headers: {
            'Content-Type': 'application/json',
-        //    'Cookie': 'token=' + document.cookie.toString(),
-           
        },
        credentials: 'include',
-       cache: 'no-cache',
+       cache: 'force-cache',
    }).then((response) => response.json());
    return response;
-  } 
+} 
 
 export default function AdminChat(
     props: AdminChatProps
 ) {
     const [selectedChat, setSelectedChat] = React.useState<any>(null);
 
-    // Функция для выбора чата с выводом в консоль
+    // Функция для выбора чата
     const handleSetSelectedChat = async (chat: any) => {
-        console.log("Выбранный чат:", chat);  // Выводим информацию о выбранном чате
         const session = await fetchUserSession(chat.id);
-        console.log("Сессия пользователя:", session);  // Выводим информацию о сессии пользователя
         document.cookie = `session=${session.session}; path=/; max-age=86400`;
-
-        console.log("Сессия пользователя:", session);  // Выводим информацию о сессии пользователя
+        socket.disconnect();
+        
+        socket.connect();
         setSelectedChat(chat);
-        window.location.reload();
-
     };
+
 
     return (
         <>
         <Grid xs={9}>
             <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
                 <Box component="main" className="MainContent" sx={{ flex: 1, display: "flex", alignItems: "center" }}>
-                <Chat socket={socket} />
-                    {/* {selectedChat ? (
-                        <Chat socket={socket} />
+                    {selectedChat ? (
+                        // Use `key` to force re-render on chat change
+                        <Chat key={selectedChat.id} socket={socket} />
                     ) : (
-             
                         <Box sx={{ width: "100%", flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                        <Box sx={{ padding: "10px 20px", borderRadius: "50px", backgroundColor: "background.level2" }}>
-                          <Typography sx={{textAlign: "center"}}>
-                          Выберите чат, чтобы начать общение
-                          </Typography>
+                            <Box sx={{ padding: "10px 20px", borderRadius: "50px", backgroundColor: "background.level2" }}>
+                                <Typography sx={{ textAlign: "center" }}>
+                                    Выберите чат, чтобы начать общение
+                                </Typography>
+                            </Box>
                         </Box>
-                      </Box>
-                    )} */}
+                    )}
                 </Box>
             </Box>
         </Grid>
         <Grid xs={3} sx={{height: "100vh"}}>
-            <RopsList
+            <RopsList 
+            
                 chats={props.chats}
                 selectedChatId={selectedChat?.id}  
                 setSelectedChat={handleSetSelectedChat}

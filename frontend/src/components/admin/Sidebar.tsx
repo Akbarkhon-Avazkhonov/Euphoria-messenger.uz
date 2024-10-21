@@ -9,7 +9,7 @@ import Sheet from '@mui/joy/Sheet';
 import ColorSchemeToggle from '@/components/ui/ColorSchemeToggle';
 import NavLink from '@/components/ui/NavLink';
 import LogoutModal from '@/components/ui/LogoutModal';
-
+import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
 import GroupRounded from "@mui/icons-material/GroupRounded";
 import MenuOpenRoundedIcon from '@mui/icons-material/MenuOpenRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
@@ -27,6 +27,11 @@ const SidebarItems = [
         title: 'Роли',
         href: "/admin/roles",
         icon: <TuneRoundedIcon />
+    },
+    {
+        title: 'РОПЫ',
+        href: "/admin/rop",
+        icon: <GroupsRoundedIcon />
     },
     {
         title: 'Чат',

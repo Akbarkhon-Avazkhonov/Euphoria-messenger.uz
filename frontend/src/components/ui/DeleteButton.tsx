@@ -15,7 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function DeleteButton(
     props: {
-        id: number;
+        id: number | string;
         url: string;
         canDelete?: boolean;
         isMaterial?: boolean;

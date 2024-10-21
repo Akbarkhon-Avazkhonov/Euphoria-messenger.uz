@@ -1,7 +1,7 @@
 Euphoria-messenger.uz
 
 http://213.230.71.82:5050/ - pgAdmin4 (postgres@gmail.com postgres)
-http://euphoria-messenger.uz:9000/ - Portainer (admin 123qwe!secret)
+https://euphoria-messenger.uz:9000/ - Portainer (admin secret123qwe!)
 
 http://euphoria-messenger.uz:4000/ - backend 
 http://euphoria-messenger.uz:4000/api - backend api

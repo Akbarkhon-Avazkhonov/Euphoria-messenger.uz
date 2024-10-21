@@ -79,6 +79,135 @@ export class UsersService {
     };
   }
 
+  async getOperators() {
+    const query = `
+    SELECT 
+    u."id",
+u."login", 
+u."name", 
+u."role",
+u."created_at",
+t."phoneNumber",
+t."verified"
+FROM "Users" u
+LEFT JOIN "TgUsers" t ON u."id" = t."user_id"
+LEFT JOIN "Roles" r ON u."role" = r."name"
+WHERE r."access" ->> 'can_manage_users' = 'false';
+  `;
+    const result = await this.pgService.query(query);
+
+    return {
+      message: 'Список операторов',
+      data: result.rows,
+    };
+  }
+  async getRops() {
+    const query = `
+      SELECT 
+      u."id",
+  u."login", 
+  u."name", 
+  u."role",
+  u."created_at",
+  t."phoneNumber",
+  t."verified"
+FROM "Users" u
+LEFT JOIN "TgUsers" t ON u."id" = t."user_id"
+LEFT JOIN "Roles" r ON u."role" = r."name"
+WHERE r."access" ->> 'can_manage_users' = 'true';
+    `;
+    const result = await this.pgService.query(query);
+
+    return {
+      message: 'Список пользователей',
+      data: result.rows,
+    };
+  }
+
+  async getRopOperators(id: number) {
+    const query = `
+      SELECT
+      u."id",
+        u."login",
+        u."name",
+        u."role",
+        u."created_at",
+        tg."phoneNumber"
+      FROM "Users" u
+      LEFT JOIN "TgUsers" tg ON u."id" = tg."user_id"
+      LEFT JOIN "Rops" r ON u."id" = r."operator_id"
+      WHERE r."rop_id" = $1
+    `;
+    const result = await this.pgService.query(query, [id]);
+    return {
+      message: 'Операторы РОП',
+      data: result.rows,
+    };
+  }
+
+  async getOperatorsNotRop(id: number) {
+    const query = `
+      SELECT
+        u."id",
+        u."login",
+        u."name",
+        u."role",
+        u."created_at",
+        tg."phoneNumber"
+      FROM "Users" u
+      LEFT JOIN "TgUsers" tg ON u."id" = tg."user_id"
+      LEFT JOIN "Rops" r ON u."id" = r."operator_id" AND r."rop_id" = $1
+      WHERE r."rop_id" IS NULL;
+    `;
+
+    const result = await this.pgService.query(query, [id]);
+    return {
+      message: 'Операторы не связанные с этим РОПом',
+      data: result.rows,
+    };
+  }
+
+  async addRopOperator(ropId: number, userId: number) {
+    // First, check if the Rop-Operator pair already exists
+    const checkQuery = `
+      SELECT COUNT(*)
+      FROM "Rops"
+      WHERE "rop_id" = $1 AND "operator_id" = $2;
+    `;
+
+    const checkResult = await this.pgService.query(checkQuery, [ropId, userId]);
+    const count = parseInt(checkResult.rows[0].count, 10);
+
+    if (count > 0) {
+      return {
+        message: 'Уже существует', // Return this message if the pair already exists
+      };
+    }
+
+    // If not already existing, insert the new Rop-Operator pair
+    const insertQuery = `
+      INSERT INTO "Rops" (rop_id, operator_id)
+      VALUES ($1, $2);
+    `;
+
+    await this.pgService.query(insertQuery, [ropId, userId]);
+
+    return {
+      message: 'Оператор успешно добавлен',
+    };
+  }
+
+  async removeRopOperator(ropId: number, userId: number) {
+    const query = `
+      DELETE FROM "Rops"
+      WHERE "rop_id" = $1 AND "operator_id" = $2;
+    `;
+    await this.pgService.query(query, [ropId, userId]);
+    return {
+      message: 'Оператор успешно удален',
+    };
+  }
+
   async updatePassword(login: string, body: UpdateUserPasswordDto) {
     if (body.password) {
       const hashedPassword = await bcrypt.hash(body.password, 10);

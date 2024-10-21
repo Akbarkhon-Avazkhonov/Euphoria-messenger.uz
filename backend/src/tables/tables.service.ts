@@ -11,6 +11,7 @@ export class TablesService implements OnModuleInit {
     await this.createUsers();
     await this.createDefaultUsers();
     await this.createTgUsers();
+    await this.createRops();
   }
 
   // Создание таблицы Roles
@@ -134,5 +135,21 @@ export class TablesService implements OnModuleInit {
     CREATE INDEX IF NOT EXISTS idx_tg_users_user_id ON "TgUsers" ("user_id");
     `;
     await this.pgService.safeQuery(query_create_table, 'TgUsers');
+  }
+
+  async createRops() {
+    const query_create_table = `
+    CREATE TABLE IF NOT EXISTS "Rops" (
+      "id" SERIAL PRIMARY KEY,
+      "rop_id" INTEGER,
+      "operator_id" INTEGER,
+      "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+      FOREIGN KEY ("rop_id") REFERENCES "Users"("id") ON DELETE CASCADE,
+      FOREIGN KEY ("operator_id") REFERENCES "Users"("id") ON DELETE CASCADE
+    );
+    `;
+    await this.pgService.safeQuery(query_create_table, 'Rops');
   }
 }
