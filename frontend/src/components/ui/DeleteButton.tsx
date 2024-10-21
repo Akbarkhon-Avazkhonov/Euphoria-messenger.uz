@@ -20,7 +20,7 @@ export default function DeleteButton(
         canDelete?: boolean;
         isMaterial?: boolean;
         dangerText?: string;
-        deleteCallback?: (id:number) => void;
+        deleteCallback?: (id:number | string) => void;
     }
 ) {
   const [open, setOpen] = React.useState<boolean>(false);
