@@ -15,7 +15,7 @@ import { AccessKeys } from "@/types/access";
 
 
 const accessValues: Record<AccessKeys, boolean> = {
-  can_manage_user: false,
+  can_manage_users: false,
   can_write: true,
   can_read: true,
   can_delete: false,
@@ -31,7 +31,7 @@ const accessValues: Record<AccessKeys, boolean> = {
 };
 
 const accessDescription: Record<AccessKeys, string> = {
-  can_manage_user: "Управление пользователями",
+  can_manage_users: "Управление пользователями",
   can_write: "Запись",
   can_read: "Чтение",
   can_delete: "Удаление",

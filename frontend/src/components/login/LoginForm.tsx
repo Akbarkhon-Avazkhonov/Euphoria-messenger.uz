@@ -54,6 +54,7 @@ export default function LoginForm() {
       document.cookie = `token=${data.token}; path=/; max-age=86400`;
       document.cookie = `role=${data.role}; path=/; max-age=86400`;
       document.cookie = `session=${data.session}; path=/; max-age=86400`;
+      document.cookie = `id=${data.id}; path=/; max-age=86400`;
       await setEncryptedCookie("access", data.access);
 
       // document.cookie = `access=${JSON.stringify(data.access)}; path=/; max-age=86400`;

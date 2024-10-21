@@ -14,7 +14,7 @@ export class AuthService {
     const query = `
   SELECT u.*, r.* , u.id as id
   FROM "Users" u
-  JOIN "Roles" r ON u.role = r.name 
+  JOIN "Roles" r ON u."role" = r."name" 
   WHERE u.login = '${body.login}';
 `;
     const result = await this.pgService.query(query);
@@ -42,6 +42,7 @@ export class AuthService {
         role: user.role,
         access: user.access,
       };
+      console.log('payload:', payload);
       const token = await this.jwtService.signAsync(payload);
       const jwtSession = await this.jwtService.signAsync({ session });
       return {
@@ -50,7 +51,7 @@ export class AuthService {
         token,
         session: jwtSession,
         access: user.access,
-        role: user.role,
+        role: user.role.toString(),
       };
     } else {
       const payload = {
@@ -63,7 +64,7 @@ export class AuthService {
         message: 'Вход выполнен успешно 👍',
         id: user.id,
         token,
-        role: user.role,
+        role: user.role.toString(),
         access: user.access,
       };
     }

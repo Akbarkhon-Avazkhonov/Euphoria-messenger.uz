@@ -15,7 +15,7 @@ function arrayBufferToString(buffer: ArrayBuffer): string {
 }
 
 // Функция для получения ключа шифрования из строки
-async function getEncryptionKey(key: string): Promise<CryptoKey> {
+export async function getEncryptionKey(key: string): Promise<CryptoKey> {
   const keyBuffer = stringToArrayBuffer(key);
   return crypto?.subtle?.importKey(
     'raw', 
@@ -27,7 +27,7 @@ async function getEncryptionKey(key: string): Promise<CryptoKey> {
 }
 
 // Функция шифрования данных перед записью в куки
-async function encryptData(data: string): Promise<string> {
+export async function encryptData(data: string): Promise<string> {
   const key = await getEncryptionKey(ENCRYPTION_KEY);
   const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH)); // Генерация случайного IV
 
@@ -69,7 +69,7 @@ export async function setEncryptedCookie(name: string, value: Record<string, any
 
 
 // Функция дешифрования данных
-async function decryptData(encryptedData: string): Promise<string | null> {
+export async function decryptData(encryptedData: string): Promise<string | null> {
     try {
       const key = await getEncryptionKey(ENCRYPTION_KEY);
       const encryptedBytes = Uint8Array.from(atob(encryptedData), (c) => c.charCodeAt(0));
@@ -130,3 +130,29 @@ export const fetchAccess = async (
     setAccess(false); // В случае ошибки, блокируем доступ
   }
 };
+
+export const middlewareAccess = async (
+  accessName: AccessKeys,
+  cookie: string,
+) => {
+    try {
+      const encryptData = await decryptData(cookie);
+      if (encryptData) {
+        const decryptedAccess = JSON.parse(encryptData);
+        console.log('Decrypted Access:', decryptedAccess);
+        if (decryptedAccess) {
+          return decryptedAccess[accessName]; // Устанавливаем значение can_write
+        } else {
+          return false; // Если куки не найдены или ошибка, блокируем доступ
+        }
+      } else {
+        return false; // Если encryptData равно null, блокируем доступ
+      }
+
+ 
+    } catch (error) {
+      console.error('Ошибка при получении доступа:', error);
+      return (false); // В случае ошибки, блокируем доступ
+    }
+  };
+  

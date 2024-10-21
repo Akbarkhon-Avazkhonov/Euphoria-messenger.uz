@@ -1,5 +1,5 @@
 export type AccessKeys =
-  | "can_manage_user"
+  | "can_manage_users"
   | "can_write"
   | "can_read"
   | "can_delete"
