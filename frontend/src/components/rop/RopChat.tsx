@@ -4,6 +4,7 @@ import { socket } from "@/socket"
 import { Box, Grid, Typography } from "@mui/joy";
 import RopsList from "@/components/ui/admin/RopsList";
 import React from "react";
+import OperatorsList from "../ui/rop/OperatorsList";
 
 interface RopChatProps {
     chats: any
@@ -58,7 +59,7 @@ export default function RopChat(
             </Box>
         </Grid>
         <Grid xs={3} sx={{height: "100vh"}}>
-            <RopsList 
+            <OperatorsList 
             
                 chats={props.chats}
                 selectedChatId={selectedChat?.id}  

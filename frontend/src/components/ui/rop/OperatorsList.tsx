@@ -50,7 +50,7 @@ export default function OperatorsList(props: any) {
           fontWeight="lg"
           sx={{ mr: 'auto' }}
         >
-          РОПЫ
+          Операторы
         </Typography>
         <IconButton onClick={handleToast}>
           <TuneRounded />
