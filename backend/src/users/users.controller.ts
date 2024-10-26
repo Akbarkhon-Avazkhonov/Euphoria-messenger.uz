@@ -29,6 +29,11 @@ export class UsersController {
     return this.usersService.create(body);
   }
 
+  @Patch('update-user/:id')
+  update(@Param('id') id: string, @Body() body: UpdateUserDto) {
+    return this.usersService.update(+id, body);
+  }
+
   @Auth()
   @Get('profile')
   getProfile(@Request() req: any) {

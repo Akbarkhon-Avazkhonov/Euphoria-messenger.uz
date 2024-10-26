@@ -23,7 +23,7 @@ export class MessagesGateway {
       );
       if (telegramInstance) {
         const messages = await telegramInstance.getMessages(payload[0].userId, {
-          limit: 10,
+          limit: 100,
         });
         const result = await Promise.all(
           messages.map(async (message) => {
@@ -55,8 +55,6 @@ export class MessagesGateway {
               // Add the photo URL to the message data
               messageData.photoUrl = photoPath;
               messageData.media = true; // Indicate that this message contains media
-              console.log('photoUrl', messageData.photoUrl);
-              console.log('media', messageData.media);
             } else if (message.media && message.media.voice) {
               const voicePath = `uploads/${message.media.document.id}.ogg`;
               if (!fs.existsSync(voicePath)) {

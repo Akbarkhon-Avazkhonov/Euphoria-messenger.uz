@@ -35,6 +35,7 @@ interface UsersTableProps {
 }
 import SwapVertRounded from '@mui/icons-material/SwapVertRounded';
 import { Select } from '@mui/joy';
+import EditUser from './EditUser';
 export default function UsersTable(
   {users}: UsersTableProps
 ) {
@@ -175,9 +176,9 @@ export default function UsersTable(
               <th style={{ width: '4%', padding: '10px 6px', textAlign: 'center' }}>
                 <SettingsRoundedIcon />
               </th>
-              <th style={{  width: '4%', padding: '10px 6px', textAlign: 'center' }}>
+              {/* <th style={{  width: '4%', padding: '10px 6px', textAlign: 'center' }}>
                 <DeleteOutlineRoundedIcon />
-              </th>
+              </th> */}
             </tr>
           </thead>
           <tbody>
@@ -227,15 +228,13 @@ export default function UsersTable(
                   <Typography level="body-xs">{row.created_at.slice(0,10)}</Typography>
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  <IconButton size="sm" color="primary" variant="soft">
-                    <EditRoundedIcon />
-                  </IconButton>
+                  <EditUser id={row.id} name={row.name} login={row.login} role={row.role}/>
                 </td>
-                <td style={{ textAlign: 'center' }}>
+                {/* <td style={{ textAlign: 'center' }}>
                   <IconButton size="sm" color="danger" variant="soft">
                     <DeleteOutlineRoundedIcon />
                   </IconButton>
-                </td>
+                </td> */}
 
               </tr>
             ))}

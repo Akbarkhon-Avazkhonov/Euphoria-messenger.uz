@@ -10,6 +10,7 @@ export class UsersService {
   async getAll() {
     const query = `
   SELECT 
+    u."id",
     u."login", 
     u."name", 
     u."role",
@@ -67,6 +68,45 @@ export class UsersService {
     };
   }
 
+  async update(
+    id: number,
+    body: { name?: string; login?: string; password?: string; role?: string },
+  ) {
+    if (body.password) {
+      const hashedPassword = await bcrypt.hash(body.password, 10);
+      const query = `
+        UPDATE "Users" SET  password = '${hashedPassword}'
+        WHERE id = ${id};
+      `;
+      await this.pgService.query(query);
+    }
+    if (body.name) {
+      const query = `
+        UPDATE "Users" SET  name = '${body.name}'
+        WHERE id = ${id};
+      `;
+      await this.pgService.query(query);
+    }
+    if (body.login) {
+      const query = `
+        UPDATE "Users" SET  login = '${body.login}'
+        WHERE id = ${id};
+      `;
+      await this.pgService.query(query);
+    }
+    if (body.role) {
+      const query = `
+        UPDATE "Users" SET  role = '${body.role}'
+        WHERE id = ${id};
+      `;
+      await this.pgService.query(query);
+    }
+    return {
+      message: 'Пользователь успешно обновлен',
+      data: id,
+      password: body.password,
+    };
+  }
   async getProfile(req: any) {
     const query = `
       SELECT  name, login, role FROM "Users" WHERE "login" = '${req.login}';

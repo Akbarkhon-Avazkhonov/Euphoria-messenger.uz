@@ -47,7 +47,6 @@ export class SessionGateway
     const session = await this.getSessionFromCookie(
       client.handshake.headers.cookie,
     );
-    console.log('Session:', session);
     if (!session) {
       client.disconnect();
       return;
@@ -83,7 +82,7 @@ export class SessionGateway
 
     const result = dialogs.map(
       (dialog) =>
-        dialog.isUser && {
+        dialog && {
           userId: dialog.id,
           title: dialog.title,
           unreadCount: dialog.unreadCount,

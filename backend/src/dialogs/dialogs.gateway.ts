@@ -44,7 +44,7 @@ export class DialogsGateway {
 
       // Map dialogs to a cleaner format
       const result: Dialog[] = dialogs
-        .filter((dialog) => dialog.isUser)
+        // .filter((dialog) => dialog.isUser)
         .map((dialog) => ({
           userId: dialog.id,
           title: dialog.title,

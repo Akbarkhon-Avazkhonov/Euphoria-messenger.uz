@@ -46,7 +46,6 @@ export default function Chat(props: ChatProps) {
   React.useEffect(() => {
     fetchAccess('can_write', setCanWrite);
     fetchAccess('can_read_photo', setCanReadPhoto);
-    console.log('canReadPhoto', canReadPhoto);
   }, []);
 
   const sendNewMessage = (message: string, userId: string) => {
@@ -115,11 +114,11 @@ export default function Chat(props: ChatProps) {
 
     props.socket.on('dialogs', (dialogs) => {
       setDialogs(dialogs);
-      console.log(dialogs);
     });
 
     props.socket.on('getMessages', (messages) => {
       setChatMessages(messages);
+      console.log(messages);
     });
 
     props.socket.on('newMessage', (message) => {
@@ -247,7 +246,8 @@ export default function Chat(props: ChatProps) {
 
             {chatMessages.map((message: any, index: number) => {
               const isYou = message.out;
-              const show = message.peerId.userId == selectedChat.userId;
+              const show = (message.peerId.userId == selectedChat.userId) || (message.peerId.chatId == Math.abs(selectedChat.userId));
+
               if (show) {
                 return (
                   <Stack

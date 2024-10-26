@@ -15,6 +15,7 @@ import MenuOpenRoundedIcon from '@mui/icons-material/MenuOpenRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import QuestionAnswerRoundedIcon from '@mui/icons-material/QuestionAnswerRounded';
+import Diversity3RoundedIcon from '@mui/icons-material/Diversity3Rounded';
 import { usePathname } from "next/navigation";
 
 const SidebarItems = [
@@ -37,6 +38,11 @@ const SidebarItems = [
         title: 'Чат',
         href: "/admin/chat",
         icon: <QuestionAnswerRoundedIcon />
+    },
+    {
+        title: 'Группы',
+        href: "/admin/groups",
+        icon: <Diversity3RoundedIcon />
     }
 ];
 

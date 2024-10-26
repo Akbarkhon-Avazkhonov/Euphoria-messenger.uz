@@ -21,13 +21,13 @@ type ChatBubbleProps = MessageProps & {
 };
 
 export default function ChatBubble(props: ChatBubbleProps) {
-  const { message, variant,media = undefined ,date, photoUrl=undefined ,canReadPhoto , voiceUrl = undefined} = props;
-  const isSent = variant === 'sent';
+  const { message, out,media = undefined ,date, photoUrl=undefined ,canReadPhoto , voiceUrl = undefined} = props;
+  const isSent = out;
   const [isHovered, setIsHovered] = React.useState<boolean>(false);
   const [isLiked, setIsLiked] = React.useState<boolean>(false);
   const [isCelebrated, setIsCelebrated] = React.useState<boolean>(false);
   let fileName = 'Отправленный файл'
-  console.log('canReadPhoto',canReadPhoto)
+
   if (media != 'null' && media) {
     try{
     const mediaObj = JSON.parse(media)

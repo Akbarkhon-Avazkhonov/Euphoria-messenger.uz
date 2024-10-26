@@ -1,4 +1,5 @@
 import { TelegramClient } from 'telegram';
+import { LogLevel } from 'telegram/extensions/Logger';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { StringSession } from 'telegram/sessions';
 const TEST_SERVERS = process.env.TEST_SERVERS == 'true';
@@ -21,6 +22,7 @@ export async function telegramClient(
   );
   if (client.disconnected) {
     await client.connect();
+    client.setLogLevel(LogLevel.DEBUG);
   }
   if (TEST_SERVERS) {
     client.session.setDC(
