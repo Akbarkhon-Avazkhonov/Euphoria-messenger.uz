@@ -7,7 +7,6 @@ services:
       POSTGRES_DB: euphoria-messenger.uz
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      # - ./initdb:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     networks:
