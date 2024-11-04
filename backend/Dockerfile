@@ -9,6 +9,8 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 
+# создай папку uploads
+RUN mkdir -p /app/uploads
 # Собираем проект
 RUN npm run build
 
