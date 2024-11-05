@@ -67,7 +67,6 @@ export default function RopsTable(
     newValue: number | null,
   ) => {
     setRecordsPerPage(parseInt(String(newValue), 10));
-    console.log(newValue);
     setCurrentPage(1); // Reset to first page on records per page change
   };
 

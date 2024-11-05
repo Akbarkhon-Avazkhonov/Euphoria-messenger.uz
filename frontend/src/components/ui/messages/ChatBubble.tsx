@@ -12,6 +12,8 @@ import { socket } from "@/socket";
 import { MessageProps } from '@/types/message';
 import { Card, CardCover } from '@mui/joy';
 import { AudioPlayer } from 'react-audio-play';
+import ModalImage from "react-modal-image";
+
 type ChatBubbleProps = MessageProps & {
   userId: string;
   variant: 'sent' | 'received';
@@ -109,12 +111,17 @@ export default function ChatBubble(props: ChatBubbleProps) {
           photoUrl ? (
             <Card sx={{ maxWidth: 600, flexGrow: 1, minHeight: '200px' }}>
               <CardCover>
-                <img
+              <ModalImage
+                  small={`${process.env.NEXT_PUBLIC_BACKEND_URL}/${photoUrl}`}
+                  large={`${process.env.NEXT_PUBLIC_BACKEND_URL}/${photoUrl}`}
+                  alt="Hello World!"
+                />
+                {/* <img
                   loading='lazy'
                   alt={photoUrl}
                   src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/${photoUrl}`}
                   style={{ objectFit: 'contain', height: '100%', width: '100%' }}
-                />
+                /> */}
               </CardCover>
             </Card>
 

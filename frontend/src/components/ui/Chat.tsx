@@ -83,7 +83,6 @@ export default function Chat(props: ChatProps) {
   
   const onNewMessage = (message: any) => {
     message = parse(message);
-    console.log(message);
     setNewMessage(message);
     setDialogs((prev) => {
       const newDialogs = [...prev];
@@ -118,7 +117,6 @@ export default function Chat(props: ChatProps) {
 
     props.socket.on('getMessages', (messages) => {
       setChatMessages(messages);
-      console.log(messages);
     });
 
     props.socket.on('newMessage', (message) => {
@@ -126,7 +124,6 @@ export default function Chat(props: ChatProps) {
     });
 
     props.socket.on('getFile', (data: any) => {
-      console.log(data);
       window.open(data, '_blank');
     })
   }, []);

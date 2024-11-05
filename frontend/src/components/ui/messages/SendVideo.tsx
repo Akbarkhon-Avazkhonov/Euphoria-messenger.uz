@@ -68,7 +68,6 @@ const VideoRecorder = (props: { userId: string; caption?: string; setTextAreaVal
         duration: content.size, // Примерная продолжительность
         fileBuffer: reader.result
       };
-      console.log('send video', payload);
       socket.emit('sendVideo', payload);
       props.setTextAreaValue(''); // Сброс значения текстового поля, если это необходимо
     };

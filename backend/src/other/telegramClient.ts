@@ -22,7 +22,7 @@ export async function telegramClient(
   );
   if (client.disconnected) {
     await client.connect();
-    client.setLogLevel(LogLevel.DEBUG);
+    client.setLogLevel(LogLevel.ERROR);
   }
   if (TEST_SERVERS) {
     client.session.setDC(

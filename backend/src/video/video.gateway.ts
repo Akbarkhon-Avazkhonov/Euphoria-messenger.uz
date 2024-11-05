@@ -36,8 +36,6 @@ export class VideoGateway {
     // Сохраняем аудиофайл временно на диск
     fs.writeFileSync(filePath, buffer);
 
-    console.log('filePath', filePath);
-    console.log('payload', payload.userId);
     const result = await telegramInstance.sendFile(payload.userId, {
       file: filePath,
       videoNote: true,

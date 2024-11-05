@@ -53,7 +53,6 @@ async function fetchPatchRole(
   access: object
 ) {
   const cookie = encodeURIComponent(window.document.cookie);
-  console.log("Cookies", cookie);
 
   return await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/roles/one/${id}`, {
     method: "PATCH",

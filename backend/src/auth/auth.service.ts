@@ -42,7 +42,6 @@ export class AuthService {
         role: user.role,
         access: user.access,
       };
-      console.log('payload:', payload);
       const token = await this.jwtService.signAsync(payload);
       const jwtSession = await this.jwtService.signAsync({ session });
       return {

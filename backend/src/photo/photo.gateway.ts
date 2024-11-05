@@ -17,7 +17,6 @@ export class PhotoGateway {
   // Отправка аудиофайла
   @SubscribeMessage('sendPhoto')
   async handlePhoto(client: Socket, payload: any) {
-    console.log('handlePhoto');
     if (
       !client.data.session ||
       !payload.userId ||
@@ -31,9 +30,7 @@ export class PhotoGateway {
       console.log('payload.fileName', payload.fileName);
       return;
     }
-    console.log('client.data.session', client.data.session);
 
-    console.log('sendPhoto');
     const telegramInstance = this.telegramService.getTelegramClient(
       client.data.session,
     );
@@ -44,14 +41,12 @@ export class PhotoGateway {
     // Сохраняем аудиофайл временно на диск
     fs.writeFileSync(filePath, buffer);
 
-    console.log('filePath', filePath);
-    console.log('payload', payload.userId);
+
     const result = await telegramInstance.sendFile(payload.userId, {
       file: filePath,
       // photo: true,
       message: payload.caption,
     });
-    console.log('result', result);
 
     // client.emit('sendAudio', { status: 'success', data: result });
     fs.unlinkSync(filePath); // Удаление временного файла после отправки

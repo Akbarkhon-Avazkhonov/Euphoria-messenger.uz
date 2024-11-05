@@ -18,7 +18,6 @@ async function fetchAllUsers(cookies: string,id:string) {
      credentials: 'include',
      cache: 'no-cache',
  }).then((response) => response.json());
- console.log(response)
  return response;
 } 
 
@@ -29,7 +28,6 @@ export default async function User() {
  
   if (access) {
     const decryptAccess = await decryptData(access)
-    console.log(decryptAccess)
     if (decryptAccess && JSON.parse(decryptAccess).can_manage_users){
       // redirect to rop
       const token = cookieStore.get('token')?.value;

@@ -66,10 +66,7 @@ export default function AddOperator(
   
   const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    console.log(
-      props.id,
-      operator
-    )
+
     fetchAddRopOperator(props.id, operator).then(() => {
       setOpen(false);
     });

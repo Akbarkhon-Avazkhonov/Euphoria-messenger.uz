@@ -36,26 +36,28 @@ interface UsersTableProps {
 import SwapVertRounded from '@mui/icons-material/SwapVertRounded';
 import { Select } from '@mui/joy';
 import EditUser from './EditUser';
+import { userAgentFromString } from 'next/server';
 export default function UsersTable(
   {users}: UsersTableProps
 ) {
-  const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState <any[]>(users);
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(10);
   const [sortDirection, setSortDirection] = useState('asc');
 
   const handleSearch = (event:any) => {
-    const query = event.target.value.toLowerCase();
-    setSearchQuery(query);
-    setFilteredData(
-      filteredData.filter((user) =>
-        user.name.toLowerCase().includes(query)
-        || user.login.toLowerCase().includes(query)
-        || user.phoneNumber.toLowerCase().includes(query)
-      )
-    );
-    setCurrentPage(1); // Reset to first page on search
+    const query = event.target.value?.toLowerCase();
+    console.log(query);
+    if (query === '') {
+      setFilteredData(users);
+    } else {
+      setFilteredData(
+        users.filter((user) =>
+          user.name.toLowerCase().includes(query)
+          || user.login.toLowerCase().includes(query)
+        )
+      );
+    }
   };
 
   const handlePageChange = (newPage:any) => {
@@ -67,7 +69,6 @@ export default function UsersTable(
     newValue: number | null,
   ) => {
     setRecordsPerPage(parseInt(String(newValue), 10));
-    console.log(newValue);
     setCurrentPage(1); // Reset to first page on records per page change
   };
 
@@ -120,8 +121,7 @@ export default function UsersTable(
             size="sm"
             placeholder="Поиск пользователей"
             startDecorator={<SearchIcon />}
-            value={searchQuery}
-            onChange={handleSearch}
+            onInput={(e) => handleSearch(e)}
           />
         </FormControl>
       </Box>
@@ -182,7 +182,7 @@ export default function UsersTable(
             </tr>
           </thead>
           <tbody>
-            {users && users.map((row:any,index:any) => (
+            {users && filteredData.map((row:any,index:any) => (
               <tr key={index}>
                 <td style={{ textAlign: 'center', width: 120 }}>
                   {index + 1}

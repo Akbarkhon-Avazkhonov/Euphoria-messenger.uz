@@ -17,7 +17,6 @@ async function fetchUsers(cookies: string, id: string) {
      credentials: 'include',
      cache: 'no-cache',
  }).then((response) => response.json());
- console.log(response);
  return response;
 
 } 
