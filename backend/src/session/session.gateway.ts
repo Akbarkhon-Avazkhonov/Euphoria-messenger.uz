@@ -80,18 +80,20 @@ export class SessionGateway
     // Get initial dialogs and send to the client
     const dialogs = await telegramInstance.getDialogs({ limit: 100 });
 
-    const result = dialogs.map(
-      (dialog) =>
-        dialog && {
-          userId: dialog.id,
-          title: dialog.title,
-          unreadCount: dialog.unreadCount,
-          phone: dialog.entity?.phone,
-          message: dialog.message?.message,
-          date: dialog.message?.date,
-          status: dialog.entity?.status,
-        },
-    );
+    const result = dialogs
+      .filter((dialog) => dialog.isUser)
+      .map(
+        (dialog) =>
+          dialog && {
+            userId: dialog.id,
+            title: dialog.title,
+            unreadCount: dialog.unreadCount,
+            phone: dialog.entity?.phone,
+            message: dialog.message?.message,
+            date: dialog.message?.date,
+            status: dialog.entity?.status,
+          },
+      );
     client.emit('dialogs', result);
   }
 

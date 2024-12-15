@@ -172,7 +172,7 @@ export default function RopsTable(
               </th>
               
             
-              <th style={{ width: '4%', padding: '10px 6px', textAlign: 'center' }}>
+              <th style={{ width: '6%', padding: '10px 6px', textAlign: 'center' }}>
                 <RemoveRedEyeRoundedIcon />
               </th>
             
@@ -228,7 +228,7 @@ export default function RopsTable(
                   <Link href={
                     `/admin/rop/${row.id}/${row.name}`
                   }>
-                  <IconButton size="sm" color="primary" variant="soft">
+                  <IconButton size="sm" color="primary" >
                     <RemoveRedEyeRoundedIcon />
                   </IconButton>
                   </Link>

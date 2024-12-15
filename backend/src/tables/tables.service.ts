@@ -12,6 +12,7 @@ export class TablesService implements OnModuleInit {
     await this.createDefaultUsers();
     await this.createTgUsers();
     await this.createRops();
+    await this.createGroups();
   }
 
   // Создание таблицы Roles
@@ -151,5 +152,18 @@ export class TablesService implements OnModuleInit {
     );
     `;
     await this.pgService.safeQuery(query_create_table, 'Rops');
+  }
+
+  async createGroups() {
+    const query_create_table = `
+    CREATE TABLE IF NOT EXISTS "Groups" (
+      "id" SERIAL PRIMARY KEY,  -- Автоматический идентификатор
+      "title" VARCHAR(255) ,  -- Уникальная роль пользователя
+      "description" VARCHAR(255) DEFAULT '',  -- Описание роли
+      "users" INT[] DEFAULT '{}',  -- Массив идентификаторов пользователей
+      "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- Дата создания
+    );
+    `;
+    await this.pgService.safeQuery(query_create_table, 'Groups');
   }
 }

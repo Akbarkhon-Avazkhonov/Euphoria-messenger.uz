@@ -32,7 +32,7 @@ export class RedisIoAdapter extends IoAdapter {
       transports: ['websocket', 'polling'], // Allow multiple transports
     });
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('events').EventEmitter.defaultMaxListeners = 15;
+    require('events').EventEmitter.defaultMaxListeners = 30;
 
     server.adapter(this.adapterConstructor);
     return server;

@@ -153,7 +153,7 @@ export default function RolesTables({ roles }: RolesTableProps) {
               <th style={{ width: '4%', padding: '10px 6px', textAlign: 'center' }}>
                 <SettingsRoundedIcon />
               </th>
-              <th style={{ width: '4%', padding: '10px 6px', textAlign: 'center' }}>
+              <th style={{ width: '6%', padding: '10px 6px', textAlign: 'center' }}>
                 <DeleteOutlineRoundedIcon />
               </th>
             </tr>

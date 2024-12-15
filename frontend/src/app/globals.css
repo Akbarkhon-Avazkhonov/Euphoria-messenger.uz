@@ -31,3 +31,9 @@
     text-wrap: balance;
   }
 }
+
+
+.modal-image {
+  position: fixed; /* or absolute */
+  z-index: 9999; /* Set a high value to ensure it overlays */
+}

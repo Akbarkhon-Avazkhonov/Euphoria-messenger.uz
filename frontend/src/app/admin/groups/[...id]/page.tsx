@@ -2,11 +2,12 @@ import UsersTable from "@/components/admin/users/UsersTables";
 import AddUser from "@/components/admin/users/AddUser";
 import { Box, Typography } from "@mui/joy";
 import { cookies } from "next/headers";
-import GroupsTable from "@/components/admin/groups/GroupsTable";
-import AddGroup from "@/components/admin/groups/AddGroup";
+import RopsTable from "@/components/admin/rop/RopsTables";
+import AddOperator from "@/components/admin/rop/AddOperator";
+import OperatorsTable from "@/components/admin/rop/OperatorsTables";
 
-async function fetchGroups(cookies: string) {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/all`, {
+async function fetchUsers(cookies: string, id: string) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/getRopOperators/${id}`, {
      method: 'GET',
      headers: {
          'Content-Type': 'application/json',
@@ -17,8 +18,10 @@ async function fetchGroups(cookies: string) {
      cache: 'no-cache',
  }).then((response) => response.json());
  return response;
+
 } 
-export default async function Admin() {
+
+export default async function Rop({ params }: { params: { id: string[]} }) {
   const cookieStore = cookies()
   // get token from cookie
   const token = cookieStore.get('token')?.value;
@@ -27,7 +30,7 @@ export default async function Admin() {
     throw new Error("Token not found in cookies");
   }
 
-  const groups = await fetchGroups(token);
+  const users = await fetchUsers(token, params.id[0]);
     return (
     <Box
         component="main"
@@ -62,12 +65,13 @@ export default async function Admin() {
         >
   
             <Typography level="h2" component="h1">
-              Все группы
+            {decodeURIComponent(params.id[1])}
             </Typography>
-            <AddGroup />
-            
+            <AddOperator id={params.id[0]}/>
         </Box>
-        <GroupsTable groups={groups.data}/>
+        <OperatorsTable 
+        rop_id={params.id[0]}
+        users={users.data}/>
     </Box>
     );
 }

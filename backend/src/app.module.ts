@@ -21,6 +21,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { PhotoModule } from './photo/photo.module';
 import { VideoModule } from './video/video.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
+import { GroupsModule } from './groups/groups.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
     FileModule,
     PhotoModule,
     VideoModule,
+    GroupsModule,
   ],
   controllers: [AppController],
   providers: [AppService, TelegramService],

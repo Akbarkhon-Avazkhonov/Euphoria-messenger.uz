@@ -14,7 +14,7 @@ import Typography from '@mui/joy/Typography';
 import SearchIcon from '@mui/icons-material/Search';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
-
+import RemoveRedEyeRoundedIcon from '@mui/icons-material/RemoveRedEyeRounded';
 import BlockIcon from '@mui/icons-material/Block';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -23,11 +23,11 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import NumbersRoundedIcon from '@mui/icons-material/NumbersRounded';
 import Option from '@mui/joy/Option';
 import AvatarWithStatus from '@/components/ui/AvatarWithStatus';
-interface UserProps {
-  login: string;
-  name: string;
-  role: string;
-  phoneNumber: string;
+interface GroupsProps {
+  id: number;
+  title:string;
+  description: string;
+  user_count: string;
   created_at: string;
 }
 interface UsersTableProps {
@@ -35,29 +35,27 @@ interface UsersTableProps {
 }
 import SwapVertRounded from '@mui/icons-material/SwapVertRounded';
 import { Select } from '@mui/joy';
-import EditUser from './EditUser';
-import { userAgentFromString } from 'next/server';
-export default function UsersTable(
-  {users}: UsersTableProps
+import Link from 'next/link';
+export default function GroupsTable(
+  {groups}: any
 ) {
-  const [filteredData, setFilteredData] = useState <any[]>(users);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredData, setFilteredData] = useState <any[]>(groups);
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(10);
   const [sortDirection, setSortDirection] = useState('asc');
 
   const handleSearch = (event:any) => {
-    const query = event.target.value?.toLowerCase();
-    console.log(query);
-    if (query === '') {
-      setFilteredData(users);
-    } else {
-      setFilteredData(
-        users.filter((user) =>
-          user.name.toLowerCase().includes(query)
-          || user.login.toLowerCase().includes(query)
-        )
-      );
-    }
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+    setFilteredData(
+      filteredData.filter((user) =>
+        user.name.toLowerCase().includes(query)
+        || user.login.toLowerCase().includes(query)
+        || user.phoneNumber.toLowerCase().includes(query)
+      )
+    );
+    setCurrentPage(1); // Reset to first page on search
   };
 
   const handlePageChange = (newPage:any) => {
@@ -95,7 +93,7 @@ export default function UsersTable(
   // const currentData = filteredData.slice(startIndex, startIndex + recordsPerPage);
 
   React.useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/all`,{credentials: 'include'})
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/getRops`,{credentials: 'include'})
     .then((response) => response.json())
     .then((data) => {
       setFilteredData(data.data);
@@ -119,9 +117,10 @@ export default function UsersTable(
         <FormControl sx={{ flex: 1 }} size="sm">
           <Input
             size="sm"
-            placeholder="Поиск пользователей"
+            placeholder="Поиск группы"
             startDecorator={<SearchIcon />}
-            onInput={(e) => handleSearch(e)}
+            value={searchQuery}
+            onChange={handleSearch}
           />
         </FormControl>
       </Box>
@@ -156,17 +155,13 @@ export default function UsersTable(
                 <NumbersRoundedIcon />
               </th>
               <th style={{ width: 200, padding: '16px 6px' }}>
-                <Typography>Имя</Typography>
+                <Typography>Название</Typography>
+              </th>
+              <th style={{ width: 400, padding: '16px 6px'  }}>
+                Описание
               </th>
               <th style={{ width: 200, padding: '16px 6px'  }}>
-                Логин
-              </th>
-              <th style={{ width: 200, padding: '16px 6px'  }}>
-                    Телефон
-              </th>
-              <th style={{ width: 200, padding: '16px 6px'  }}>
-                    <Typography>Роль</Typography>
-                    
+                    Кол-во пользователей
               </th>
               <th style={{width: '15%', padding: '16px 6px'  }}>
                 Дата создания
@@ -174,71 +169,46 @@ export default function UsersTable(
               
             
               <th style={{ width: '6%', padding: '10px 6px', textAlign: 'center' }}>
-                <SettingsRoundedIcon />
+                <RemoveRedEyeRoundedIcon />
               </th>
-              {/* <th style={{  width: '4%', padding: '10px 6px', textAlign: 'center' }}>
-                <DeleteOutlineRoundedIcon />
-              </th> */}
+            
             </tr>
           </thead>
           <tbody>
-            {users && filteredData.map((row:any,index:any) => (
+            {groups && groups.map((row:any,index:any) => (
               <tr key={index}>
                 <td style={{ textAlign: 'center', width: 120 }}>
                   {index + 1}
                 </td>
                 <td>
                   <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <AvatarWithStatus size="sm" fullname={row.name[0]} />
-                    <Typography level="body-xs">{row.name}</Typography>
-                  </Box>
-                </td>
-                <td >
-                  <Box sx={
-                  {
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingRight: '24px',}
-                
-                }>
-                  <Typography level="body-xs">{row.login}</Typography>
-                  
+                    <AvatarWithStatus size="sm" fullname={row.title[0]} />
+                    <Typography level="body-xs">{row.title}</Typography>
                   </Box>
                 </td>
                 <td>
-                  <Typography level="body-xs">{row.phoneNumber}</Typography>
+                  <Typography level="body-xs">{row.description}</Typography>
                 </td>
-                {/* <td>
-                  <Chip
-                    size="sm"
-                    variant={row.isActive ? 'soft' : 'outlined'}
-                    color={row.isActive ? 'success' : 'danger'}
-                    startDecorator={row.isActive ? <CheckRoundedIcon /> : <BlockIcon />}
-                    sx={{ textTransform: 'capitalize' }}
-                  >
-                    {row.isActive ? 'Активен' : 'Неактивен'}
-                  </Chip>
-                </td> */}
-          
                 <td>
-                  <Typography level="body-xs">{row.role}</Typography>
+                  <Typography level="body-xs">{row.users.length}</Typography>
                 </td>
                 <td>
                   <Typography level="body-xs">{row.created_at.slice(0,10)}</Typography>
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  <EditUser id={row.id} name={row.name} login={row.login} role={row.role}/>
-                </td>
-                {/* <td style={{ textAlign: 'center' }}>
-                  <IconButton size="sm" color="danger" variant="soft">
-                    <DeleteOutlineRoundedIcon />
+                  <Link href={
+                    `/admin/groups/${row.id}/${row.title}`
+                  }>
+                  <IconButton size="sm" color="primary">
+                    <RemoveRedEyeRoundedIcon />
                   </IconButton>
-                </td> */}
+                  </Link>
+                </td>
+          
 
               </tr>
             ))}
-          </tbody>
+          </tbody> 
         </Table>
       </Sheet>
       <Box

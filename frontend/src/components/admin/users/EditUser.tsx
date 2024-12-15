@@ -92,7 +92,7 @@ export default function EditUser(
   return (
     <>
     
-        <IconButton size="sm" color="primary" variant="soft" onClick={() => setOpen(true)}>
+        <IconButton size="sm" color="primary"  onClick={() => setOpen(true)}>
                 <EditRoundedIcon />
         </IconButton>
       

@@ -35,14 +35,14 @@ const SidebarItems = [
         icon: <GroupsRoundedIcon />
     },
     {
-        title: 'Чат',
-        href: "/admin/chat",
-        icon: <QuestionAnswerRoundedIcon />
-    },
-    {
         title: 'Группы',
         href: "/admin/groups",
         icon: <Diversity3RoundedIcon />
+    },
+    {
+        title: 'Чат',
+        href: "/admin/chat",
+        icon: <QuestionAnswerRoundedIcon />
     }
 ];
 
