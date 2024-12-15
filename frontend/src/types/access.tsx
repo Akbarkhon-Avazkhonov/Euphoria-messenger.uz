@@ -10,5 +10,4 @@ export type AccessKeys =
   | "can_send_photo"
   | "can_read_photo"
   | "can_send_file"
-  | "can_read_file"
-  | "can_create_group";
+  | "can_read_file";

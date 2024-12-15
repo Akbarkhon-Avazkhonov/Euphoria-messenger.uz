@@ -14,7 +14,7 @@ import Typography from '@mui/joy/Typography';
 import SearchIcon from '@mui/icons-material/Search';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
-import RemoveRedEyeRoundedIcon from '@mui/icons-material/RemoveRedEyeRounded';
+
 import BlockIcon from '@mui/icons-material/Block';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -23,26 +23,25 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import NumbersRoundedIcon from '@mui/icons-material/NumbersRounded';
 import Option from '@mui/joy/Option';
 import AvatarWithStatus from '@/components/ui/AvatarWithStatus';
-interface GroupsProps {
-  id: number;
-  title:string;
-  description: string;
-  user_count: string;
+interface UserProps {
+  login: string;
+  name: string;
+  role: string;
+  phoneNumber: string;
   created_at: string;
 }
 interface UsersTableProps {
+  group_id: string;
     users : any[];
 }
 import SwapVertRounded from '@mui/icons-material/SwapVertRounded';
 import { Select } from '@mui/joy';
-import Link from 'next/link';
-import EditGroup from './EditGroup';
 import DeleteButton from '@/components/ui/DeleteButton';
-export default function GroupsTable(
-  {groups}: any
+export default function GroupUsersTable(
+  {group_id, users}: UsersTableProps
 ) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredData, setFilteredData] = useState <any[]>(groups);
+  const [filteredData, setFilteredData] = useState <any[]>(users);
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(10);
   const [sortDirection, setSortDirection] = useState('asc');
@@ -94,13 +93,13 @@ export default function GroupsTable(
   const startIndex = (currentPage - 1) * recordsPerPage;
   // const currentData = filteredData.slice(startIndex, startIndex + recordsPerPage);
 
-  React.useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/getRops`,{credentials: 'include'})
-    .then((response) => response.json())
-    .then((data) => {
-      setFilteredData(data.data);
-    });
-  } , []);
+  // React.useEffect(() => {
+  //   fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/getRops`,{credentials: 'include'})
+  //   .then((response) => response.json())
+  //   .then((data) => {
+  //     setFilteredData(data.data);
+  //   });
+  // } , []);
   return (
     <>
       <Box
@@ -119,7 +118,7 @@ export default function GroupsTable(
         <FormControl sx={{ flex: 1 }} size="sm">
           <Input
             size="sm"
-            placeholder="Поиск группы"
+            placeholder="Поиск пользователей"
             startDecorator={<SearchIcon />}
             value={searchQuery}
             onChange={handleSearch}
@@ -157,69 +156,75 @@ export default function GroupsTable(
                 <NumbersRoundedIcon />
               </th>
               <th style={{ width: 200, padding: '16px 6px' }}>
-                <Typography>Название</Typography>
+                <Typography>Имя</Typography>
               </th>
-              <th style={{ width: 400, padding: '16px 6px'  }}>
-                Описание
+              <th style={{ width: 200, padding: '16px 6px'  }}>
+                Логин
               </th>
-              {/* <th style={{ width: 200, padding: '16px 6px'  }}>
-                    Кол-во пользователей
-              </th> */}
+              <th style={{ width: 200, padding: '16px 6px'  }}>
+                    Телефон
+              </th>
+              <th style={{ width: 200, padding: '16px 6px'  }}>
+                    <Typography>Роль</Typography>
+                    
+              </th>
               <th style={{width: '15%', padding: '16px 6px'  }}>
                 Дата создания
               </th>
               
-              <th style={{ width: '6%', padding: '10px 6px', textAlign: 'center' }}>
-                <RemoveRedEyeRoundedIcon />
-              </th>
-              <th style={{ width: '4%', padding: '10px 6px', textAlign: 'center' }}>
-                <SettingsRoundedIcon />
-              </th>
-              <th style={{ width: '6%', padding: '10px 6px', textAlign: 'center' }}>
+        
+              <th style={{  width: '4%', padding: '10px 6px', textAlign: 'center' }}>
                 <DeleteOutlineRoundedIcon />
               </th>
-            
             </tr>
           </thead>
           <tbody>
-            {groups && groups.map((row:any,index:any) => (
+            {users && users.map((row:any,index:any) => (
               <tr key={index}>
                 <td style={{ textAlign: 'center', width: 120 }}>
                   {index + 1}
                 </td>
                 <td>
                   <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <AvatarWithStatus size="sm" fullname={row.title[0]} />
-                    <Typography level="body-xs">{row.title}</Typography>
+                    <AvatarWithStatus size="sm" fullname={row.name[0]} />
+                    <Typography level="body-xs">{row.name}</Typography>
+                  </Box>
+                </td>
+                <td >
+                  <Box sx={
+                  {
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingRight: '24px',}
+                
+                }>
+                  <Typography level="body-xs">{row.login}</Typography>
+                  
                   </Box>
                 </td>
                 <td>
-                  <Typography level="body-xs">{row.description}</Typography>
+                  <Typography level="body-xs">{row.phoneNumber}</Typography>
                 </td>
-                {/* <td>
-                  <Typography level="body-xs">{row.description}</Typography>
-                </td> */}
+          
+          
+                <td>
+                  <Typography level="body-xs">{row.role}</Typography>
+                </td>
                 <td>
                   <Typography level="body-xs">{row.created_at.slice(0,10)}</Typography>
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  <Link href={
-                    `/admin/groups/${row.id}/${row.title}`
-                  }>
-                  <IconButton size="sm" color="primary">
-                    <RemoveRedEyeRoundedIcon />
-                  </IconButton>
-                  </Link>
+                  <DeleteButton 
+                    id={`${group_id}/${row.id}`}
+                    url = {`groups/removeGroupUser`}
+                   canDelete
+                  />
                 </td>
-                <td style={{ textAlign: 'center' }}>
-                  <EditGroup group_id={row.id} title={row.title} description={row.description} />
-                </td>
-                <td style={{ textAlign: 'center' }}>
-                  <DeleteButton id={row.id} canDelete={true} url={'groups/group'} />
-                </td>
+
               </tr>
             ))}
-          </tbody> 
+          </tbody>
         </Table>
       </Sheet>
       <Box

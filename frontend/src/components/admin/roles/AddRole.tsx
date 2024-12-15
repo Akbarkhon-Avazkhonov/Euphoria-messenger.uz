@@ -28,7 +28,6 @@ const accessValues: Record<AccessKeys, boolean> = {
   can_read_photo: false,
   can_send_file: false,
   can_read_file: false,
-  can_create_group: false,
 };
 
 const accessDescription: Record<AccessKeys, string> = {
@@ -44,7 +43,6 @@ const accessDescription: Record<AccessKeys, string> = {
   can_read_photo: "Чтение фото",
   can_send_file: "Отправка файла",
   can_read_file: "Чтение файла",
-  can_create_group: "Создание группы",
 };
 
 async function fetchPostRole(

@@ -25,14 +25,14 @@ const SidebarItems = [
         icon: <GroupRounded />
     },
     {
-        title: 'Роли',
-        href: "/admin/roles",
-        icon: <TuneRoundedIcon />
-    },
-    {
         title: 'РОПЫ',
         href: "/admin/rop",
         icon: <GroupsRoundedIcon />
+    },
+    {
+        title: 'Роли',
+        href: "/admin/roles",
+        icon: <TuneRoundedIcon />
     },
     {
         title: 'Группы',

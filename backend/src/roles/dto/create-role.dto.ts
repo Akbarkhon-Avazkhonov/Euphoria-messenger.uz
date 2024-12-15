@@ -25,7 +25,6 @@ export class CreateRoleDto {
       can_read_photo: true,
       can_send_file: true,
       can_read_file: true,
-      can_create_group: true,
     },
     description: 'Права доступа',
   })
@@ -49,6 +48,5 @@ export class CreateRoleDto {
     can_send_file: boolean;
     can_read_file: boolean;
     // Group
-    can_create_group: boolean;
   };
 }

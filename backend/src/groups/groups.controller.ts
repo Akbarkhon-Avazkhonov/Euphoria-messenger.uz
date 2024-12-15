@@ -27,17 +27,41 @@ export class GroupsController {
     return this.groupsService.findAll();
   }
 
-  @Get('one/:id')
+  @Get('group/:id')
   findOne(@Param('id') id: string) {
     return this.groupsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateGroupDto: UpdateGroupDto) {
-    return this.groupsService.update(+id, updateGroupDto);
+  @Get('getGroupUsers/:id')
+  getGroupUsers(@Param('id') id: string) {
+    return this.groupsService.getGroupUsers(+id);
   }
 
-  @Delete(':id')
+  @Post('addUser/:groupId/:userId')
+  addRopOperator(
+    @Param('groupId') groupId: string,
+    @Param('userId') userId: string,
+  ) {
+    return this.groupsService.addUser(+groupId, +userId);
+  }
+
+  @Patch('update/:group_id')
+  update(
+    @Param('group_id') group_id: string,
+    @Body() updateGroupDto: UpdateGroupDto,
+  ) {
+    return this.groupsService.update(+group_id, updateGroupDto);
+  }
+
+  @Delete('removeGroupUser/:groupId/:userId')
+  removeGroupUser(
+    @Param('groupId') groupId: string,
+    @Param('userId') userId: string,
+  ) {
+    return this.groupsService.removeGroupUser(+groupId, +userId);
+  }
+
+  @Delete('group/:id')
   remove(@Param('id') id: string) {
     return this.groupsService.remove(+id);
   }

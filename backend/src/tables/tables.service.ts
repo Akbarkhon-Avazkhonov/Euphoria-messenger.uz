@@ -13,6 +13,7 @@ export class TablesService implements OnModuleInit {
     await this.createTgUsers();
     await this.createRops();
     await this.createGroups();
+    await this.createGroupsUsers();
   }
 
   // Создание таблицы Roles
@@ -49,8 +50,7 @@ export class TablesService implements OnModuleInit {
         "can_send_photo": true,
         "can_read_photo": true,
         "can_send_file": true,
-        "can_read_file": true,
-        "can_create_group": true
+        "can_read_file": true
       }', 'Администратор'),
       ('Оператор', '{
         "can_manage_users": false,
@@ -64,8 +64,7 @@ export class TablesService implements OnModuleInit {
         "can_send_photo": false,
         "can_read_photo": false,
         "can_send_file": false,
-        "can_read_file": false,
-        "can_create_group": true
+        "can_read_file": false
       }', 'Пользователь'),
       ('РОП', '{
         "can_manage_users": true,
@@ -79,8 +78,7 @@ export class TablesService implements OnModuleInit {
         "can_send_photo": false,
         "can_read_photo": false,
         "can_send_file": false,
-        "can_read_file": false,
-        "can_create_group": false
+        "can_read_file": false
       }', 'РОП')
     ON CONFLICT (name) DO NOTHING;  -- Avoid duplicates
     `;
@@ -160,10 +158,25 @@ export class TablesService implements OnModuleInit {
       "id" SERIAL PRIMARY KEY,  -- Автоматический идентификатор
       "title" VARCHAR(255) ,  -- Уникальная роль пользователя
       "description" VARCHAR(255) DEFAULT '',  -- Описание роли
-      "users" INT[] DEFAULT '{}',  -- Массив идентификаторов пользователей
       "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- Дата создания
     );
     `;
     await this.pgService.safeQuery(query_create_table, 'Groups');
+  }
+
+  async createGroupsUsers() {
+    const query_create_table = `
+    CREATE TABLE IF NOT EXISTS "GroupsUsers" (
+      "id" SERIAL PRIMARY KEY,
+      "group_id" INTEGER,
+      "user_id" INTEGER,
+      "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+      FOREIGN KEY ("group_id") REFERENCES "Groups"("id") ON DELETE CASCADE,
+      FOREIGN KEY ("user_id") REFERENCES "Users"("id") ON DELETE CASCADE
+    );
+  `;
+    await this.pgService.safeQuery(query_create_table, 'GroupsUsers');
   }
 }

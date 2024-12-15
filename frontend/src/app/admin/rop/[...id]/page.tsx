@@ -7,7 +7,7 @@ import AddOperator from "@/components/admin/rop/AddOperator";
 import OperatorsTable from "@/components/admin/rop/OperatorsTables";
 
 async function fetchUsers(cookies: string, id: string) {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/getRopOperators/${id}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/getGroupUsers/${id}`, {
      method: 'GET',
      headers: {
          'Content-Type': 'application/json',
@@ -31,6 +31,7 @@ export default async function Rop({ params }: { params: { id: string[]} }) {
   }
 
   const users = await fetchUsers(token, params.id[0]);
+  console.log(users);
     return (
     <Box
         component="main"

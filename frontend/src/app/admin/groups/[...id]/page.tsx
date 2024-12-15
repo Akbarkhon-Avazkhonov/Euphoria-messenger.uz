@@ -2,12 +2,13 @@ import UsersTable from "@/components/admin/users/UsersTables";
 import AddUser from "@/components/admin/users/AddUser";
 import { Box, Typography } from "@mui/joy";
 import { cookies } from "next/headers";
-import RopsTable from "@/components/admin/rop/RopsTables";
-import AddOperator from "@/components/admin/rop/AddOperator";
+
 import OperatorsTable from "@/components/admin/rop/OperatorsTables";
+import AddUserGroup from "@/components/admin/groups/AddUserGroup";
+import GroupUsersTable from "@/components/admin/groups/GroupUsersTable";
 
 async function fetchUsers(cookies: string, id: string) {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/getRopOperators/${id}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/getGroupUsers/${id}`, {
      method: 'GET',
      headers: {
          'Content-Type': 'application/json',
@@ -67,10 +68,10 @@ export default async function Rop({ params }: { params: { id: string[]} }) {
             <Typography level="h2" component="h1">
             {decodeURIComponent(params.id[1])}
             </Typography>
-            <AddOperator id={params.id[0]}/>
+            <AddUserGroup id={params.id[0]}/>
         </Box>
-        <OperatorsTable 
-        rop_id={params.id[0]}
+        <GroupUsersTable 
+        group_id={params.id[0]}
         users={users.data}/>
     </Box>
     );
