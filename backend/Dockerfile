@@ -4,15 +4,24 @@ FROM node:18
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем файлы проекта
+# Копируем package.json и package-lock.json
 COPY package*.json ./
-RUN npm install
+
+# Устанавливаем только production-зависимости
+RUN npm install --production
+
+# Создаем папку uploads
+RUN mkdir -p /app/uploads
+
+# Копируем все файлы проекта
 COPY . .
 
-# создай папку uploads
-RUN mkdir -p /app/uploads
 # Собираем проект
 RUN npm run build
+
+# Устанавливаем переменные окружения (опционально)
+ENV NODE_ENV=production
+ENV PORT=4000
 
 # Указываем команду запуска
 CMD ["npm", "run", "start:prod"]
