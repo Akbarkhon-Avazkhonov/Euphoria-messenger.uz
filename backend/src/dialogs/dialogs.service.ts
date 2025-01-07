@@ -8,6 +8,10 @@ export class DialogsService {
     return 'This action adds a new dialog';
   }
 
+  async getGroups(userId: number) {
+    console.log(userId);
+  }
+
   findAll() {
     return `This action returns all dialogs`;
   }

@@ -14,6 +14,7 @@ export class TablesService implements OnModuleInit {
     await this.createRops();
     await this.createGroups();
     await this.createGroupsUsers();
+    await this.createGroupMessages();
   }
 
   // Создание таблицы Roles
@@ -178,5 +179,21 @@ export class TablesService implements OnModuleInit {
     );
   `;
     await this.pgService.safeQuery(query_create_table, 'GroupsUsers');
+  }
+
+  async createGroupMessages() {
+    const query_create_table = `
+    CREATE TABLE IF NOT EXISTS "GroupMessages" (
+      "id" SERIAL PRIMARY KEY,
+      "group_id" INTEGER,
+      "user_id" INTEGER,
+      "message" JSONB,
+      "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+      FOREIGN KEY ("group_id") REFERENCES "Groups"("id") ON DELETE CASCADE,
+      FOREIGN KEY ("user_id") REFERENCES "Users"("id") ON DELETE CASCADE
+    );
+  `;
+    await this.pgService.safeQuery(query_create_table, 'GroupMessages');
   }
 }

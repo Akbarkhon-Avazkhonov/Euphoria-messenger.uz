@@ -17,6 +17,7 @@ import { instrument } from '@socket.io/admin-ui';
 import { stringify as flattedStringify, parse } from 'flatted'; // Используем для безопасной сериализации
 
 import * as fs from 'fs';
+import { PgService } from 'src/other/pg.service';
 
 @Injectable()
 @WebSocketGateway()
@@ -32,6 +33,7 @@ export class SessionGateway
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
     private readonly telegramService: TelegramService,
+    private readonly pgService: PgService,
   ) {}
 
   afterInit() {
@@ -79,22 +81,52 @@ export class SessionGateway
 
     // Get initial dialogs and send to the client
     const dialogs = await telegramInstance.getDialogs({ limit: 100 });
-
     const result = dialogs
       .filter((dialog) => dialog.isUser)
-      .map(
-        (dialog) =>
-          dialog && {
-            userId: dialog.id,
-            title: dialog.title,
-            unreadCount: dialog.unreadCount,
-            phone: dialog.entity?.phone,
-            message: dialog.message?.message,
-            date: dialog.message?.date,
-            status: dialog.entity?.status,
-          },
-      );
-    client.emit('dialogs', result);
+      .map((dialog) => ({
+        userId: dialog.id,
+        title: dialog.title,
+        unreadCount: dialog.unreadCount,
+        phone: dialog.entity?.phone,
+        message: dialog.message?.message,
+        date: dialog.message?.date,
+        status: dialog.entity?.status,
+        type: 'dialog', // Указываем тип объекта
+      }));
+
+    const cookieString = client.handshake.headers.cookie;
+
+    // Функция для извлечения значения конкретного ключа из строки куки
+    function getCookieValue(cookieString, key) {
+      const match = cookieString.match(new RegExp(`${key}=([^;]+)`));
+      return match ? match[1] : null;
+    }
+
+    // Извлечение значения 'id'
+    const id = getCookieValue(cookieString, 'id');
+    console.log(id); // Выводит: 6
+
+    // Получение групп для пользователя
+    const groupsQuery = await this.pgService.query(
+      `SELECT g.*, g.id AS "userId"
+     FROM "Groups" g
+     JOIN "GroupsUsers" gu ON g.id = gu.group_id
+     WHERE gu.user_id = $1`,
+      [id],
+    );
+
+    const groups = groupsQuery.rows.map((group) => ({
+      ...group,
+      type: 'group', // Указываем тип объекта
+    }));
+    console.log(groups); // Логируем группы
+
+    // Объединяем dialogs и groups в один список
+    const finalResult = [...groups, ...result];
+
+    console.log(finalResult); // Финальный результат
+
+    client.emit('dialogs', finalResult);
   }
 
   // Handle client disconnection

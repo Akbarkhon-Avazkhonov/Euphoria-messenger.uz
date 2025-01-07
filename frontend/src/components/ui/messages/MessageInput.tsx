@@ -73,6 +73,9 @@ export default function MessageInput(props: MessageInputProps) {
               }}
             >
               <Stack direction="row">
+              {
+                (+userId > 10000) &&
+                <>
                 {/* Компонент для отправки аудио */}
                 <SendAudio userId={userId} setTextAreaValue={setTextAreaValue}  />
                 {/* Компонент для отправки видео */}
@@ -81,7 +84,8 @@ export default function MessageInput(props: MessageInputProps) {
                 <SendFile userId={userId} />
                 {/* Компонент для отправки фото */}
                 <SendPhoto userId={userId} />
-
+                </>
+              }
               </Stack>
 
               {/* Кнопка отправки сообщения */}

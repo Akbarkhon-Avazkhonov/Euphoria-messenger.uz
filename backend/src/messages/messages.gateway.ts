@@ -7,6 +7,7 @@ import { TelegramService } from 'src/telegram/telegram.service';
 import * as fs from 'fs';
 import { generateRandomBytes, readBigIntFromBuffer } from 'telegram/Helpers';
 import { Api } from 'telegram';
+import { PgService } from 'src/other/pg.service';
 
 @UseGuards(SessionGuard)
 @WebSocketGateway()
@@ -14,6 +15,7 @@ export class MessagesGateway {
   constructor(
     private readonly messagesService: MessagesService,
     private readonly telegramService: TelegramService, // Inject TelegramService
+    private readonly pgService: PgService,
   ) {}
   @SubscribeMessage('getMessages')
   async handleGetMessages(client: Socket, payload: any) {
@@ -22,6 +24,59 @@ export class MessagesGateway {
         client.data.session,
       );
       if (telegramInstance) {
+        console.log('Getting messages for user', payload[0].userId);
+        if (+payload[0].userId < 10000) {
+          const cookieString = client.handshake.headers.cookie;
+
+          // Функция для извлечения значения конкретного ключа из строки куки
+          function getCookieValue(cookieString, key) {
+            const match = cookieString.match(new RegExp(`${key}=([^;]+)`));
+            return match ? match[1] : null;
+          }
+          const id = getCookieValue(cookieString, 'id');
+          const getGroupMessagesQuery = `
+  SELECT 
+    "id",
+    CASE WHEN "user_id" = $1 THEN TRUE ELSE FALSE END AS "out",
+    JSON_BUILD_OBJECT(
+      'userId', "user_id",
+      'className', 'PeerUser'
+    ) AS "fromId",
+    JSON_BUILD_OBJECT(
+      'userId', "group_id",
+      'className', 'PeerUser'
+    ) AS "toId",
+    "message"->>'message' AS "message", -- Извлекаем значение ключа "message" из JSONB
+    EXTRACT(EPOCH FROM "created_at")::BIGINT AS "date",
+    JSON_BUILD_OBJECT(
+      'userId', "group_id",
+      'className', 'PeerUser'
+    ) AS "peerId",
+    NULL AS "media"
+  FROM "GroupMessages"
+  WHERE "group_id" = $2
+  ORDER BY "created_at" ASC;
+`;
+
+          console.log('ID пользователя:', id);
+          console.log('ID группы:', payload[0].userId);
+          const groupMessages = await this.pgService.query(
+            getGroupMessagesQuery,
+            [
+              +id, // ID пользователя для проверки `out`
+              +payload[0].userId, // ID группы
+            ],
+          );
+
+          groupMessages.rows.forEach((message) => {
+            // date to number
+            message.date = +message.date;
+          });
+          console.log('Сообщения группы:', groupMessages.rows);
+          client.emit('getMessages', groupMessages.rows);
+
+          return;
+        }
         const messages = await telegramInstance.getMessages(payload[0].userId, {
           limit: 100,
         });
@@ -87,6 +142,30 @@ export class MessagesGateway {
         );
 
         if (telegramInstance) {
+          if (+payload.userId < 10000) {
+            const cookieString = client.handshake.headers.cookie;
+
+            // Функция для извлечения значения конкретного ключа из строки куки
+            function getCookieValue(cookieString, key) {
+              const match = cookieString.match(new RegExp(`${key}=([^;]+)`));
+              return match ? match[1] : null;
+            }
+            const id = getCookieValue(cookieString, 'id');
+            const insertMessageQuery = `
+            INSERT INTO "GroupMessages" ("group_id", "user_id", "message", "created_at")
+            VALUES ($1, $2, $3, DEFAULT)
+            RETURNING *;
+          `;
+            await this.pgService.query(insertMessageQuery, [
+              +payload.userId,
+              id,
+              { message: payload.message },
+            ]);
+            console.log(payload.userId);
+            // Получение групп для пользователя
+            console.log(payload);
+            return;
+          }
           // Отправка сообщения пользователю с указанным userId
           const result = await telegramInstance.sendMessage(
             payload.userId.toString(),

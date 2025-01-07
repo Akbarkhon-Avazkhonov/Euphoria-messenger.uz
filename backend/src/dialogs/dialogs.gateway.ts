@@ -43,7 +43,7 @@ export class DialogsGateway {
       const dialogs = await telegramInstance.getDialogs({ limit: 100 });
 
       // Map dialogs to a cleaner format
-      const result: Dialog[] = dialogs
+      const finalResult: Dialog[] = dialogs
         .filter((dialog) => dialog.isUser)
         .map((dialog) => ({
           userId: dialog.id,
@@ -54,8 +54,13 @@ export class DialogsGateway {
           date: dialog.date,
         }));
 
+      // get groups from db
+      const groups = await this.dialogsService.getGroups(
+        client.data.session.userId,
+      );
+
       // Emit the formatted dialogs to the client
-      client.emit('dialogs', result);
+      client.emit('dialogs', finalResult);
     } catch (error) {
       // Emit an error message to the client if any issues occur
       client.emit('error', `Failed to get dialogs: ${error.message}`);

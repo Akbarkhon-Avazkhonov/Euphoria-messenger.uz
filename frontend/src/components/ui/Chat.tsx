@@ -37,8 +37,11 @@ export default function Chat(props: ChatProps) {
   const [canWrite, setCanWrite] = React.useState<boolean | null>(null);
   const [canReadPhoto, setCanReadPhoto] = React.useState<boolean | null>(false);
   const setSelectedUserId = (userId: string) => {
+    console.log('setSelectedUserId', userId);
     // find the chat with the given userId
-    const chat = dialogs.find((chat) => chat.userId === userId);
+    console.log('dialogs', dialogs);
+    const chat = dialogs.find((chat) => chat.userId == userId);
+    console.log('chat', chat);
     setSelectedChat(chat);
   };
 
@@ -112,6 +115,7 @@ export default function Chat(props: ChatProps) {
     });
 
     props.socket.on('dialogs', (dialogs) => {
+      console.log(dialogs);
       setDialogs(dialogs);
     });
 
@@ -130,7 +134,8 @@ export default function Chat(props: ChatProps) {
 
   React.useLayoutEffect(() => {
     setChatMessages([]);
-    props.socket.emitWithAck('getMessages', { userId: selectedChat.userId }, () => {
+    props.socket.emitWithAck('getMessages', { userId: selectedChat?.userId || selectedChat?.id }, () => {
+      console.log('getMessages');
       setChatMessages([]);
     }
     );
@@ -182,15 +187,19 @@ export default function Chat(props: ChatProps) {
               dialogs.length ? (dialogs.map((chat) => (
                 chat &&
                 <DialogsItem
-                  key={chat.userId.toString()}
+                  key={chat.userId?.toString()} // Используем короткую запись
                   title={chat.title}
                   phone={chat.phone}
                   message={chat.message}
                   date={chat.date}
                   unreadCount={chat.unreadCount}
-                  selected={selectedChat.userId == chat.userId.toString()}
-                  setSelectedUserId={(userId) => setSelectedUserId(userId)}
-                  userId={chat.userId.toString()}
+                  selected={
+                    selectedChat?.userId && (chat.userId || chat.id)
+                      ? String(selectedChat.userId) === String(chat.userId || chat.id)
+                      : false
+                  }
+                  setSelectedUserId={setSelectedUserId} // Передаем напрямую, т.к. функция уже соответствует
+                  userId={chat.userId?.toString() || chat.id.toString()} // Упрощаем логику
                   status={chat.status}
                 />
 
@@ -209,7 +218,7 @@ export default function Chat(props: ChatProps) {
           backgroundColor: 'background.level3',
         }}
       >
-        <MessageHeader title={selectedChat.title} />
+        {/* <MessageHeader title={selectedChat.title} /> */}
         <Box
           sx={{
             display: 'flex',
@@ -223,7 +232,7 @@ export default function Chat(props: ChatProps) {
         >
           <Stack spacing={2} justifyContent="flex-end" sx={{ flex: 1 }}>
             {
-              !selectedChat.userId &&
+              (!selectedChat?.userId || !selectedChat.id) &&
               <>
                 <Box sx={{ width: "100%", flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
                   <Box sx={{ padding: "10px 20px", borderRadius: "50px", backgroundColor: "background.level2" }}>
@@ -235,7 +244,7 @@ export default function Chat(props: ChatProps) {
               </>
             }
             {
-              (chatMessages.length < 1 && selectedChat.userId)  &&
+              (chatMessages.length < 1 && selectedChat?.userId)  &&
               <>
                 <ChatBubbleSkeleton variant='received' />
               </>
@@ -243,7 +252,9 @@ export default function Chat(props: ChatProps) {
 
             {chatMessages.map((message: any, index: number) => {
               const isYou = message.out;
-              const show = (message.peerId.userId == selectedChat.userId) || (message.peerId.chatId == Math.abs(selectedChat.userId));
+              const show = 
+              (message.peerId.userId == selectedChat?.userId)
+              || (message.peerId.chatId == Math.abs(selectedChat.userId));
 
               if (show) {
                 return (
@@ -261,7 +272,7 @@ export default function Chat(props: ChatProps) {
           </Stack>
         </Box>
         {
-          (canWrite && selectedChat.userId) && <MessageInput
+          (canWrite && selectedChat?.userId) && <MessageInput
             textAreaValue={textAreaValue}
             setTextAreaValue={setTextAreaValue}
             userId={selectedChat.userId}

@@ -25,6 +25,8 @@ export default function DialogsItem(props: DialogsItemProps) {
   if (props.userId === '777000') {
     return null;
   }
+  console.log(props.title)
+  console.log(props.userId)
   return (
     <>
       <ListItem >
