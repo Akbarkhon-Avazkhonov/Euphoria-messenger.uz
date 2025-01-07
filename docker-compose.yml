@@ -37,19 +37,19 @@ services:
     networks:
       - app-network
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    restart: always
-    env_file:  # Load environment variables from the .env.production file
-      - ./frontend/.env.production
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
-    networks:
-      - app-network
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   restart: always
+  #   env_file:  # Load environment variables from the .env.production file
+  #     - ./frontend/.env.production
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - app-network
 
   pgadmin:
     image: dpage/pgadmin4:latest
