@@ -22,20 +22,20 @@ services:
     networks:
       - app-network
 
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    restart: always
-    depends_on:
-      - postgres
-      - redis-stack
-    env_file:  # Load environment variables from the .env.production file
-      - ./backend/.env.production
-    ports:
-      - "4000:4000"
-    networks:
-      - app-network
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   restart: always
+  #   depends_on:
+  #     - postgres
+  #     - redis-stack
+  #   env_file:  # Load environment variables from the .env.production file
+  #     - ./backend/.env.production
+  #   ports:
+  #     - "4000:4000"
+  #   networks:
+  #     - app-network
 
   frontend:
     build:
@@ -46,8 +46,8 @@ services:
       - ./frontend/.env.production
     ports:
       - "3000:3000"
-    depends_on:
-      - backend
+    # depends_on:
+    #   - backend
     networks:
       - app-network
 
