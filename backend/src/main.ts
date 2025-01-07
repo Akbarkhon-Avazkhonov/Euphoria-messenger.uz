@@ -8,12 +8,12 @@ async function bootstrap() {
   let httpsOptions = undefined;
 
   // Используем SSL, если установлена переменная окружения PRODUCTION
-  if (process.env.PRODUCTION) {
-    httpsOptions = {
-      key: fs.readFileSync('live/euphoria-messenger.uz/privkey.pem'),
-      cert: fs.readFileSync('live/euphoria-messenger.uz/fullchain.pem'),
-    };
-  }
+  // if (process.env.PRODUCTION) {
+  //   httpsOptions = {
+  //     key: fs.readFileSync('live/euphoria-messenger.uz/privkey.pem'),
+  //     cert: fs.readFileSync('live/euphoria-messenger.uz/fullchain.pem'),
+  //   };
+  // }
 
   const app = await NestFactory.create(AppModule, {
     snapshot: true,
