@@ -4,22 +4,23 @@ FROM node:18
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем package.json и package-lock.json
+# Копируем файлы для установки зависимостей
 COPY package*.json ./
 
-# Устанавливаем только production-зависимости
+# Устанавливаем зависимости
 RUN npm install --production
+RUN npm install -g @nestjs/cli
 
 # Создаем папку uploads
 RUN mkdir -p /app/uploads
 
-# Копируем все файлы проекта
+# Копируем оставшиеся файлы
 COPY . .
 
 # Собираем проект
 RUN npm run build
 
-# Устанавливаем переменные окружения (опционально)
+# Указываем переменные окружения
 ENV NODE_ENV=production
 ENV PORT=4000
 
