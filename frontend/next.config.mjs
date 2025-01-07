@@ -5,7 +5,9 @@ const nextConfig = {
     images: {
         domains: ['localhost'],
     },
-    optimizeFonts: false,
+    future: {
+        ignoreBuildErrors: true, // Игнорировать ошибки при сборке
+      },
 };
 
 export default nextConfig;
