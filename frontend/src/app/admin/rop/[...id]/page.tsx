@@ -7,7 +7,7 @@ import AddOperator from "@/components/admin/rop/AddOperator";
 import OperatorsTable from "@/components/admin/rop/OperatorsTables";
 
 async function fetchUsers(cookies: string, id: string) {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/getGroupUsers/${id}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/getRopOperators/${id}`, {
      method: 'GET',
      headers: {
          'Content-Type': 'application/json',
