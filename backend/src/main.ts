@@ -52,7 +52,7 @@ async function bootstrap() {
   });
 
   app.enableCors({
-    origin: 'https://euphoria-messenger.uz',
+    origin: true,
     credentials: true,
   });
 
