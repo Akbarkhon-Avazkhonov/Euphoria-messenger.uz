@@ -1,8 +1,12 @@
-import { WebSocketGateway, SubscribeMessage } from '@nestjs/websockets';
+import {
+  WebSocketGateway,
+  SubscribeMessage,
+  WebSocketServer,
+} from '@nestjs/websockets';
 import { MessagesService } from './messages.service';
 import { SessionGuard } from 'src/session/session.guard';
 import { UseGuards } from '@nestjs/common';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { TelegramService } from 'src/telegram/telegram.service';
 import * as fs from 'fs';
 import { generateRandomBytes, readBigIntFromBuffer } from 'telegram/Helpers';
@@ -17,6 +21,9 @@ export class MessagesGateway {
     private readonly telegramService: TelegramService, // Inject TelegramService
     private readonly pgService: PgService,
   ) {}
+  @WebSocketServer()
+  server: Server;
+
   @SubscribeMessage('getMessages')
   async handleGetMessages(client: Socket, payload: any) {
     if (client.data.session && payload[0].userId) {
@@ -36,30 +43,32 @@ export class MessagesGateway {
           const id = getCookieValue(cookieString, 'id');
           const getGroupMessagesQuery = `
   SELECT 
-    "id",
-    CASE WHEN "user_id" = $1 THEN TRUE ELSE FALSE END AS "out",
+    gm."id",
+    CASE WHEN gm."user_id" = $1 THEN TRUE ELSE FALSE END AS "out",
     JSON_BUILD_OBJECT(
-      'userId', "user_id",
+      'userId', gm."user_id",
       'className', 'PeerUser'
     ) AS "fromId",
     JSON_BUILD_OBJECT(
-      'userId', "group_id",
+      'userId', gm."group_id",
       'className', 'PeerUser'
     ) AS "toId",
-    "message"->>'message' AS "message", -- Извлекаем значение ключа "message" из JSONB
-    EXTRACT(EPOCH FROM "created_at")::BIGINT AS "date",
+    u."name" AS "senderName", -- Имя отправителя
+    gm."message"->>'message' AS "message", -- Извлекаем значение ключа "message" из JSONB
+    EXTRACT(EPOCH FROM gm."created_at")::BIGINT AS "date",
     JSON_BUILD_OBJECT(
-      'userId', "group_id",
+      'userId', gm."group_id",
       'className', 'PeerUser'
     ) AS "peerId",
     NULL AS "media"
-  FROM "GroupMessages"
-  WHERE "group_id" = $2
-  ORDER BY "created_at" ASC;
+  FROM "GroupMessages" gm
+  LEFT JOIN "Users" u ON gm."user_id" = u."id" -- Присоединяем таблицу Users
+  WHERE gm."group_id" = $2
+  ORDER BY gm."created_at" ASC;
 `;
 
-          console.log('ID пользователя:', id);
-          console.log('ID группы:', payload[0].userId);
+          // console.log('ID пользователя:', id);
+          // console.log('ID группы:', payload[0].userId);
           const groupMessages = await this.pgService.query(
             getGroupMessagesQuery,
             [
@@ -156,14 +165,28 @@ export class MessagesGateway {
             VALUES ($1, $2, $3, DEFAULT)
             RETURNING *;
           `;
-            await this.pgService.query(insertMessageQuery, [
+            const newMessage = await this.pgService.query(insertMessageQuery, [
               +payload.userId,
               id,
               { message: payload.message },
             ]);
-            console.log(payload.userId);
-            // Получение групп для пользователя
-            console.log(payload);
+            // Broadcast the message to all clients in the group room
+            const room = `group_${payload.userId}`;
+            const messageData = {
+              id: newMessage.rows[0].id,
+              groupId: payload.userId,
+              userId: id,
+              message: payload.message,
+              date: new Date(newMessage.rows[0].created_at).getTime(),
+              media: false, // Add media logic if necessary
+            };
+
+            this.server.to(room).emit('newMessage', messageData);
+
+            return;
+            // console.log(payload.userId);
+            // // Получение групп для пользователя
+            // console.log(payload);
             return;
           }
           // Отправка сообщения пользователю с указанным userId
@@ -175,7 +198,7 @@ export class MessagesGateway {
           );
 
           // Запись результата в файл (опционально, для отладки)
-          fs.writeFileSync('sendMessageResult.json', JSON.stringify(result));
+          // fs.writeFileSync('sendMessageResult.json', JSON.stringify(result));
 
           // Эмит сообщения обратно клиенту с подтверждением успешной отправки
           client.emit('sendMessage', { status: 'success', data: result });

@@ -20,10 +20,11 @@ type ChatBubbleProps = MessageProps & {
   photoUrl?: any;
   canReadPhoto?: boolean;
   voiceUrl?: any;
+  senderName?: string;
 };
 
 export default function ChatBubble(props: ChatBubbleProps) {
-  const { message, out,media = undefined ,date, photoUrl=undefined ,canReadPhoto , voiceUrl = undefined} = props;
+  const { message, out,media = undefined ,date, photoUrl=undefined ,canReadPhoto ,senderName, voiceUrl = undefined} = props;
   const isSent = out;
   const [isHovered, setIsHovered] = React.useState<boolean>(false);
   const [isLiked, setIsLiked] = React.useState<boolean>(false);
@@ -93,18 +94,18 @@ export default function ChatBubble(props: ChatBubbleProps) {
   return (
     <Box sx={{ maxWidth: '60%', minWidth: 'auto' }}>
       <Stack
-        direction="row"
-        justifyContent="end"
-        spacing={2}
-        sx={{ mb: 0.25 }}
-      >
-        <Typography level="body-xs">
-          {/* {out &&  sender : sender.name} */}
-        </Typography>
-        <Typography level="body-xs">{relativeDate(date)}</Typography>
-
-        <Typography level="body-xs">{}</Typography>
-      </Stack>
+  direction="row"
+  justifyContent={isSent ? "end" : "start"}
+  spacing={2}
+  sx={{ mb: 0.25 }}
+>
+  {props.senderName && !isSent && (
+    <Typography level="body-xs" sx={{ fontWeight: "bold" }}>
+      {props.senderName}
+    </Typography>
+  )}
+  <Typography level="body-xs">{relativeDate(date)}</Typography>
+</Stack>
       {media != 'null' && media && canReadPhoto ? (
          <>
         {
