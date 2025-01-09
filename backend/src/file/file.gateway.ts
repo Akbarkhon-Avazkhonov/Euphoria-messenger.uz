@@ -43,36 +43,32 @@ export class FileGateway {
     try {
       // Проверка наличия сеанса и userId в payload
       if (!client.data.session || !payload.userId) return;
-      console.log('client here 1');
       const telegramInstance = await this.telegramService.getTelegramClient(
         client.data.session,
       );
-      console.log('client here 2');
 
       if (!telegramInstance) {
         console.log('Telegram instance not found');
         return;
       }
 
-      console.log('client here 3');
-
       // Получение сообщения по userId и messageId
       const result = await telegramInstance.getMessages(payload.userId, {
         ids: [payload.messageId],
       });
-      console.log('client here 4');
 
       // Проверка, что сообщение и медиафайл существуют
       if (!result || result.length === 0 || !result[0].media) {
         return;
       }
+      const media = result[0].media;
       if (result.length > 0) {
         const message = result[0];
         if (message.voice) {
           // Download the voice message
           const filePath = `voice_${message.id}.ogg`;
           const fullPath = path.join(__dirname, '../../uploads/', filePath);
-          const file = await telegramInstance.downloadMedia(message.voice, {
+          const file = await telegramInstance.downloadMedia(media, {
             workers: 1,
           });
           fs.writeFile(fullPath, file);
@@ -86,10 +82,10 @@ export class FileGateway {
         }
       }
 
-      const media = result[0].media;
+      const fileName = media.document?.attributes[0]?.fileName
+        ? media.document.attributes[0].fileName
+        : `${media.document.id}.${media.document.mimeType.split('/')[1]}`;
 
-      const fileName =
-        media.document.id + '.' + media.document.mimeType.split('/')[1];
       const uploadPath = path.join(__dirname, '../..', 'uploads', fileName);
 
       // take only uploads/fileName
@@ -103,7 +99,11 @@ export class FileGateway {
       }
 
       // Загрузка медиафайла из Telegram
-      const file = await telegramInstance.downloadMedia(result);
+      const file = await telegramInstance.downloadMedia(media);
+
+      if (!Buffer.isBuffer(file) || file.length === 0) {
+        console.log('Файл не был загружен или пустой.');
+      }
 
       await fs.writeFile(uploadPath, file);
 
