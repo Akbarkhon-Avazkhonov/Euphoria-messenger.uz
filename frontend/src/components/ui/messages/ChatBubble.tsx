@@ -110,20 +110,16 @@ export default function ChatBubble(props: ChatBubbleProps) {
         {
           photoUrl ? (
             <Card sx={{ maxWidth: 600, flexGrow: 1, minHeight: '200px' }}>
-              <CardCover>
-              <ModalImage
-                  small={`${process.env.NEXT_PUBLIC_BACKEND_URL}/${photoUrl}`}
-                  large={`${process.env.NEXT_PUBLIC_BACKEND_URL}/${photoUrl}`}
-                  alt="Hello World!"
-                />
-                {/* <img
-                  loading='lazy'
-                  alt={photoUrl}
-                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/${photoUrl}`}
-                  style={{ objectFit: 'contain', height: '100%', width: '100%' }}
-                /> */}
-              </CardCover>
-            </Card>
+            <CardCover>
+              <img
+                loading="lazy"
+                alt="Hello World!"
+                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/${photoUrl}`}
+                style={{ objectFit: 'contain', height: '100%', width: '100%', cursor: 'pointer' }}
+                onClick={() => window.open(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${photoUrl}`, '_blank')}
+              />
+            </CardCover>
+          </Card>
 
           ): (<Sheet
             variant="outlined"
@@ -204,7 +200,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
                 color: 'var(--joy-palette-danger-solidBg)'
               }}
             >
-              {media ? media : 'Сообщение не поддерживается в данной версии приложения'}
+              {media && canReadPhoto ? media : 'Сообщение не поддерживается в данной версии приложения'}
             </Typography>
           </Sheet>
           }

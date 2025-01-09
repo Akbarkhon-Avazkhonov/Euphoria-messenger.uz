@@ -189,9 +189,9 @@ export default function Chat(props: ChatProps) {
                 <DialogsItem
                   key={chat.userId?.toString()} // Используем короткую запись
                   title={chat.title}
-                  phone={chat.phone}
+                  phone={chat.phone || chat.description}
                   message={chat.message}
-                  date={chat.date}
+                  date={(new Date(+chat.date))}
                   unreadCount={chat.unreadCount}
                   selected={
                     selectedChat?.userId && (chat.userId || chat.id)
